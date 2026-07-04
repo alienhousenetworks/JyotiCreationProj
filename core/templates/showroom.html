@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}B2B Showroom Catalog — Jyoticreations Saree Sourcing{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}">
+{% endblock %}
+
+{% block content %}
+<main id="showroom-page">
+  <div class="catalog-wrap">
+    
+    <!-- Showroom Header -->
+    <div class="showroom-hdr rv">
+      <div class="hdr-eyebrow">{{ site_config.showroom_eyebrow|default:"Enterprise Allocation Desk" }}</div>
+      <h1 class="hdr-title">{{ site_config.showroom_title|default:"B2B Showroom Catalog" }}</h1>
+      <p class="hdr-desc">{{ site_config.showroom_desc|default:"Explore our active handloom allocations and product listings. Click on any card to view manufacturing technical specifications and initialize bulk procurement inquiries." }}</p>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="cat-filters rv d1">
+      <button class="cat-tab active" data-filter="all">All Sourcing Entries</button>
+      {% for cat in categories %}
+      <button class="cat-tab" data-filter="{{ cat.slug }}">{{ cat.name }}</button>
+      {% endfor %}
+    </div>
+
+    <!-- Subcategory Filters Grouped by Category -->
+    <div class="sub-filters-wrap rv d1" style="margin-top: 16px; margin-bottom: 32px;">
+      {% for cat in categories %}
+      <div class="sub-filters-group" id="sub-filters-{{ cat.slug }}" style="display: none; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <button class="sub-tab active" data-sub="all">All {{ cat.name }}</button>
+        {% for sub in cat.subcategories.all %}
+        <button class="sub-tab" data-sub="{{ sub.slug }}">{{ sub.name }}</button>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Catalog Grid -->
+    <div class="catalog-grid rv d2">
+      {% for prod in products %}
+      <div class="prod-card" data-category="{{ prod.category.slug }}" data-subcategory="{{ prod.subcategory.slug|default:'none' }}" onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}', '{{ prod.moq|escapejs }}')">
+        <div class="prod-img-box">
+          <div class="prod-overlay"></div>
+          {% if prod.image_main %}
+          <img class="prod-img" src="{{ prod.image_main.url }}" alt="{{ prod.name }}">
+          {% else %}
+          <div class="prod-img abstract-pattern pattern-{% cycle '1' '2' '3' '4' '5' '6' %}"></div>
+          {% endif %}
+          <div class="prod-badge">{{ prod.moq }} MOQ</div>
+          {% if prod.is_best_seller %}
+          <div class="prod-status">Best Seller</div>
+          {% elif prod.is_new_arrival %}
+          <div class="prod-status">New Arrival</div>
+          {% elif prod.is_premium %}
+          <div class="prod-status">Premium</div>
+          {% endif %}
+        </div>
+        <div class="prod-details">
+          <div class="prod-cat-name">{{ prod.category.name }} {% if prod.subcategory %}· {{ prod.subcategory.name }}{% endif %}</div>
+          <h3 class="prod-h">{{ prod.name }}</h3>
+          <p class="prod-desc">{{ prod.description|truncatewords:20 }}</p>
+          <div class="prod-meta-specs">
+            <div class="prod-spec-row"><label>Fabric</label><span>{{ prod.purity_fabric }}</span></div>
+            <div class="prod-spec-row"><label>Border</label><span>{{ prod.border_specs }}</span></div>
+            <div class="prod-spec-row"><label>Weight</label><span>{{ prod.structural_weight }}</span></div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="catalog-empty">
+        <p>No products are currently allocated to the showroom catalog ledger.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // Highlight active link
+  document.getElementById('nav-cv').classList.add('active-link');
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const catTabs = document.querySelectorAll('.cat-tab');
+    const subGroups = document.querySelectorAll('.sub-filters-group');
+    const cards = document.querySelectorAll('.prod-card');
+
+    let currentCategory = 'all';
+    let currentSubcategory = 'all';
+
+    // Category Selector
+    catTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        catTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        currentCategory = tab.dataset.filter;
+        currentSubcategory = 'all';
+
+        // Toggle subcategory groups visibility
+        subGroups.forEach(group => {
+          if (group.id === 'sub-filters-' + currentCategory) {
+            group.style.display = 'flex';
+            // Set first sub-tab ("All Category") to active
+            group.querySelectorAll('.sub-tab').forEach(st => st.classList.remove('active'));
+            const defaultSubTab = group.querySelector('.sub-tab[data-sub="all"]');
+            if (defaultSubTab) defaultSubTab.classList.add('active');
+          } else {
+            group.style.display = 'none';
+          }
+        });
+
+        filterProducts();
+      });
+    });
+
+    // Subcategory Selector
+    subGroups.forEach(group => {
+      const subTabs = group.querySelectorAll('.sub-tab');
+      subTabs.forEach(stab => {
+        stab.addEventListener('click', () => {
+          subTabs.forEach(t => t.classList.remove('active'));
+          stab.classList.add('active');
+
+          currentSubcategory = stab.dataset.sub;
+          filterProducts();
+        });
+      });
+    });
+
+    // Filtering execution
+    function filterProducts() {
+      cards.forEach(card => {
+        const matchesCategory = (currentCategory === 'all' || card.dataset.category === currentCategory);
+        const matchesSubcategory = (currentSubcategory === 'all' || card.dataset.subcategory === currentSubcategory);
+
+        if (matchesCategory && matchesSubcategory) {
+          card.style.display = 'block';
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, 50);
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.display = 'none';
+          }, 300);
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

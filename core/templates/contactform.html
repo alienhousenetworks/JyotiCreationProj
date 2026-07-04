@@ -1,0 +1,122 @@
+<div id="contact-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeContactModal()">✕ Close</button>
+    <div class="modal-hdr">
+      <div class="modal-brand">{{ site_config.brand_name|default:"Jyoti" }}<em>{{ site_config.brand_suffix|default:"creations" }}</em></div>
+      <h3>B2B Sourcing Desk</h3>
+      <p>Secure premium wholesale allocations and private label timelines.</p>
+    </div>
+    <form id="modal-enquiry-form">
+      <div class="modal-form-group">
+        <input type="text" id="modal-form-name" placeholder="YOUR NAME" required autocomplete="name">
+      </div>
+      <div class="modal-form-group">
+        <input type="text" id="modal-form-company" placeholder="COMPANY / BRAND NAME" required autocomplete="organization">
+      </div>
+      <div class="modal-form-group">
+        <input type="email" id="modal-form-email" placeholder="BUSINESS EMAIL" required autocomplete="email">
+      </div>
+      <div class="modal-form-group">
+        <textarea id="modal-form-message" placeholder="SPECIFIC REQUIREMENTS / QUANTITY REQUIRED" rows="3" required></textarea>
+      </div>
+      <button type="submit" class="btn-modal-submit">Submit &amp; Connect on WhatsApp</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  let activeModalProduct = { name: '', fabric: '', border: '', weight: '', moq: '' };
+
+  function openContactModal(prodName = '', fabric = '', border = '', weight = '', moq = '') {
+    activeModalProduct = { name: prodName, fabric, border, weight, moq };
+    
+    const msgField = document.getElementById('modal-form-message');
+    if (prodName) {
+      msgField.placeholder = `INQUIRING ABOUT: ${prodName}. ADD ANY CUSTOM SPECIFICATIONS OR QUANTITY`;
+    } else {
+      msgField.placeholder = "SPECIFIC REQUIREMENTS / QUANTITY REQUIRED";
+    }
+
+    document.getElementById('contact-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeContactModal() {
+    document.getElementById('contact-modal').style.display = 'none';
+    if (!document.querySelector('.drawer.open')) {
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Handle Modal Submit
+  document.getElementById('modal-enquiry-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('modal-form-name').value;
+    const company = document.getElementById('modal-form-company').value;
+    const email = document.getElementById('modal-form-email').value;
+    const message = document.getElementById('modal-form-message').value;
+
+    const isProduct = activeModalProduct.name !== '';
+    let textMsg = '';
+
+    if (isProduct) {
+      textMsg = `*B2B PRODUCT SPECIFIC ENQUIRY*\n\n` +
+                `*Buyer Name:* ${name}\n` +
+                `*Company/Brand:* ${company}\n` +
+                `*Email:* ${email}\n\n` +
+                `*Product Evaluated:* ${activeModalProduct.name}\n` +
+                `- Fabric: ${activeModalProduct.fabric}\n` +
+                `- Border: ${activeModalProduct.border}\n` +
+                `- Weight: ${activeModalProduct.weight}\n` +
+                `- MOQ: ${activeModalProduct.moq}\n\n` +
+                `*Buyer Message:* ${message}`;
+    } else {
+      textMsg = `*GENERAL B2B PROCUREMENT ENQUIRY*\n\n` +
+                `*Buyer Name:* ${name}\n` +
+                `*Company/Brand:* ${company}\n` +
+                `*Email:* ${email}\n\n` +
+                `*Buyer Message:* ${message}`;
+    }
+
+    const encoded = encodeURIComponent(textMsg);
+    const waNumber = '{{ site_config.whatsapp_number|default:"919999999999" }}';
+    const waUrl = `https://wa.me/${waNumber}?text=${encoded}`;
+
+    const payload = {
+      name: name,
+      company: company,
+      email: email,
+      phone: '',
+      message: isProduct ? `[Modal Product: ${activeModalProduct.name}] ${message}` : `[Modal General Sourcing] ${message}`
+    };
+
+    fetch('/api/enquiry/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getModalCookie('csrftoken') || ''
+      },
+      body: JSON.stringify(payload)
+    }).finally(() => {
+      window.open(waUrl, '_blank');
+      closeContactModal();
+      document.getElementById('modal-enquiry-form').reset();
+    });
+  });
+
+  function getModalCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>

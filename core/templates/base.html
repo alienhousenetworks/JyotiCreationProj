@@ -1,0 +1,725 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} — {{ site_config.site_subtitle|default:"Bengal's Finest Handloom Sarees · Premium B2B Manufacturer" }}{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}{{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} — Premier B2B Bengali silk saree manufacturer. Garad, Korial, Baluchari & Jamdani. Direct loom-to-boutique. OEM, Private Label, Export House. MOQ from 10 units.{% endblock %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Curtain for drawer -->
+<div id="curtain"></div>
+
+<!-- Intro Reveal Veil -->
+<div id="intro-veil">
+  <canvas class="intro-thread-canvas" id="intro-canvas"></canvas>
+  <div class="intro-brand" id="intro-brand">{{ site_config.brand_name|default:"Jyoti" }}<em>{{ site_config.brand_suffix|default:"creations" }}</em></div>
+  <div class="intro-line" id="intro-line"></div>
+  <div class="intro-sub" id="intro-sub">{{ site_config.intro_sub|default:"Bengal Handloom Heritage Ledger" }}</div>
+</div>
+
+<!-- WebGL Simulation stage -->
+<canvas id="silk-stage"></canvas>
+<div id="ambient-layer"></div>
+<div id="ptcl-layer"></div>
+
+<!-- NAVIGATION -->
+<nav id="gnav">
+  <a class="logo-block" href="{% url 'home' %}">
+    <div class="logo-w">{{ site_config.brand_name|default:"Jyoti" }}<em>{{ site_config.brand_suffix|default:"creations" }}</em></div>
+    <span class="logo-sub">{{ site_config.site_subtitle|default:"Premium B2B Manufacturer" }}</span>
+  </a>
+  <ul class="nav-links">
+    <li><a id="nav-hp" href="{% url 'home' %}">Home</a></li>
+    <li><a id="nav-cv" href="{% url 'showroom' %}">Showroom</a></li>
+    <li><a id="nav-pt" href="{% url 'partners' %}">Partners</a></li>
+    <li><button class="nav-cta" onclick="odc()">Contact</button></li>
+  </ul>
+</nav>
+
+<!-- MAIN CONTENT BLOCK -->
+{% block content %}
+{% endblock %}
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="ft-top">
+    <div>
+      <div class="logo-w">{{ site_config.brand_name|default:"Jyoti" }}<em>{{ site_config.brand_suffix|default:"creations" }}</em></div>
+      <p class="ft-brand-desc">India's premier B2B Bengali silk saree manufacturer. Connecting Bengal's finest handloom artisans with global luxury commerce since 2008. OEM · Private Label · Export House.</p>
+      <div class="ft-badge">✦ ISO 9001:2015 · GI Registered · Export Licensed</div>
+    </div>
+    <div class="ft-col">
+      <h5>Saree Collections</h5>
+      <ul>
+        {% for cat in global_categories %}
+        <li><a href="{% url 'category_detail' cat.slug %}" style="text-decoration:none;color:inherit;">{{ cat.name }} Portfolio</a></li>
+        {% empty %}
+        <li><a href="{% url 'showroom' %}" style="text-decoration:none;color:inherit;">Garad Heritage</a></li>
+        <li><a href="{% url 'showroom' %}" style="text-decoration:none;color:inherit;">Korial Zari</a></li>
+        <li><a href="{% url 'showroom' %}" style="text-decoration:none;color:inherit;">Baluchari Narrative</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h5>B2B Services</h5>
+      <ul>
+        <li>Wholesale Allocation</li>
+        <li>OEM Manufacturing</li>
+        <li>Private Label</li>
+        <li>Sample Programs</li>
+        <li>Export Documentation</li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h5>Connect</h5>
+      <ul>
+        <li>WhatsApp: {{ site_config.phone_number|default:"+91 99999 99999" }}</li>
+        <li>Email: {{ site_config.email_address|default:"b2b@jyoticreations.com" }}</li>
+        <li>{{ site_config.cluster_office|default:"Bishnupur Cluster Office" }}</li>
+        <li>{{ site_config.sourcing_hub|default:"Murshidabad Sourcing Hub" }}</li>
+        <li>{{ site_config.shipping_desk|default:"International Shipping Desk" }}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <div class="ft-copy">© 2026 {{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} Procurement Group Corp. · Premium Bengali Silk B2B Manufacturer · All Rights Reserved</div>
+    <div class="ft-legal">
+      <span>{{ site_config.legal_terms_text|default:"B2B Terms" }}</span>
+      <span>{{ site_config.legal_privacy_text|default:"Privacy Policy" }}</span>
+      <span>{{ site_config.legal_gi_text|default:"GI Certification" }}</span>
+      <span>{{ site_config.legal_export_text|default:"Export Compliance" }}</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════════ SIDE DRAWER ════════════════ -->
+<div class="drawer" id="drawer">
+  <div class="dr-top">
+    <div class="dr-brand-lbl">{{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} · B2B Sourcing Ledger</div>
+    <button class="dr-close" onclick="cd()">✕ Close Panel</button>
+  </div>
+  <div class="dr-body">
+    <div class="dr-tag">Verified Sourcing Entry · ISO 9001:2015</div>
+    <h2 class="dr-title" id="dr-title">Asset Entry</h2>
+    <table class="dr-table">
+      <tr><td>Fabric Core</td><td id="dr-fabric">—</td></tr>
+      <tr><td>Border Detail</td><td id="dr-border">—</td></tr>
+      <tr><td>Structural Weight</td><td id="dr-weight">—</td></tr>
+      <tr><td>B2B MOQ</td><td id="dr-moq">—</td></tr>
+      <tr><td>Origin Cluster</td><td>Bishnupur · Murshidabad · Shantipur (GI Tagged)</td></tr>
+      <tr><td>Quality Cert</td><td>ISO 9001:2015 · Quarterly Audit Compliant</td></tr>
+      <tr><td>Export Clearance</td><td>Active · 42 International Markets</td></tr>
+      <tr><td>Zari Standard</td><td>24K Gold-Plated Metallic Thread (Where Applicable)</td></tr>
+      <tr><td>Packaging</td><td>Luxury Tissue · Gold-Embossed Box · GI Certificate</td></tr>
+      <tr><td>OEM / Private Label</td><td>Available for orders 50+ units</td></tr>
+    </table>
+    <div class="dr-note">
+      <p>Enterprise-only allocation. Sample sets available prior to full order commitment. Custom weave specifications accommodated for 50+ unit orders. A dedicated account manager is assigned on order confirmation.</p>
+    </div>
+  </div>
+  <div class="dr-actions">
+    <button class="dr-wa" onclick="openContactModal(activeProduct.name, activeProduct.fabric, activeProduct.border, activeProduct.weight, activeProduct.moq)">✆ Initialize Procurement Sourcing</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT — INTERACTIONS + WEBGL SILK ENGINE
+     ════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════════
+   INTRO ANIMATION SEQUENCE
+   ══════════════════════════════════════════════ */
+(function initIntro() {
+  const veil = document.getElementById('intro-veil');
+  const brand = document.getElementById('intro-brand');
+  const sub = document.getElementById('intro-sub');
+  const line = document.getElementById('intro-line');
+
+  if (sessionStorage.getItem('introShown') === 'true') {
+    veil.style.display = 'none';
+    document.getElementById('gnav').classList.add('visible');
+    return;
+  }
+
+  const ic = document.getElementById('intro-canvas');
+  const ctx = ic.getContext('2d');
+  ic.width = window.innerWidth;
+  ic.height = window.innerHeight;
+
+  let threads = [];
+  let animFrame;
+  let t = 0;
+
+  function createThread(x, y) {
+    return { x, y, vx: (Math.random()-0.5)*0.8, vy: -Math.random()*0.5-0.2,
+      life: 1, decay: 0.003+Math.random()*0.003,
+      length: 20+Math.random()*60, angle: Math.random()*Math.PI*2,
+      color: Math.random() > 0.5 ? `rgba(223,186,95,` : `rgba(178,142,61,` };
+  }
+
+  function drawThreads() {
+    ctx.clearRect(0,0,ic.width,ic.height);
+    t += 0.018;
+
+    if (threads.length < 120 && t > 0.5) {
+      const cx = ic.width / 2, cy = ic.height / 2;
+      for (let i = 0; i < 3; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const r = Math.random() * 180;
+        threads.push(createThread(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r));
+      }
+    }
+
+    threads = threads.filter(th => th.life > 0);
+    threads.forEach(th => {
+      th.x += th.vx; th.y += th.vy; th.life -= th.decay;
+      th.angle += 0.01;
+      const alpha = th.life * 0.85;
+      ctx.save();
+      ctx.translate(th.x, th.y);
+      ctx.rotate(th.angle);
+      ctx.strokeStyle = th.color + alpha + ')';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(-th.length/2, 0);
+      ctx.lineTo(th.length/2, 0);
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // Central glow
+    if (t > 0.3) {
+      const gA = Math.min((t-0.3)/1.5, 0.15);
+      const grad = ctx.createRadialGradient(ic.width/2,ic.height/2,0,ic.width/2,ic.height/2,250);
+      grad.addColorStop(0, `rgba(223,186,95,${gA})`);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,ic.width,ic.height);
+    }
+
+    animFrame = requestAnimationFrame(drawThreads);
+  }
+  drawThreads();
+
+  // Text reveals
+  setTimeout(() => { brand.classList.add('show'); }, 800);
+  setTimeout(() => { line.classList.add('expand'); }, 1000);
+  setTimeout(() => { sub.classList.add('show'); }, 1200);
+
+  // Fade out intro
+  setTimeout(() => {
+    cancelAnimationFrame(animFrame);
+    veil.classList.add('fade-out');
+    document.getElementById('gnav').classList.add('visible');
+    sessionStorage.setItem('introShown', 'true');
+    setTimeout(() => { veil.style.display = 'none'; }, 1400);
+  }, 3200);
+})();
+
+/* Nav scroll */
+window.addEventListener('scroll', () => {
+  document.getElementById('gnav').classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ══════════════════════════════════════════════
+   DRAWER
+   ══════════════════════════════════════════════ */
+let activeProduct = { name: '', fabric: '', border: '', weight: '', moq: '' };
+
+function od(name, fabric, border, weight, moq) {
+  activeProduct = { name, fabric, border, weight, moq };
+  document.getElementById('dr-title').textContent = name;
+  document.getElementById('dr-fabric').textContent = fabric;
+  document.getElementById('dr-border').textContent = border;
+  document.getElementById('dr-weight').textContent = weight;
+  document.getElementById('dr-moq').textContent = moq;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('curtain').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function odc() {
+  openContactModal();
+}
+
+function cd() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('curtain').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.getElementById('curtain').addEventListener('click', cd);
+
+/* ══════════════════════════════════════════════
+   SCROLL REVEAL
+   ══════════════════════════════════════════════ */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); } });
+}, { threshold: 0.10, rootMargin: '0px 0px -30px 0px' });
+
+function triggerRevealObserver() {
+  document.querySelectorAll('.rv').forEach(el => revealObs.observe(el));
+}
+document.addEventListener('DOMContentLoaded', triggerRevealObserver);
+
+/* ══════════════════════════════════════════════
+   GOLD PARTICLES
+   ══════════════════════════════════════════════ */
+(function spawnParticles() {
+  const layer = document.getElementById('ptcl-layer');
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    p.className = 'silk-particle';
+    const s = Math.random() * 5 + 1.5;
+    const isGold = Math.random() > 0.4;
+    p.style.cssText = `
+      width:${s}px;height:${s}px;
+      left:${Math.random()*100}%;
+      background:radial-gradient(circle,${isGold ? 'rgba(255,217,125,0.9)' : 'rgba(178,142,61,0.6)'},transparent 70%);
+      animation-duration:${15+Math.random()*20}s;
+      animation-delay:${Math.random()*18}s;
+      filter:blur(${s*0.2}px);
+    `;
+    layer.appendChild(p);
+  }
+})();
+
+/* ══════════════════════════════════════════════════════════════════
+   ADVANCED WEBGL BENGALI SILK SIMULATION ENGINE
+   ══════════════════════════════════════════════════════════════════ */
+(function initSilkEngine() {
+  const canvas = document.getElementById('silk-stage');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.1, 200);
+  camera.position.set(0, 0, 7.5);
+
+  function createSilkShader(opts) {
+    opts = opts || {};
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime:      { value: opts.phase || 0 },
+        uScroll:    { value: 0 },
+        uVel:       { value: 0 },
+        uMouse:     { value: new THREE.Vector2(0, 0) },
+        uPhase:     { value: opts.phase || 0 },
+        uIsBorder:  { value: opts.isBorder  ? 1.0 : 0.0 },
+        uIsZari:    { value: opts.isZari    ? 1.0 : 0.0 },
+        uIsPallu:   { value: opts.isPallu   ? 1.0 : 0.0 },
+        uIsBody:    { value: opts.isBody    ? 1.0 : 0.0 },
+        uIsBg:      { value: opts.isBg      ? 1.0 : 0.0 },
+        uOpacity:   { value: opts.opacity != null ? opts.opacity : 1.0 },
+        uLightDir:  { value: new THREE.Vector3(1.0, 1.4, 2.5).normalize() },
+        uCamPos:    { value: camera.position },
+        uEnvColor:  { value: new THREE.Color(0.12, 0.09, 0.04) },
+        uBodyColor1:   { value: new THREE.Color(0.962, 0.948, 0.916) },
+        uBodyColor2:   { value: new THREE.Color(0.940, 0.922, 0.886) },
+        uBorderColor1: { value: new THREE.Color(0.56,  0.08,  0.14) },
+        uBorderColor2: { value: new THREE.Color(0.40,  0.04,  0.09) },
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform float uScroll;
+        uniform float uVel;
+        uniform vec2  uMouse;
+        uniform float uPhase;
+        uniform float uIsBorder;
+        uniform float uIsZari;
+        uniform float uIsPallu;
+        uniform float uIsBg;
+
+        varying vec2  vUv;
+        varying float vZ;
+        varying vec3  vNorm;
+        varying vec3  vWorld;
+        varying float vHeight;
+
+        float drape(vec3 p, float t) {
+          float w1 = sin(p.y * 0.65) * 0.65;
+          float w2 = cos(p.x * 0.75 + p.y * 0.35) * 0.22;
+          float w3 = sin(p.x * 1.35) * 0.11;
+          float w4 = cos(p.y * 1.95) * 0.08;
+          float gravity = pow(max(0.0, -p.y + 0.5), 1.4) * 0.28;
+          float md = distance(uv, vec2(uMouse.x*0.5+0.5, 1.0-(uMouse.y*0.5+0.5)));
+          float pull = smoothstep(0.5, 0.0, md) * 0.04 * sin(t * 0.6 + uPhase);
+          return w1 + w2 + w3 + w4 + gravity + pull;
+        }
+
+        void main() {
+          vUv = uv;
+          vec3 pos = position;
+
+          float t = uTime + uPhase;
+          pos.z += drape(pos, t);
+
+          pos.x += sin(pos.y * 0.30 + t * 0.04) * 0.06;
+
+          if (uIsPallu > 0.5) {
+            float edge = pow(abs(uv.x - 0.5) * 2.0, 2.2);
+            pos.z -= edge * 0.3;
+            pos.y -= edge * 0.12;
+          }
+
+          vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+          vWorld = worldPos.xyz;
+
+          float eps = 0.005;
+          vec3 posR = pos + vec3(eps, 0, 0);
+          posR.z += drape(posR, t);
+          vec3 posU = pos + vec3(0, eps, 0);
+          posU.z += drape(posU, t);
+          vec3 tang = posR - pos;
+          vec3 btan = posU - pos;
+          vNorm = normalize(cross(tang, btan));
+
+          vZ = pos.z;
+          vHeight = pos.y;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform float uScroll;
+        uniform float uIsBorder;
+        uniform float uIsZari;
+        uniform float uIsPallu;
+        uniform float uIsBody;
+        uniform float uIsBg;
+        uniform float uOpacity;
+        uniform vec3  uLightDir;
+        uniform vec3  uCamPos;
+        uniform vec3  uEnvColor;
+        uniform vec3  uBodyColor1;
+        uniform vec3  uBodyColor2;
+        uniform vec3  uBorderColor1;
+        uniform vec3  uBorderColor2;
+
+        varying vec2  vUv;
+        varying float vZ;
+        varying vec3  vNorm;
+        varying vec3  vWorld;
+        varying float vHeight;
+
+        vec3 anisotropicSilk(vec3 N, vec3 L, vec3 V, vec3 specColor, float roughU, float roughV) {
+          vec3 H = normalize(L + V);
+          float NdotL = max(dot(N, L), 0.0);
+          float NdotV = max(dot(N, V), 0.001);
+          float NdotH = dot(N, H);
+          vec3 T = normalize(cross(N, vec3(0.0, 1.0, 0.0)));
+          vec3 B = cross(N, T);
+          float TdotH = dot(T, H);
+          float BdotH = dot(B, H);
+          float exponent = (TdotH * TdotH) / (roughU * roughU) + (BdotH * BdotH) / (roughV * roughV);
+          float spec = exp(-exponent) / (roughU * roughV * sqrt(max(NdotL * NdotV, 0.0001)));
+          return specColor * NdotL * max(spec, 0.0);
+        }
+
+        float silkTexture(vec2 uv, float time) {
+          float h = sin(uv.x * 920.0) * 0.5 + 0.5;
+          float v = sin(uv.y * 680.0) * 0.5 + 0.5;
+          float diag = sin((uv.x + uv.y) * 450.0 + time * 0.3) * 0.5 + 0.5;
+          return h * 0.40 + v * 0.30 + diag * 0.30;
+        }
+
+        float weaveNoise(vec2 uv) {
+          float wx = fract(uv.x * 160.0);
+          float wy = fract(uv.y * 120.0);
+          float warp = step(0.5, wx) * step(0.5, wy);
+          return warp * 0.06;
+        }
+
+        void main() {
+          vec3 L = normalize(uLightDir);
+          vec3 V = normalize(uCamPos - vWorld);
+          vec3 N = normalize(vNorm);
+
+          float NdotL = max(dot(N, L), 0.0);
+          float NdotV = max(dot(N, V), 0.0);
+
+          vec3 offWhite = uBodyColor1;
+          vec3 warmIvory = uBodyColor2;
+
+          float silkF = silkTexture(vUv, uTime);
+          float weave = weaveNoise(vUv);
+
+          vec3 baseColor = mix(offWhite, warmIvory, silkF * 0.5 + weave);
+
+          float lBorder = smoothstep(0.0, 0.012, vUv.x) - smoothstep(0.14, 0.165, vUv.x);
+          float rBorder = smoothstep(0.835, 0.860, vUv.x) - smoothstep(0.988, 1.0, vUv.x);
+          float bMask = clamp(lBorder + rBorder, 0.0, 1.0);
+
+          vec3 crimson   = uBorderColor1;
+          vec3 deepCrim  = uBorderColor2;
+          vec3 crimColor = mix(crimson, deepCrim, vUv.y * 0.35 + vZ * 0.08);
+          baseColor = mix(baseColor, crimColor, bMask);
+
+          float pallu = clamp(
+            smoothstep(0.0, 0.018, vUv.y) - smoothstep(0.16, 0.20, vUv.y),
+            0.0, 1.0
+          );
+          vec3 palluCol = mix(crimson * 0.85, deepCrim * 0.95, 0.5);
+          baseColor = mix(baseColor, palluCol, pallu * 0.72);
+
+          float gLI = smoothstep(0.108,0.118,vUv.x) - smoothstep(0.133,0.143,vUv.x);
+          float gLO = smoothstep(0.020,0.030,vUv.x) - smoothstep(0.048,0.058,vUv.x);
+          float gRI = smoothstep(0.857,0.867,vUv.x) - smoothstep(0.882,0.892,vUv.x);
+          float gRO = smoothstep(0.942,0.952,vUv.x) - smoothstep(0.970,0.980,vUv.x);
+          float zMask = clamp(gLI + gLO + gRI + gRO, 0.0, 1.0);
+
+          float pz1 = smoothstep(0.003,0.008,vUv.y)  - smoothstep(0.010,0.015,vUv.y);
+          float pz2 = smoothstep(0.155,0.160,vUv.y) - smoothstep(0.167,0.172,vUv.y);
+          zMask = max(zMask, clamp(pz1+pz2, 0.0, 1.0));
+
+          float shimmer = sin(vUv.y * 720.0 + uTime * 2.2) * 0.38 + 0.62;
+          float shimmer2 = cos(vUv.x * 450.0 + uTime * 1.6) * 0.20 + 0.80;
+          float acuteBoost = 1.0 + pow(1.0 - NdotV, 3.0) * 1.8;
+          vec3 goldColor  = vec3(0.88, 0.72, 0.28) * (shimmer * shimmer2) * acuteBoost;
+          vec3 goldDeep   = vec3(0.62, 0.49, 0.16) * acuteBoost;
+          baseColor = mix(baseColor, mix(goldDeep, goldColor, shimmer), zMask * 0.94);
+
+          if (bMask < 0.04 && zMask < 0.04 && pallu < 0.04) {
+            if (uIsBg > 0.5) {
+              baseColor += vec3(silkF * 0.03 + weave);
+            } else {
+              baseColor += vec3(silkF * 0.022 + weave);
+            }
+          }
+
+          float edgeMask = smoothstep(0.0, 0.02, vUv.x) * smoothstep(1.0, 0.98, vUv.x)
+                         * smoothstep(0.0, 0.015, vUv.y) * smoothstep(1.0, 0.985, vUv.y);
+
+          vec3 diffuse = baseColor * (NdotL * 0.75 + 0.28) * (0.65 + 0.35 * edgeMask);
+
+          float fres = pow(1.0 - NdotV, 3.5) * 0.18;
+          vec3 fresColor = mix(vec3(0.85, 0.78, 0.65), vec3(0.92, 0.82, 0.48), zMask);
+
+          float roughU = bMask > 0.5 ? 0.38 : 0.25;
+          float roughV = bMask > 0.5 ? 0.12 : 0.08;
+          vec3 specCol = zMask > 0.3 ? vec3(1.0, 0.92, 0.60) : vec3(0.90, 0.88, 0.82);
+          vec3 aniso = anisotropicSilk(N, L, V, specCol, roughU, roughV) * 0.55 * edgeMask;
+
+          float lightVal = smoothstep(-0.5, 0.65, vZ);
+          float shadow   = pow(max(0.0, -vZ), 1.6) * 0.22;
+
+          vec3 rimDir = normalize(vec3(-1.2, 0.2, 0.8));
+          float rim = pow(max(dot(N, rimDir), 0.0), 4.0) * 0.12;
+          vec3 rimColor = vec3(0.80, 0.65, 0.28) * rim * edgeMask;
+
+          vec3 finalColor = diffuse * (0.78 + 0.36 * lightVal)
+            + aniso
+            + (fresColor * fres * edgeMask)
+            + rimColor
+            + uEnvColor * (0.06 + 0.04 * NdotV) * edgeMask
+            - vec3(shadow);
+
+          if (zMask > 0.3) {
+            float goldSpec = pow(max(dot(N, normalize(L + V)), 0.0), 60.0) * 1.4;
+            finalColor += vec3(1.0, 0.92, 0.55) * goldSpec * shimmer * edgeMask;
+          }
+
+          float feather = smoothstep(0.0, 0.035, vUv.x) * smoothstep(1.0, 0.965, vUv.x)
+                        * smoothstep(0.0, 0.020, vUv.y) * smoothstep(1.0, 0.980, vUv.y);
+          gl_FragColor = vec4(clamp(finalColor, 0.0, 1.0), uOpacity * feather);
+        }
+      `,
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+  }
+
+  const bodyGeo   = new THREE.PlaneGeometry(3.4, 10.5, 160, 160);
+  const leftGeo   = new THREE.PlaneGeometry(2.6, 9.8, 120, 120);
+  const rightGeo  = new THREE.PlaneGeometry(2.2, 9.5, 110, 110);
+  const bgGeo     = new THREE.PlaneGeometry(5.0, 12.0, 80, 80);
+
+  const bodyMat  = createSilkShader({ phase: 0.0,  isBody: true,   opacity: 0.96 });
+  const leftMat  = createSilkShader({ phase: 1.80, isBody: true,   opacity: 0.88 });
+  const rightMat = createSilkShader({ phase: 3.40, isBorder: true, opacity: 0.82 });
+  const bgMat    = createSilkShader({ phase: 5.20, isBody: true, isBg: true,   opacity: 0.40 });
+
+  const bodyMesh  = new THREE.Mesh(bodyGeo,  bodyMat);
+  const leftMesh  = new THREE.Mesh(leftGeo,  leftMat);
+  const rightMesh = new THREE.Mesh(rightGeo, rightMat);
+  const bgMesh    = new THREE.Mesh(bgGeo,    bgMat);
+
+  bodyMesh.position.set( 0.4,  0.0, -0.2);
+  bodyMesh.rotation.set( 0.01, 0.08, 0.015);
+
+  leftMesh.position.set(-2.4,  0.1, -0.8);
+  leftMesh.rotation.set( 0.02, 0.22, -0.025);
+
+  rightMesh.position.set(2.8, -0.1, -1.1);
+  rightMesh.rotation.set(-0.015, -0.26, 0.02);
+
+  bgMesh.position.set(0.0, 0.0, -3.0);
+  bgMesh.rotation.set(0.0, 0.0, 0.0);
+
+  scene.add(bgMesh, leftMesh, rightMesh, bodyMesh);
+
+  const camKeyframes = [
+    [0.00,  0.0,  0.2,  7.5,  0.0,  0.0],
+    [0.15,  0.6,  0.4,  6.8, -0.1,  0.1],
+    [0.30, -0.4,  0.1,  7.2,  0.2,  0.0],
+    [0.45,  0.2, -0.3,  6.5,  0.0, -0.1],
+    [0.60,  0.8,  0.5,  7.0, -0.2,  0.1],
+    [0.75, -0.2,  0.0,  7.4,  0.1,  0.0],
+    [0.90,  0.3,  0.2,  6.9,  0.0,  0.0],
+    [1.00,  0.0,  0.2,  7.5,  0.0,  0.0],
+  ];
+
+  function getCamPos(t01) {
+    const tc = t01 % 1.0;
+    let a = 0, b = 1;
+    for (let i = 0; i < camKeyframes.length - 1; i++) {
+      if (tc >= camKeyframes[i][0] && tc < camKeyframes[i+1][0]) { a = i; b = i+1; break; }
+    }
+    const ka = camKeyframes[a], kb = camKeyframes[b];
+    const span = kb[0] - ka[0];
+    const pct = span > 0 ? (tc - ka[0]) / span : 0;
+    const ease = pct * pct * (3 - 2 * pct);
+    return {
+      x: ka[1] + (kb[1]-ka[1]) * ease,
+      y: ka[2] + (kb[2]-ka[2]) * ease,
+      z: ka[3] + (kb[3]-ka[3]) * ease,
+      lx: ka[4] + (kb[4]-ka[4]) * ease,
+      ly: ka[5] + (kb[5]-ka[5]) * ease,
+    };
+  }
+
+  let tgtScr = window.scrollY, smScr = window.scrollY, vel = 0, mx = 0, my = 0;
+  const clock = new THREE.Clock();
+  const allMats = [bodyMat, leftMat, rightMat, bgMat];
+
+  const palettes = [
+    {
+      limit: 0.0,
+      body1: new THREE.Color(0.962, 0.948, 0.916),
+      body2: new THREE.Color(0.940, 0.922, 0.886),
+      bord1: new THREE.Color(0.56,  0.08,  0.14),
+      bord2: new THREE.Color(0.40,  0.04,  0.09)
+    },
+    {
+      limit: 2.0,
+      body1: new THREE.Color(0.04,  0.34,  0.22),
+      body2: new THREE.Color(0.02,  0.22,  0.15),
+      bord1: new THREE.Color(0.72,  0.52,  0.04),
+      bord2: new THREE.Color(0.54,  0.38,  0.02)
+    },
+    {
+      limit: 4.5,
+      body1: new THREE.Color(0.05,  0.08,  0.36),
+      body2: new THREE.Color(0.03,  0.04,  0.24),
+      bord1: new THREE.Color(0.78,  0.06,  0.42),
+      bord2: new THREE.Color(0.52,  0.02,  0.28)
+    },
+    {
+      limit: 7.5,
+      body1: new THREE.Color(0.12,  0.12,  0.14),
+      body2: new THREE.Color(0.08,  0.08,  0.09),
+      bord1: new THREE.Color(0.68,  0.02,  0.12),
+      bord2: new THREE.Color(0.48,  0.01,  0.08)
+    }
+  ];
+
+  const activeBody1 = new THREE.Color();
+  const activeBody2 = new THREE.Color();
+  const activeBord1 = new THREE.Color();
+  const activeBord2 = new THREE.Color();
+
+  let isFirstFrame = true;
+  window.addEventListener('scroll',    () => { tgtScr = window.scrollY; }, { passive: true });
+  window.addEventListener('mousemove', e  => {
+    mx = (e.clientX / window.innerWidth)  * 2 - 1;
+    my = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
+
+  (function loop() {
+    const t = clock.getElapsedTime();
+    const prev = smScr;
+    smScr += (tgtScr - smScr) * 0.04;
+    vel    = (smScr - prev) * 0.85;
+    const sn = smScr / window.innerHeight;
+
+    const camCycle = (t / 80.0) % 1.0;
+    const cp = getCamPos(camCycle);
+    const camX = cp.x + mx * 0.18;
+    const camY = cp.y + my * 0.10 - sn * 2.5;
+    const targetCamPos = new THREE.Vector3(camX, camY, cp.z);
+    
+    if (isFirstFrame) {
+      camera.position.copy(targetCamPos);
+      isFirstFrame = false;
+    } else {
+      camera.position.lerp(targetCamPos, 0.08);
+    }
+    camera.lookAt(cp.lx, cp.ly - sn * 2.5, 0);
+
+    let pIdx = 0;
+    for (let i = 0; i < palettes.length - 1; i++) {
+      if (sn >= palettes[i].limit) {
+        pIdx = i;
+      }
+    }
+    const pA = palettes[pIdx];
+    const pB = palettes[pIdx + 1];
+    
+    const range = pB.limit - pA.limit;
+    const factor = Math.min(Math.max((sn - pA.limit) / range, 0.0), 1.0);
+
+    activeBody1.lerpColors(pA.body1, pB.body1, factor);
+    activeBody2.lerpColors(pA.body2, pB.body2, factor);
+    activeBord1.lerpColors(pA.bord1, pB.bord1, factor);
+    activeBord2.lerpColors(pA.bord2, pB.bord2, factor);
+
+    allMats.forEach((m, i) => {
+      const u = m.uniforms;
+      u.uTime.value   = t;
+      u.uScroll.value = sn;
+      u.uVel.value    = vel;
+      u.uMouse.value.set(mx, my);
+      u.uBodyColor1.value.copy(activeBody1);
+      u.uBodyColor2.value.copy(activeBody2);
+      u.uBorderColor1.value.copy(activeBord1);
+      u.uBorderColor2.value.copy(activeBord2);
+      u.uLightDir.value.set(
+        Math.sin(t * 0.12) * 0.6 + 1.0,
+        Math.sin(t * 0.08) * 0.3 + 1.4,
+        2.5
+      ).normalize();
+    });
+
+    bodyMesh.position.y  =  0.0 + camY + sn * 0.35;
+    leftMesh.position.y  =  0.1 + camY + sn * 0.15;
+    rightMesh.position.y = -0.1 + camY + sn * 0.25;
+    bgMesh.position.y    =  0.0 + camY + sn * 0.08;
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  })();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+})();
+</script>
+{% include 'contactform.html' %}
+</body>
+</html>

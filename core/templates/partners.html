@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}B2B Partners — {{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Premium styles specific to the Partners page */
+  #partners-page {
+    min-height: 100vh;
+    padding-top: 120px;
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 10;
+  }
+  .partners-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .partners-hdr {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 64px auto;
+  }
+  .partners-hdr .hdr-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .partners-hdr .hdr-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    color: var(--text-f);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .partners-hdr .hdr-title strong {
+    font-weight: 700;
+    color: var(--gold);
+    font-style: italic;
+  }
+  .partners-hdr .hdr-desc {
+    font-size: clamp(14px, 2vw, 16px);
+    color: var(--text-d);
+    line-height: 1.6;
+  }
+  
+  /* Highlight Section */
+  .highlight-title-wrapper {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .highlight-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--gold);
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 8px;
+  }
+  .highlight-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 80px;
+  }
+
+  .partner-card-highlight {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(223, 186, 95, 0.25);
+    border-radius: 4px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .partner-card-highlight::before {
+    content: '✦';
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    color: var(--gold);
+    font-size: 10px;
+    opacity: 0.8;
+  }
+  .partner-card-highlight:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 12px 30px rgba(223, 186, 95, 0.08);
+  }
+
+  /* Standard Grid */
+  .partners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
+  .partner-card {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border-s);
+    border-radius: 4px;
+    padding: 24px 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .partner-card:hover {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+  }
+
+  /* Shared Logo Box style */
+  .partner-logo-box {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .partner-logo {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+  }
+  .partner-card:hover .partner-logo,
+  .partner-card-highlight:hover .partner-logo {
+    opacity: 1;
+  }
+  .partner-logo-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(223, 186, 95, 0.05);
+    border: 1px dashed rgba(223, 186, 95, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--gold);
+    font-style: italic;
+  }
+  
+  .partner-name {
+    font-size: 14px;
+    color: var(--text-f);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  .partner-card-highlight .partner-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-s), transparent);
+    margin: 48px 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="partners-page">
+  <div class="partners-wrap">
+    
+    <!-- Header -->
+    <div class="partners-hdr rv">
+      <div class="hdr-eyebrow">{{ partners_sec.label|default:"Enterprise Network" }}</div>
+      <h1 class="hdr-title">{{ partners_sec.title|default:"Our Global" }} <strong>{{ partners_sec.highlighted_title|default:"B2B Partners" }}</strong></h1>
+      <p class="hdr-desc">{{ partners_sec.description|default:"We collaborate with premier fashion boutiques, luxury retail networks, and international sourcing agencies." }}</p>
+    </div>
+
+    <!-- Highlights Section (Top 10) -->
+    {% if top_partners %}
+    <div class="highlight-title-wrapper rv d1">
+      <h3 class="highlight-title">Featured Top Partners</h3>
+    </div>
+    <div class="highlight-grid rv d2">
+      {% for partner in top_partners %}
+      <div class="partner-card-highlight">
+        <div class="partner-logo-box">
+          {% if partner.logo %}
+          <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-logo">
+          {% else %}
+          <div class="partner-logo-placeholder">{{ partner.name|slice:":1" }}</div>
+          {% endif %}
+        </div>
+        <div class="partner-name">{{ partner.name }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="divider"></div>
+    {% endif %}
+
+    <!-- All Partners Grid -->
+    <div class="highlight-title-wrapper rv d1" style="margin-top: 32px;">
+      <h3 class="highlight-title">All Network Members</h3>
+    </div>
+    <div class="partners-grid rv d2">
+      {% for partner in all_partners %}
+      <div class="partner-card">
+        <div class="partner-logo-box">
+          {% if partner.logo %}
+          <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-logo">
+          {% else %}
+          <div class="partner-logo-placeholder">{{ partner.name|slice:":1" }}</div>
+          {% endif %}
+        </div>
+        <div class="partner-name">{{ partner.name }}</div>
+      </div>
+      {% empty %}
+      <div style="grid-column: 1/-1; text-align: center; color: var(--text-d); padding: 48px 0;">
+        <p>No global partner records found in the system ledger.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // Highlight active link
+  document.getElementById('nav-pt').classList.add('active-link');
+</script>
+{% endblock %}

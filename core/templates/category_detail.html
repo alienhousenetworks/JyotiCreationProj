@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} — Luxury Saree Sourcing | Jyoticreations{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}">
+<link rel="stylesheet" href="{% static 'css/category_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<main id="category-page">
+  <div class="catalog-wrap">
+    
+    <!-- Category Header -->
+    <div class="category-hdr rv">
+      <a href="{% url 'home' %}" class="back-link">← Return to Heritage Ledger</a>
+      <div class="hdr-eyebrow">Category Catalog Desk</div>
+      <h1 class="hdr-title">{{ category.name }} <strong>Collection</strong></h1>
+      {% if category.description %}
+      <p class="hdr-desc">{{ category.description }}</p>
+      {% else %}
+      <p class="hdr-desc">Explore our premium B2B collections of authentic handloom {{ category.name }} sarees. Handcrafted by master artisans with certified sourcing parameters.</p>
+      {% endif %}
+    </div>
+
+    <!-- Subcategory Tabs & Sorting Toolbar -->
+    <div class="toolbar-wrap rv d1">
+      <div class="sub-filters">
+        <button class="sub-tab active" data-sub="all">All Subcategories</button>
+        {% for sub in subcategories %}
+        <button class="sub-tab" data-sub="{{ sub.slug }}">{{ sub.name }}</button>
+        {% endfor %}
+      </div>
+      <div class="sort-box">
+        <label for="date-sort">Sort by:</label>
+        <select id="date-sort" class="sort-select">
+          <option value="newest">Newest Added</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Catalog Grid -->
+    <div class="catalog-grid rv d2" id="product-grid">
+      {% for prod in products %}
+      <div class="prod-card" data-sub="{{ prod.subcategory.slug|default:'none' }}" data-date="{{ prod.created_at|date:'U' }}" onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}', '{{ prod.moq|escapejs }}')">
+        <div class="prod-img-box">
+          <div class="prod-overlay"></div>
+          {% if prod.image_main %}
+          <img class="prod-img" src="{{ prod.image_main.url }}" alt="{{ prod.name }}">
+          {% else %}
+          <div class="prod-img abstract-pattern pattern-{% cycle '1' '2' '3' '4' '5' '6' %}"></div>
+          {% endif %}
+          <div class="prod-badge">{{ prod.moq }} MOQ</div>
+          {% if prod.is_best_seller %}
+          <div class="prod-status">Best Seller</div>
+          {% elif prod.is_new_arrival %}
+          <div class="prod-status">New Arrival</div>
+          {% elif prod.is_premium %}
+          <div class="prod-status">Premium</div>
+          {% endif %}
+        </div>
+        <div class="prod-details">
+          <div class="prod-cat-name">{{ category.name }} {% if prod.subcategory %}· {{ prod.subcategory.name }}{% endif %}</div>
+          <h3 class="prod-h">{{ prod.name }}</h3>
+          <p class="prod-desc">{{ prod.description|truncatewords:20 }}</p>
+          <div class="prod-meta-specs">
+            <div class="prod-spec-row"><label>Fabric</label><span>{{ prod.purity_fabric }}</span></div>
+            <div class="prod-spec-row"><label>Border</label><span>{{ prod.border_specs }}</span></div>
+            <div class="prod-spec-row"><label>Weight</label><span>{{ prod.structural_weight }}</span></div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="catalog-empty">
+        <p>No allocations are currently available for this category ledger.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.sub-tab');
+    const cards = Array.from(document.querySelectorAll('.prod-card'));
+    const sortSelect = document.getElementById('date-sort');
+    const grid = document.getElementById('product-grid');
+
+    let currentFilter = 'all';
+
+    // Subcategory Filtering
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        currentFilter = tab.dataset.sub;
+        filterAndSort();
+      });
+    });
+
+    // Date Sorting
+    sortSelect.addEventListener('change', () => {
+      filterAndSort();
+    });
+
+    function filterAndSort() {
+      // 1. Filter
+      cards.forEach(card => {
+        const matchesFilter = (currentFilter === 'all' || card.dataset.sub === currentFilter);
+        if (matchesFilter) {
+          card.style.display = 'block';
+          setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => { card.style.display = 'none'; }, 300);
+        }
+      });
+
+      // 2. Sort
+      const sortedCards = [...cards];
+      const isNewest = sortSelect.value === 'newest';
+
+      sortedCards.sort((a, b) => {
+        const dateA = parseInt(a.dataset.date, 10);
+        const dateB = parseInt(b.dataset.date, 10);
+        return isNewest ? (dateB - dateA) : (dateA - dateB);
+      });
+
+      // Re-append sorted cards
+      sortedCards.forEach(card => {
+        grid.appendChild(card);
+      });
+    }
+  });
+</script>
+{% endblock %}
