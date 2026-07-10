@@ -44,7 +44,7 @@
     <!-- Catalog Grid -->
     <div class="catalog-grid rv d2" id="product-grid">
       {% for prod in products %}
-      <div class="prod-card" data-sub="{{ prod.subcategory.slug|default:'none' }}" data-date="{{ prod.created_at|date:'U' }}" onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}', '{{ prod.moq|escapejs }}')">
+      <div class="prod-card" data-sub="{{ prod.subcategory.slug|default:'none' }}" data-date="{{ prod.created_at|date:'U' }}" onclick="window.location.href='{% url 'product_detail' prod.slug %}'">
         <div class="prod-img-box">
           <div class="prod-overlay"></div>
           {% if prod.image_main %}

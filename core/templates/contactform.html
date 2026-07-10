@@ -19,6 +19,10 @@
       <div class="modal-form-group">
         <textarea id="modal-form-message" placeholder="SPECIFIC REQUIREMENTS / QUANTITY REQUIRED" rows="3" required></textarea>
       </div>
+      <div class="modal-form-group checkbox-group" style="display: flex; align-items: center; gap: 10px; margin: 15px 0; text-align: left; background: rgba(223, 186, 95, 0.05); padding: 10px; border: 1px solid var(--border); border-radius: 4px;">
+        <input type="checkbox" id="modal-form-branding" style="width: auto; margin: 0; cursor: pointer; height: 16px; width: 16px; accent-color: var(--gold);">
+        <label for="modal-form-branding" style="font-size: 11px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; cursor: pointer; user-select: none;">Request Custom Branding / Private Label (Tags, Embroidery)</label>
+      </div>
       <button type="submit" class="btn-modal-submit">Submit &amp; Connect on WhatsApp</button>
     </form>
   </div>
@@ -56,6 +60,7 @@
     const company = document.getElementById('modal-form-company').value;
     const email = document.getElementById('modal-form-email').value;
     const message = document.getElementById('modal-form-message').value;
+    const customBranding = document.getElementById('modal-form-branding').checked;
 
     const isProduct = activeModalProduct.name !== '';
     let textMsg = '';
@@ -70,12 +75,14 @@
                 `- Border: ${activeModalProduct.border}\n` +
                 `- Weight: ${activeModalProduct.weight}\n` +
                 `- MOQ: ${activeModalProduct.moq}\n\n` +
+                `*Custom Branding Requested:* ${customBranding ? 'Yes' : 'No'}\n` +
                 `*Buyer Message:* ${message}`;
     } else {
       textMsg = `*GENERAL B2B PROCUREMENT ENQUIRY*\n\n` +
                 `*Buyer Name:* ${name}\n` +
                 `*Company/Brand:* ${company}\n` +
                 `*Email:* ${email}\n\n` +
+                `*Custom Branding Requested:* ${customBranding ? 'Yes' : 'No'}\n` +
                 `*Buyer Message:* ${message}`;
     }
 
@@ -88,7 +95,8 @@
       company: company,
       email: email,
       phone: '',
-      message: isProduct ? `[Modal Product: ${activeModalProduct.name}] ${message}` : `[Modal General Sourcing] ${message}`
+      message: isProduct ? `[Modal Product: ${activeModalProduct.name}] ${message}` : `[Modal General Sourcing] ${message}`,
+      custom_branding_requested: customBranding
     };
 
     fetch('/api/enquiry/', {

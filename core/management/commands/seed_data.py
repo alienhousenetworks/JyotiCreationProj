@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 from core.models import (
-    Category, SubCategory, Product, HeroSection, EditorialSection,
+    Category, SubCategory, Product, ProductImage, HeroSection, EditorialSection,
     WhyChooseUsCard, HeritageSection, ProcessStep, TechnicalMetric,
     ExportCountry, Testimonial, FaqItem
 )
@@ -100,7 +100,7 @@ class Command(BaseCommand):
         self.stdout.write("Seeding sample B2B products...")
         
         # Saree Products
-        Product.objects.create(
+        s1 = Product.objects.create(
             name="Garad Classic Standard",
             category=sarees,
             subcategory=saree_sub_objs["Handcrafted Sarees"],
@@ -113,8 +113,10 @@ class Command(BaseCommand):
             is_best_seller=True,
             is_silk_collection=True
         )
+        ProductImage.objects.create(product=s1, image='products/gallery/garad_detail1.jpg', order=1)
+        ProductImage.objects.create(product=s1, image='products/gallery/garad_detail2.jpg', order=2)
         
-        Product.objects.create(
+        s2 = Product.objects.create(
             name="Korial Imperial Luxury",
             category=sarees,
             subcategory=saree_sub_objs["Handcrafted Sarees"],
@@ -127,8 +129,9 @@ class Command(BaseCommand):
             is_new_arrival=True,
             is_silk_collection=True
         )
+        ProductImage.objects.create(product=s2, image='products/gallery/korial_detail1.jpg', order=1)
         
-        Product.objects.create(
+        s3 = Product.objects.create(
             name="Tussar Korial Hybrid",
             category=sarees,
             subcategory=saree_sub_objs["Pure Tussar Silk"],
@@ -140,8 +143,8 @@ class Command(BaseCommand):
             material="Natural Tussar Silk",
             is_handcrafted=True
         )
-
-        Product.objects.create(
+        
+        s4 = Product.objects.create(
             name="Baluchari Crimson Narrative",
             category=sarees,
             subcategory=saree_sub_objs["Handcrafted Sarees"],
@@ -155,8 +158,21 @@ class Command(BaseCommand):
             is_festive_collection=True
         )
 
+        s5 = Product.objects.create(
+            name="Matka Silk Gold Shimmer",
+            category=sarees,
+            subcategory=saree_sub_objs["Pure Matka Silk"],
+            description="Premium rough texture matka silk with fine gold zari weaves on borders.",
+            purity_fabric="Pure Hand-spun Matka Silk Yarn",
+            border_specs="Zari Accent Borders",
+            structural_weight="450 Grams",
+            moq="15 Units Minimum",
+            material="Matka Silk",
+            is_premium=True
+        )
+
         # Kurti Products
-        Product.objects.create(
+        k1 = Product.objects.create(
             name="Modal Silk Royal Kurti",
             category=kurtis,
             subcategory=kurti_sub_objs["Pure Modal Silk Kurtis"],
@@ -169,8 +185,9 @@ class Command(BaseCommand):
             is_best_seller=True,
             is_silk_collection=True
         )
+        ProductImage.objects.create(product=k1, image='products/gallery/modal_kurti_detail.jpg', order=1)
 
-        Product.objects.create(
+        k2 = Product.objects.create(
             name="Kantha Stitch Premium Kurti",
             category=kurtis,
             subcategory=kurti_sub_objs["Kantha Stitch Kurtis"],
@@ -185,7 +202,7 @@ class Command(BaseCommand):
         )
 
         # Blouse Products
-        Product.objects.create(
+        b1 = Product.objects.create(
             name="Hand Painted Madhubani Blouse",
             category=blouses,
             subcategory=blouse_sub_objs["Hand Painted Blouses"],
@@ -200,7 +217,7 @@ class Command(BaseCommand):
         )
 
         # Nighties Products
-        Product.objects.create(
+        n1 = Product.objects.create(
             name="Premium Floral Cotton Nighty",
             category=nighties,
             subcategory=nightie_sub_objs["Premium Nighties"],

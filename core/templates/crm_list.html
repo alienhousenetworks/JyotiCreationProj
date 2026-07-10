@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — Jyoticreations CRM{% endblock %}
+
+{% block extra_css %}
+<style>
+  #crm-page {
+    max-width: 1400px;
+    margin: 120px auto 60px;
+    padding: 0 40px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .crm-header {
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+
+  .crm-title h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: var(--ivory);
+  }
+
+  .crm-title h1 strong {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .crm-title p {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 5px;
+  }
+
+  /* Navigation Tabs */
+  .crm-nav {
+    display: flex;
+    gap: 15px;
+  }
+
+  .crm-btn {
+    background: rgba(223, 186, 95, 0.08);
+    border: 1px solid var(--border);
+    color: var(--ivory);
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s var(--ease-lux);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .crm-btn:hover, .crm-btn.active {
+    background: var(--gold);
+    color: var(--black);
+    border-color: var(--gold);
+    box-shadow: 0 0 15px var(--gold-glow);
+  }
+
+  .crm-btn-primary {
+    background: var(--crimson);
+    border-color: var(--crimson);
+  }
+
+  .crm-btn-primary:hover {
+    background: var(--crimson-l);
+    border-color: var(--crimson-l);
+    box-shadow: 0 0 15px var(--crim-glow);
+    color: var(--ivory);
+  }
+
+  /* Split Layout */
+  .crm-split {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+  }
+
+  .crm-split.full-width {
+    grid-template-columns: 1fr;
+  }
+
+  .crm-section {
+    background: rgba(14, 11, 16, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-s);
+    padding: 30px;
+    border-radius: 6px;
+  }
+
+  .crm-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: var(--ivory);
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-s);
+    padding-bottom: 10px;
+  }
+
+  /* Form Styling */
+  .crm-form-group {
+    margin-bottom: 20px;
+  }
+
+  .crm-form-group label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .crm-form-group input, .crm-form-group select, .crm-form-group textarea {
+    width: 100%;
+    background: rgba(3, 1, 3, 0.6);
+    border: 1px solid var(--border);
+    color: var(--ivory);
+    padding: 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    outline: none;
+    font-family: inherit;
+    transition: all 0.3s ease;
+  }
+
+  .crm-form-group input:focus, .crm-form-group select:focus, .crm-form-group textarea:focus {
+    border-color: var(--gold-l);
+    box-shadow: 0 0 10px var(--gold-glow);
+  }
+
+  .crm-submit-btn {
+    width: 100%;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .crm-submit-btn:hover {
+    background: var(--gold-l);
+    box-shadow: 0 0 15px var(--gold-glow);
+  }
+
+  /* Table Grid */
+  .crm-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .crm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .crm-table th, .crm-table td {
+    padding: 15px 10px;
+    text-align: left;
+    border-bottom: 1px solid rgba(223, 186, 95, 0.08);
+  }
+
+  .crm-table th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .crm-table tbody tr:hover {
+    background: rgba(223, 186, 95, 0.03);
+  }
+
+  .status-badge {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+  }
+
+  .status-Pending { background: rgba(223, 186, 95, 0.15); color: var(--gold); border: 1px solid var(--border); }
+  .status-Production { background: rgba(139, 26, 42, 0.15); color: var(--crimson-l); border: 1px solid var(--crimson); }
+  .status-Shipped { background: rgba(50, 150, 250, 0.15); color: #4fa8ff; border: 1px solid rgba(50, 150, 250, 0.4); }
+  .status-Delivered { background: rgba(40, 200, 100, 0.15); color: #4fff92; border: 1px solid rgba(40, 200, 100, 0.4); }
+  .status-Cancelled { background: rgba(255, 255, 255, 0.1); color: var(--text-faint); border: 1px solid rgba(255, 255, 255, 0.2); }
+
+  .payment-Paid { color: #4fff92; }
+  .payment-Partial { color: var(--gold); }
+  .payment-Pending { color: var(--crimson-l); }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="crm-page">
+  
+  <!-- Header with CRM Navigation -->
+  <div class="crm-header">
+    <div class="crm-title">
+      <h1>{{ title }}</h1>
+      <p>Loom Allocation & Procurement Ledger</p>
+    </div>
+    <div class="crm-nav">
+      <a href="{% url 'crm_dashboard' %}" class="crm-btn">Dashboard</a>
+      <a href="{% url 'crm_orders' %}" class="crm-btn {% if view_type == 'orders' %}active{% endif %}">Orders</a>
+      <a href="{% url 'crm_clients' %}" class="crm-btn {% if view_type == 'clients' %}active{% endif %}">Clients</a>
+      <a href="{% url 'crm_vendors' %}" class="crm-btn {% if view_type == 'vendors' %}active{% endif %}">Weavers</a>
+      <a href="{% url 'crm_orders_create' %}" class="crm-btn crm-btn-primary">+ Book Order</a>
+    </div>
+  </div>
+
+  <div class="crm-split {% if view_type == 'orders' %}full-width{% endif %}">
+    
+    <!-- LEFT SIDE: List Grid -->
+    <div class="crm-section">
+      <h3>Active Records</h3>
+      <div class="crm-table-wrapper">
+        
+        <!-- Clients List -->
+        {% if view_type == 'clients' %}
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Company Name</th>
+              <th>Contact Person</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for client in items %}
+            <tr>
+              <td><strong>{{ client.company_name }}</strong></td>
+              <td>{{ client.contact_person }}</td>
+              <td>{{ client.email|default:"—" }}</td>
+              <td>{{ client.phone }}</td>
+              <td>{{ client.location }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 30px 0;">No clients found. Use the add panel to create one.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- Vendors List -->
+        {% elif view_type == 'vendors' %}
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Weaver/Supplier Name</th>
+              <th>Contact Person</th>
+              <th>Phone</th>
+              <th>Weaving Cluster</th>
+              <th>Active Loom Capacity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for vendor in items %}
+            <tr>
+              <td><strong>{{ vendor.name }}</strong></td>
+              <td>{{ vendor.contact_person|default:"—" }}</td>
+              <td>{{ vendor.phone|default:"—" }}</td>
+              <td>{{ vendor.cluster }}</td>
+              <td>{{ vendor.active_capacity }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 30px 0;">No weavers/vendors found. Use the add panel to register one.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- Orders List -->
+        {% elif view_type == 'orders' %}
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Order Date</th>
+              <th>Client Company</th>
+              <th>Assigned Weaver</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Total Amount</th>
+              <th>Custom Branding</th>
+              <th>Order Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in items %}
+            <tr>
+              <td><strong>#{{ order.id }}</strong></td>
+              <td>{{ order.order_date|date:"d M Y" }}</td>
+              <td>
+                <strong>{{ order.client.company_name }}</strong><br>
+                <span style="font-size: 10px; color: var(--text-faint);">{{ order.client.contact_person }}</span>
+              </td>
+              <td>{{ order.vendor.name|default:"Unallocated" }}</td>
+              <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+              <td><span class="payment-{{ order.payment_status }}">{{ order.get_payment_status_display }}</span></td>
+              <td>₹{{ order.total_amount|floatformat:2 }}</td>
+              <td>
+                {% if order.custom_branding_requested %}
+                <span style="color: var(--gold);">Yes</span>
+                {% else %}
+                <span style="color: var(--text-faint);">No</span>
+                {% endif %}
+              </td>
+              <td>
+                <ul style="margin: 0; padding-left: 15px; font-size: 11px;">
+                  {% for item in order.items.all %}
+                  <li>{{ item.product.name }} (x{{ item.quantity }})</li>
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="9" style="text-align: center; padding: 30px 0;">No orders found. Click "+ Book Order" to register one.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE: Add Forms (Only for Clients & Vendors) -->
+    {% if view_type != 'orders' %}
+    <div class="crm-section">
+      <h3>Add New Record</h3>
+      <form method="POST">
+        {% csrf_token %}
+        
+        {% if view_type == 'clients' %}
+        <div class="crm-form-group">
+          <label>Company / Boutique Name</label>
+          <input type="text" name="company_name" placeholder="e.g. Silk House LLC" required>
+        </div>
+        <div class="crm-form-group">
+          <label>Contact Person</label>
+          <input type="text" name="contact_person" placeholder="e.g. John Doe" required>
+        </div>
+        <div class="crm-form-group">
+          <label>Business Email</label>
+          <input type="email" name="email" placeholder="e.g. sourcing@silkhouse.com">
+        </div>
+        <div class="crm-form-group">
+          <label>Contact Phone</label>
+          <input type="text" name="phone" placeholder="e.g. +1 555-0199" required>
+        </div>
+        <div class="crm-form-group">
+          <label>Boutique Location</label>
+          <input type="text" name="location" placeholder="e.g. New York, USA" required>
+        </div>
+        
+        {% elif view_type == 'vendors' %}
+        <div class="crm-form-group">
+          <label>Weaver / Vendor Name</label>
+          <input type="text" name="name" placeholder="e.g. Murshidabad Loom Master A" required>
+        </div>
+        <div class="crm-form-group">
+          <label>Contact Person</label>
+          <input type="text" name="contact_person" placeholder="e.g. Master Weaver">
+        </div>
+        <div class="crm-form-group">
+          <label>Contact Phone</label>
+          <input type="text" name="phone" placeholder="e.g. +91 98765 43210">
+        </div>
+        <div class="crm-form-group">
+          <label>Weaving Cluster Location</label>
+          <input type="text" name="cluster" placeholder="e.g. Murshidabad" required>
+        </div>
+        <div class="crm-form-group">
+          <label>Active Monthly Loom Capacity</label>
+          <input type="text" name="active_capacity" placeholder="e.g. 75 units/month">
+        </div>
+        {% endif %}
+
+        <button type="submit" class="crm-submit-btn">Save Record</button>
+      </form>
+    </div>
+    {% endif %}
+
+  </div>
+
+</main>
+{% endblock %}

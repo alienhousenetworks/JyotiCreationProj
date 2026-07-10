@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} — Premium B2B Wholesale | Jyoticreations{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}">
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<main id="product-detail-page">
+  <div class="detail-container">
+    
+    <div class="back-btn-wrap rv">
+      <a href="{% url 'showroom' %}">← Return to Showroom</a>
+    </div>
+
+    <!-- Product Main Grid Layout -->
+    <div class="product-layout">
+      
+      <!-- Left Column: Gallery -->
+      <div class="product-media-showcase rv d1">
+        <div class="main-media-box">
+          {% if product.image_main %}
+          <img id="main-gallery-view" src="{{ product.image_main.url }}" alt="{{ product.name }}">
+          {% else %}
+          <div class="prod-img abstract-pattern pattern-1" style="height: 100%;"></div>
+          {% endif %}
+        </div>
+        
+        <!-- Thumbnail Strip -->
+        <div class="thumbnail-strip">
+          {% if product.image_main %}
+          <div class="thumb-item active" onclick="swapGallery('{{ product.image_main.url }}', this)">
+            <img src="{{ product.image_main.url }}" alt="Main image">
+          </div>
+          {% endif %}
+          {% if product.image_hover %}
+          <div class="thumb-item" onclick="swapGallery('{{ product.image_hover.url }}', this)">
+            <img src="{{ product.image_hover.url }}" alt="Alternate view">
+          </div>
+          {% endif %}
+          {% for extra in product.additional_images.all %}
+          <div class="thumb-item" onclick="swapGallery('{{ extra.image.url }}', this)">
+            <img src="{{ extra.image.url }}" alt="Detail view {{ forloop.counter }}">
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Right Column: Specs & Sourcing -->
+      <div class="product-info-panel rv d2">
+        <div class="prod-category-tag">{{ product.category.name }} {% if product.subcategory %}· {{ product.subcategory.name }}{% endif %}</div>
+        <h1 class="prod-title-h1">{{ product.name }}</h1>
+        
+        <div class="prod-desc-text">
+          {% if product.description %}
+          <p>{{ product.description }}</p>
+          {% else %}
+          <p>Authentic masterclass Bengal handloom work created with traditional techniques in our artisan weavers cluster. Designed for luxury boutiques and premium enterprise exports.</p>
+          {% endif %}
+        </div>
+
+        <div class="specs-section-title">Technical specifications</div>
+        <div class="spec-table-wrap">
+          <table class="spec-table">
+            <tr>
+              <td>Fabric Core</td>
+              <td>{{ product.purity_fabric }}</td>
+            </tr>
+            <tr>
+              <td>Border Specs</td>
+              <td>{{ product.border_specs }}</td>
+            </tr>
+            <tr>
+              <td>Structural Weight</td>
+              <td>{{ product.structural_weight }}</td>
+            </tr>
+            <tr>
+              <td>Material Component</td>
+              <td>{{ product.material }}</td>
+            </tr>
+            <tr>
+              <td>Loom Lead Time</td>
+              <td>{{ product.lead_time }}</td>
+            </tr>
+            <tr>
+              <td>Allocation MOQ</td>
+              <td>{{ product.moq }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="sourcing-action-card">
+          <h3>Procurement allocation</h3>
+          <p>MOQ starts at {{ product.moq }}. Secure current loom batch timings, negotiate custom weaves, or explore private-label branding options with our sourcing desk.</p>
+          <button class="btn-modal-submit" onclick="openContactModal('{{ product.name|escapejs }}', '{{ product.purity_fabric|escapejs }}', '{{ product.border_specs|escapejs }}', '{{ product.structural_weight|escapejs }}', '{{ product.moq|escapejs }}')">Initialize Sourcing Request</button>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Video Showcase Section -->
+    {% if product.video %}
+    <div class="production-video-section rv d3">
+      <div class="video-heading">
+        <h2>Weave &amp; Motion Demo</h2>
+        <p>Observe the fall, shimmer, and drape under professional studio lighting setups.</p>
+      </div>
+      <div class="video-container">
+        <video controls autoplay loop muted playsinline>
+          <source src="{{ product.video.url }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="related-products-section rv d4">
+      <div class="related-heading">
+        <h2>Similar Allocations</h2>
+      </div>
+      <div class="catalog-grid">
+        {% for prod in related_products %}
+        <a href="{% url 'product_detail' prod.slug %}" class="prod-card" style="text-decoration: none;">
+          <div class="prod-img-box">
+            <div class="prod-overlay"></div>
+            {% if prod.image_main %}
+            <img class="prod-img" src="{{ prod.image_main.url }}" alt="{{ prod.name }}">
+            {% else %}
+            <div class="prod-img abstract-pattern pattern-{% cycle '1' '2' '3' '4' '5' '6' %}"></div>
+            {% endif %}
+            <div class="prod-badge">{{ prod.moq }} MOQ</div>
+          </div>
+          <div class="prod-details">
+            <div class="prod-cat-name">{{ prod.category.name }}</div>
+            <h3 class="prod-h">{{ prod.name }}</h3>
+            <p class="prod-desc" style="margin-bottom: 0;">{{ prod.description|truncatewords:12 }}</p>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</main>
+
+<script>
+  // Highlight active link
+  document.getElementById('nav-cv').classList.add('active-link');
+
+  function swapGallery(imgUrl, thumbEl) {
+    const mainView = document.getElementById('main-gallery-view');
+    if (mainView) {
+      mainView.src = imgUrl;
+    }
+    
+    // Toggle active thumbnail styling
+    document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+    thumbEl.classList.add('active');
+  }
+</script>
+{% endblock %}

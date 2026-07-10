@@ -159,6 +159,7 @@ class Product(models.Model):
     
     image_main = models.ImageField(upload_to='products/', blank=True, null=True)
     image_hover = models.ImageField(upload_to='products/', blank=True, null=True)
+    video = models.FileField(upload_to='product_videos/', blank=True, null=True, help_text="Optional product demonstration video loop")
     
     # Collection & Tagging filters
     is_best_seller = models.BooleanField(default=False)
@@ -186,6 +187,21 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, related_name='additional_images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/gallery/')
+    order = models.PositiveIntegerField(default=0, help_text="Order in which images appear in gallery")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Product Sub-Image"
+        verbose_name_plural = "Product Sub-Images"
+
+    def __str__(self):
+        return f"{self.product.name} - Sub Image #{self.id}"
+
 
 
 # ==========================================
@@ -497,6 +513,7 @@ class B2BEnquiry(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=50, blank=True, null=True)
     message = models.TextField()
+    custom_branding_requested = models.BooleanField(default=False, help_text="Checked if client requested custom tags/embroidery")
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -538,3 +555,87 @@ class Partner(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# ==========================================
+# 16. CRM MODELS (B2B WHOLESALE SYSTEM)
+# ==========================================
+
+class CRMVendor(models.Model):
+    name = models.CharField(max_length=150, help_text="e.g. Bishnupur Weaver Cluster A")
+    contact_person = models.CharField(max_length=150, blank=True, null=True)
+    phone = models.CharField(max_length=50, blank=True, null=True)
+    cluster = models.CharField(max_length=150, default="Bishnupur")
+    active_capacity = models.CharField(max_length=100, default="50 units/month", help_text="Loom monthly capacity estimate")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "CRM Vendor/Weaver"
+        verbose_name_plural = "CRM Vendors/Weavers"
+
+    def __str__(self):
+        return f"{self.name} ({self.cluster})"
+
+
+class CRMClient(models.Model):
+    company_name = models.CharField(max_length=200)
+    contact_person = models.CharField(max_length=150)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=50)
+    location = models.CharField(max_length=150, help_text="e.g. New York, USA or Mumbai, India")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "CRM Client"
+        verbose_name_plural = "CRM Clients"
+
+    def __str__(self):
+        return f"{self.company_name} - {self.contact_person}"
+
+
+class CRMOrder(models.Model):
+    STATUS_CHOICES = (
+        ('Pending', 'Pending / WhatsApp Booked'),
+        ('Production', 'In Loom Production'),
+        ('Shipped', 'Shipped / In Transit'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    )
+    PAYMENT_CHOICES = (
+        ('Pending', 'Unpaid'),
+        ('Partial', 'Partially Paid'),
+        ('Paid', 'Fully Paid'),
+    )
+
+    client = models.ForeignKey(CRMClient, on_delete=models.CASCADE, related_name="orders")
+    vendor = models.ForeignKey(CRMVendor, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders", help_text="Assigned Weaver Cluster")
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
+    payment_status = models.CharField(max_length=50, choices=PAYMENT_CHOICES, default='Pending')
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, help_text="Negotiated total order amount")
+    custom_branding_requested = models.BooleanField(default=False, help_text="Did the buyer request custom tags/embroidery?")
+    notes = models.TextField(blank=True, null=True, help_text="Shipment details, specific weave pattern requests, etc.")
+    order_date = models.DateField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "CRM Order"
+        verbose_name_plural = "CRM Orders"
+        ordering = ['-order_date', '-id']
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.client.company_name} ({self.status})"
+
+
+class CRMOrderItem(models.Model):
+    order = models.ForeignKey(CRMOrder, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Negotiated unit price")
+
+    class Meta:
+        verbose_name = "CRM Order Item"
+        verbose_name_plural = "CRM Order Items"
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
+

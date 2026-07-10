@@ -93,6 +93,7 @@
   <div class="ft-bot">
     <div class="ft-copy">© 2026 {{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} Procurement Group Corp. · Premium Bengali Silk B2B Manufacturer · All Rights Reserved</div>
     <div class="ft-legal">
+      <span><a href="{% url 'crm_dashboard' %}" style="color: var(--gold); text-decoration: none; font-weight: 500;">CRM Portal</a></span>
       <span>{{ site_config.legal_terms_text|default:"B2B Terms" }}</span>
       <span>{{ site_config.legal_privacy_text|default:"Privacy Policy" }}</span>
       <span>{{ site_config.legal_gi_text|default:"GI Certification" }}</span>
@@ -127,7 +128,7 @@
     </div>
   </div>
   <div class="dr-actions">
-    <button class="dr-wa" onclick="openContactModal(activeProduct.name, activeProduct.fabric, activeProduct.border, activeProduct.weight, activeProduct.moq)">✆ Initialize Procurement Sourcing</button>
+    <button class="dr-wa" onclick="openContactModal(activeProduct ? activeProduct.name : '', activeProduct ? activeProduct.fabric : '', activeProduct ? activeProduct.border : '', activeProduct ? activeProduct.weight : '', activeProduct ? activeProduct.moq : '')">✆ Initialize Procurement Sourcing</button>
   </div>
 </div>
 

@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}B2B CRM Dashboard — Jyoticreations{% endblock %}
+
+{% block extra_css %}
+<style>
+  #crm-page {
+    max-width: 1400px;
+    margin: 120px auto 60px;
+    padding: 0 40px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .crm-header {
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+
+  .crm-title h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: var(--ivory);
+  }
+
+  .crm-title h1 strong {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .crm-title p {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 5px;
+  }
+
+  /* Navigation Tabs */
+  .crm-nav {
+    display: flex;
+    gap: 15px;
+  }
+
+  .crm-btn {
+    background: rgba(223, 186, 95, 0.08);
+    border: 1px solid var(--border);
+    color: var(--ivory);
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s var(--ease-lux);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .crm-btn:hover, .crm-btn.active {
+    background: var(--gold);
+    color: var(--black);
+    border-color: var(--gold);
+    box-shadow: 0 0 15px var(--gold-glow);
+  }
+
+  .crm-btn-primary {
+    background: var(--crimson);
+    border-color: var(--crimson);
+  }
+
+  .crm-btn-primary:hover {
+    background: var(--crimson-l);
+    border-color: var(--crimson-l);
+    box-shadow: 0 0 15px var(--crim-glow);
+    color: var(--ivory);
+  }
+
+  /* Grid Layout for Dashboard Cards */
+  .crm-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .kpi-card {
+    background: rgba(14, 11, 16, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-s);
+    padding: 25px;
+    border-radius: 6px;
+    text-align: left;
+    transition: border 0.3s ease;
+  }
+
+  .kpi-card:hover {
+    border-color: var(--border);
+  }
+
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .kpi-val {
+    font-size: 32px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    color: var(--gold);
+    margin-top: 10px;
+  }
+
+  /* Split layout for lists */
+  .crm-split {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+  }
+
+  .crm-section {
+    background: rgba(14, 11, 16, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-s);
+    padding: 30px;
+    border-radius: 6px;
+  }
+
+  .crm-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: var(--ivory);
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-s);
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Glassmorphism Tables */
+  .crm-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .crm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .crm-table th, .crm-table td {
+    padding: 15px 10px;
+    text-align: left;
+    border-bottom: 1px solid rgba(223, 186, 95, 0.08);
+  }
+
+  .crm-table th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .crm-table tbody tr:hover {
+    background: rgba(223, 186, 95, 0.03);
+  }
+
+  .status-badge {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+  }
+
+  .status-Pending { background: rgba(223, 186, 95, 0.15); color: var(--gold); border: 1px solid var(--border); }
+  .status-Production { background: rgba(139, 26, 42, 0.15); color: var(--crimson-l); border: 1px solid var(--crimson); }
+  .status-Shipped { background: rgba(50, 150, 250, 0.15); color: #4fa8ff; border: 1px solid rgba(50, 150, 250, 0.4); }
+  .status-Delivered { background: rgba(40, 200, 100, 0.15); color: #4fff92; border: 1px solid rgba(40, 200, 100, 0.4); }
+  .status-Cancelled { background: rgba(255, 255, 255, 0.1); color: var(--text-faint); border: 1px solid rgba(255, 255, 255, 0.2); }
+
+  .payment-Paid { color: #4fff92; }
+  .payment-Partial { color: var(--gold); }
+  .payment-Pending { color: var(--crimson-l); }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="crm-page">
+  
+  <!-- Header with CRM Navigation -->
+  <div class="crm-header">
+    <div class="crm-title">
+      <h1>B2B <strong>CRM Dashboard</strong></h1>
+      <p>Loom Allocation & Procurement Ledger</p>
+    </div>
+    <div class="crm-nav">
+      <a href="{% url 'crm_dashboard' %}" class="crm-btn active">Dashboard</a>
+      <a href="{% url 'crm_orders' %}" class="crm-btn">Orders</a>
+      <a href="{% url 'crm_clients' %}" class="crm-btn">Clients</a>
+      <a href="{% url 'crm_vendors' %}" class="crm-btn">Weavers</a>
+      <a href="{% url 'crm_orders_create' %}" class="crm-btn crm-btn-primary">+ Book Order</a>
+    </div>
+  </div>
+
+  <!-- Quick KPIs -->
+  <div class="crm-kpis">
+    <div class="kpi-card">
+      <div class="kpi-label">Completed Sales Revenue</div>
+      <div class="kpi-val">₹{{ total_revenue|floatformat:2 }}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Active Orders</div>
+      <div class="kpi-val">{{ total_orders_count }}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">WhatsApp Bookings Pending</div>
+      <div class="kpi-val">{{ pending_orders_count }}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Active Weavers</div>
+      <div class="kpi-val">{{ total_vendors_count }}</div>
+    </div>
+  </div>
+
+  <!-- Lists split screen -->
+  <div class="crm-split">
+    <!-- Left Column: Recent Orders -->
+    <div class="crm-section">
+      <h3>Recent Orders <a href="{% url 'crm_orders' %}" class="crm-btn" style="padding: 4px 10px; font-size: 9px;">View All</a></h3>
+      <div class="crm-table-wrapper">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Client</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Total Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in recent_orders %}
+            <tr>
+              <td>#{{ order.id }}</td>
+              <td>
+                <strong>{{ order.client.company_name }}</strong><br>
+                <span style="font-size: 10px; color: var(--text-faint);">{{ order.client.contact_person }}</span>
+              </td>
+              <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+              <td><span class="payment-{{ order.payment_status }}">{{ order.get_payment_status_display }}</span></td>
+              <td>₹{{ order.total_amount|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 30px 0;">No orders registered yet. Click "+ Book Order" to log a WhatsApp agreement.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right Column: Weaver Cluster Performance -->
+    <div class="crm-section">
+      <h3>Weaver Cluster Loads</h3>
+      <div class="crm-table-wrapper">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Weaver / Cluster</th>
+              <th>Orders Assigned</th>
+              <th>Weave Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in vendors %}
+            <tr>
+              <td>
+                <strong>{{ v.name }}</strong><br>
+                <span style="font-size: 10px; color: var(--text-faint);">{{ v.cluster }} (Capacity: {{ v.active_capacity }})</span>
+              </td>
+              <td style="text-align: center;">{{ v.orders_assigned }}</td>
+              <td>₹{{ v.total_revenue|default:0.00|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" style="text-align: center; padding: 30px 0;">No weavers/vendors registered yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+{% endblock %}

@@ -1,12 +1,12 @@
 from django.contrib import admin
 from .models import (
     SiteConfiguration, HeroSection, TrustMarqueeItem, CategorySectionSettings,
-    Category, SubCategory, Product, EditorialSection, WhyChooseUsSectionSettings,
+    Category, SubCategory, Product, ProductImage, EditorialSection, WhyChooseUsSectionSettings,
     WhyChooseUsCard, HeritageSection, ProcessSectionSettings, ProcessStep,
     MetricsSectionSettings, TechnicalMetric, ExportSectionSettings, ExportCountry,
     TestimonialSectionSettings, Testimonial, FaqSectionSettings, FaqItem,
     PremiumSectionSettings, B2BEnquiryCTA, B2BEnquiry, PartnersSectionSettings,
-    Partner
+    Partner, CRMVendor, CRMClient, CRMOrder, CRMOrderItem
 )
 
 # Singleton pattern helper for Section configurations
@@ -63,12 +63,19 @@ class SubCategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name',)
 
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 3
+    ordering = ('order',)
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'subcategory', 'moq', 'material', 'is_active', 'is_best_seller', 'is_new_arrival')
     list_filter = ('category', 'subcategory', 'is_active', 'is_best_seller', 'is_new_arrival', 'is_handcrafted', 'is_hand_painted')
     search_fields = ('name', 'description', 'purity_fabric', 'material')
     prepopulated_fields = {'slug': ('name',)}
+    inlines = [ProductImageInline]
     fieldsets = (
         ('Basic Information', {
             'fields': ('name', 'slug', 'category', 'subcategory', 'description')
@@ -76,8 +83,8 @@ class ProductAdmin(admin.ModelAdmin):
         ('B2B Sourcing Metrics', {
             'fields': ('purity_fabric', 'border_specs', 'structural_weight', 'moq', 'lead_time', 'material')
         }),
-        ('Images', {
-            'fields': ('image_main', 'image_hover')
+        ('Images & Media', {
+            'fields': ('image_main', 'image_hover', 'video')
         }),
         ('Collection Filters', {
             'fields': ('is_best_seller', 'is_new_arrival', 'is_handcrafted', 'is_hand_painted', 'is_silk_collection', 'is_cotton_collection', 'is_festive_collection', 'is_sale', 'is_premium')
@@ -160,8 +167,8 @@ class B2BEnquiryCTAAdmin(SingletonAdmin):
 
 @admin.register(B2BEnquiry)
 class B2BEnquiryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'company', 'email', 'phone', 'submitted_at')
-    readonly_fields = ('name', 'company', 'email', 'phone', 'message', 'submitted_at')
+    list_display = ('name', 'company', 'email', 'phone', 'custom_branding_requested', 'submitted_at')
+    readonly_fields = ('name', 'company', 'email', 'phone', 'message', 'custom_branding_requested', 'submitted_at')
     search_fields = ('name', 'company', 'email', 'message')
     date_hierarchy = 'submitted_at'
 
@@ -175,3 +182,32 @@ class PartnerAdmin(admin.ModelAdmin):
     list_editable = ('is_top_highlight', 'order')
     list_filter = ('is_top_highlight',)
     search_fields = ('name',)
+
+
+# ==========================================
+# CRM ADMIN REGISTRATION
+# ==========================================
+
+@admin.register(CRMVendor)
+class CRMVendorAdmin(admin.ModelAdmin):
+    list_display = ('name', 'contact_person', 'phone', 'cluster', 'active_capacity')
+    search_fields = ('name', 'contact_person', 'phone', 'cluster')
+    list_filter = ('cluster',)
+
+@admin.register(CRMClient)
+class CRMClientAdmin(admin.ModelAdmin):
+    list_display = ('company_name', 'contact_person', 'email', 'phone', 'location')
+    search_fields = ('company_name', 'contact_person', 'email', 'phone', 'location')
+
+class CRMOrderItemInline(admin.TabularInline):
+    model = CRMOrderItem
+    extra = 1
+
+@admin.register(CRMOrder)
+class CRMOrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'client', 'vendor', 'status', 'payment_status', 'total_amount', 'custom_branding_requested', 'order_date')
+    list_filter = ('status', 'payment_status', 'custom_branding_requested', 'order_date')
+    search_fields = ('client__company_name', 'client__contact_person', 'vendor__name', 'notes')
+    inlines = [CRMOrderItemInline]
+    date_hierarchy = 'order_date'
+
