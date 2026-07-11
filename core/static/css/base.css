@@ -2,13 +2,18 @@
    LUXURY DESIGN SYSTEM & BASE STYLES
    ═══════════════════════════════════════════════════════ */
 :root {
-  --black:       #030103;
-  --black-rich:  #070409;
-  --charcoal:    #0e0b10;
-  --charcoal-l:  #1a1520;
+  --black:       #0e0a12;
+  --black-rich:  #120e16;
+  --charcoal:    #1a1525;
+  --charcoal-l:  #251e30;
   --ivory:       #faf6f0;
   --ivory-warm:  #fffbf5;
   --ivory-dim:   #d8cfbe;
+  /* On-pastel text colors — dark plum/charcoal for contrast */
+  --text-dark:   #1c1228;
+  --text-dark-2: #2e2040;
+  --text-mid:    rgba(28, 18, 40, 0.82);
+  --text-faint-d:rgba(28, 18, 40, 0.52);
   --crimson:     #8b1a2a;
   --crimson-l:   #b02235;
   --crimson-pale:rgba(139,26,42,0.18);
@@ -21,9 +26,9 @@
   --gold-glow:   rgba(223,186,95,0.22);
   --gold-glow-s: rgba(223,186,95,0.08);
   --crim-glow:   rgba(139,26,42,0.25);
-  --border:      rgba(223,186,95,0.22);
-  --border-h:    rgba(223,186,95,0.55);
-  --border-s:    rgba(223,186,95,0.10);
+  --border:      rgba(28,18,40,0.18);
+  --border-h:    rgba(28,18,40,0.40);
+  --border-s:    rgba(28,18,40,0.08);
   --text-on-dark:rgba(255, 252, 245, 0.96);
   --text-muted:  rgba(240, 235, 220, 0.78);
   --text-faint:  rgba(240, 235, 220, 0.50);
@@ -36,8 +41,8 @@
 html{scroll-behavior:smooth}
 body{
   font-family:'Inter',system-ui,sans-serif;
-  background:var(--black);
-  color:var(--ivory);
+  background:#e8e0ea;
+  color:var(--text-dark);
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -46,6 +51,58 @@ body{
 ::-webkit-scrollbar-track{background:var(--black)}
 ::-webkit-scrollbar-thumb{background:linear-gradient(var(--crimson),var(--gold));border-radius:2px}
 ::selection{background:rgba(223,186,95,0.25);color:#fff}
+
+/* ═══════════════════════════════════════════════════════
+   GLOBAL TEXT SHADOW — auto highlight over silk canvas
+   ═══════════════════════════════════════════════════════ */
+h1,h2,h3,h4,h5,h6,
+p,span,a,li,label,
+div.sec-label,div.ed-tag,div.hs-lbl,div.hs-num,
+div.sc-lbl,div.sc-num,div.sc-sub,
+.eyebrow-text,.hero-sub,.hero-h1,
+.btn-gold,.btn-ghost,.btn-crimson,
+.marquee-track,.mi,
+.v-card h3,.v-body,.v-num,.vs,.v-action,
+.ed-h,.ed-p,.ed-list li,
+.why-card-luxe h4,.why-card-luxe p,.why-card-num,
+.h-title,.h-body,.h-spec span,.h-spec label,
+.ps-lbl,.ps-num,
+.spec-lbl,.spec-val,
+.map-label h3,.map-label p,.ec-name,.ec-tag,
+.t-text,.t-name,.t-role,.t-loc,.t-quote-icon,
+.ps-lbl-text,.ps-pill,
+.faq-q,.faq-content p,
+.eq-h,.eq-p,.eq-g,
+.eq-badge,.eq-chk,
+.wh-number,.wh-label,
+.home-cat-details h3,.home-cat-link,
+.prem-tab,.prod-h,.prod-desc,.prod-cat-name,
+.hdr-title,.hdr-desc,.hdr-eyebrow,
+.cat-tab,
+button,input,textarea,select {
+  text-shadow:
+    0 1px 3px rgba(0,0,0,0.55),
+    0 2px 8px rgba(0,0,0,0.35),
+    0 4px 16px rgba(0,0,0,0.20);
+}
+
+/* Stronger shadow for large display headings */
+h1,h2,.hero-h1,.eq-h,.h-title,.sec-h,.ed-h,.hdr-title {
+  text-shadow:
+    0 1px 2px rgba(0,0,0,0.70),
+    0 3px 10px rgba(0,0,0,0.50),
+    0 8px 24px rgba(0,0,0,0.30);
+}
+
+/* Gold/gradient text needs shadow applied differently since -webkit-text-fill-color overrides color */
+.hero-h1 strong,
+.sec-h strong, .sec-h em,
+.ed-h strong,
+.h-title strong,
+.eq-h strong {
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.55)) drop-shadow(0 4px 14px rgba(0,0,0,0.35));
+}
+
 
 /* ═══════════════════════════════════════════════════════
    INTRO OVERLAY — cinematic entrance
@@ -108,19 +165,21 @@ body{
   position:fixed;inset:0;z-index:1;
   pointer-events:none;
   background:
-    radial-gradient(ellipse 65% 45% at 15% 45%, rgba(139,26,42,0.14) 0%, transparent 70%),
-    radial-gradient(ellipse 55% 40% at 85% 55%, rgba(223,186,95,0.10) 0%, transparent 70%),
-    radial-gradient(ellipse 80% 30% at 50% 100%, rgba(3,1,3,0.92) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 25% at 50% 0%,   rgba(3,1,3,0.75) 0%, transparent 60%);
+    /* Deep dark crown at top — keeps nav text readable */
+    radial-gradient(ellipse 100% 22% at 50% 0%,   rgba(14,10,20,0.82) 0%, transparent 100%),
+    /* Left-edge plum shadow */
+    radial-gradient(ellipse 40% 70% at 0%   50%,  rgba(20,12,32,0.50) 0%, transparent 80%),
+    /* Right-edge plum shadow */
+    radial-gradient(ellipse 40% 70% at 100% 50%,  rgba(20,12,32,0.50) 0%, transparent 80%),
+    /* Bottom dark vignette — keeps footer legible */
+    radial-gradient(ellipse 100% 28% at 50% 100%, rgba(14,10,20,0.90) 0%, transparent 100%),
+    /* Centre-screen very subtle tint so centre body text has a substrate */
+    radial-gradient(ellipse 70% 50% at 50% 50%,  rgba(14,10,20,0.18) 0%, transparent 100%);
   animation: ambientBreathe 18s ease-in-out infinite alternate;
 }
 @keyframes ambientBreathe {
-  0% {
-    filter: hue-rotate(0deg) brightness(0.92) saturate(1.0);
-  }
-  100% {
-    filter: hue-rotate(20deg) brightness(1.12) saturate(1.2);
-  }
+  0%   { filter: brightness(0.95) saturate(1.0); }
+  100% { filter: brightness(1.05) saturate(1.1); }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -145,16 +204,18 @@ body{
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:space-between;align-items:center;
   padding:32px 6%;z-index:1000;
-  background:transparent;
+  /* Always frosted so logo/links are readable against pastel silk */
+  background:rgba(14,10,20,0.52);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   transition:all 0.8s var(--ease-lux);
   opacity:0;transform:translateY(-10px);
 }
 #gnav.visible{opacity:1;transform:translateY(0)}
 #gnav.scrolled{
   padding:18px 6%;
-  background:rgba(3,1,3,0.88);
+  background:rgba(10,7,16,0.92);
   backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid rgba(223,186,95,0.18);
 }
 
 .logo-block{cursor:pointer;text-decoration:none;display:block}
@@ -164,7 +225,7 @@ body{
   letter-spacing:6px;text-transform:uppercase;
   color:var(--ivory);line-height:1;
 }
-.logo-w em{color:var(--gold);font-style:normal}
+.logo-w em{color:var(--gold-l);font-style:normal}
 .logo-sub{
   font-size:7.5px;letter-spacing:4px;
   text-transform:uppercase;color:var(--gold);
@@ -173,11 +234,12 @@ body{
 
 .nav-links{display:flex;list-style:none;gap:40px;align-items:center}
 .nav-links a{
-  text-decoration:none;color:var(--ivory);
+  text-decoration:none;color:rgba(255,252,245,0.90);
   font-size:10px;text-transform:uppercase;letter-spacing:3px;
   font-weight:500;cursor:pointer;
   transition:color 0.4s ease;
   position:relative;padding-bottom:3px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
 }
 .nav-links a::after{
   content:'';position:absolute;bottom:0;left:0;

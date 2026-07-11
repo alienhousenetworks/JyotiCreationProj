@@ -326,11 +326,11 @@ document.addEventListener('DOMContentLoaded', triggerRevealObserver);
         uOpacity:   { value: opts.opacity != null ? opts.opacity : 1.0 },
         uLightDir:  { value: new THREE.Vector3(1.0, 1.4, 2.5).normalize() },
         uCamPos:    { value: camera.position },
-        uEnvColor:  { value: new THREE.Color(0.12, 0.09, 0.04) },
-        uBodyColor1:   { value: new THREE.Color(0.962, 0.948, 0.916) },
-        uBodyColor2:   { value: new THREE.Color(0.940, 0.922, 0.886) },
-        uBorderColor1: { value: new THREE.Color(0.56,  0.08,  0.14) },
-        uBorderColor2: { value: new THREE.Color(0.40,  0.04,  0.09) },
+        uEnvColor:  { value: new THREE.Color(0.06, 0.04, 0.08) },
+        uBodyColor1:   { value: new THREE.Color(0.95, 0.88, 0.92) },
+        uBodyColor2:   { value: new THREE.Color(0.90, 0.82, 0.88) },
+        uBorderColor1: { value: new THREE.Color(0.72, 0.30, 0.45) },
+        uBorderColor2: { value: new THREE.Color(0.58, 0.20, 0.35) },
       },
       vertexShader: `
         uniform float uTime;
@@ -350,39 +350,33 @@ document.addEventListener('DOMContentLoaded', triggerRevealObserver);
         varying float vHeight;
 
         float drape(vec3 p, float t) {
-          float w1 = sin(p.y * 0.65) * 0.65;
-          float w2 = cos(p.x * 0.75 + p.y * 0.35) * 0.22;
-          float w3 = sin(p.x * 1.35) * 0.11;
-          float w4 = cos(p.y * 1.95) * 0.08;
-          float gravity = pow(max(0.0, -p.y + 0.5), 1.4) * 0.28;
-          float md = distance(uv, vec2(uMouse.x*0.5+0.5, 1.0-(uMouse.y*0.5+0.5)));
-          float pull = smoothstep(0.5, 0.0, md) * 0.04 * sin(t * 0.6 + uPhase);
-          return w1 + w2 + w3 + w4 + gravity + pull;
+          float w1 = sin(p.y * 0.65 + t * 0.018) * 0.30;
+          float w2 = cos(p.x * 0.75 + p.y * 0.35 + t * 0.012) * 0.12;
+          float w3 = sin(p.x * 1.35 + t * 0.022) * 0.06;
+          float w4 = cos(p.y * 1.95 + t * 0.009) * 0.04;
+          float gravity = pow(max(0.0, -p.y + 0.5), 1.4) * 0.14;
+          return w1 + w2 + w3 + w4 + gravity;
+        }
+
+        vec3 displace(vec3 p, float t) {
+          vec3 res = p;
+          res.z += drape(p, t);
+          res.x += sin(p.y * 0.30 + t * 0.04) * 0.04;
+          return res;
         }
 
         void main() {
           vUv = uv;
-          vec3 pos = position;
-
           float t = uTime + uPhase;
-          pos.z += drape(pos, t);
-
-          pos.x += sin(pos.y * 0.30 + t * 0.04) * 0.06;
-
-          if (uIsPallu > 0.5) {
-            float edge = pow(abs(uv.x - 0.5) * 2.0, 2.2);
-            pos.z -= edge * 0.3;
-            pos.y -= edge * 0.12;
-          }
+          vec3 pos = displace(position, t);
 
           vec4 worldPos = modelMatrix * vec4(pos, 1.0);
           vWorld = worldPos.xyz;
 
           float eps = 0.005;
-          vec3 posR = pos + vec3(eps, 0, 0);
-          posR.z += drape(posR, t);
-          vec3 posU = pos + vec3(0, eps, 0);
-          posU.z += drape(posU, t);
+          vec3 posR = displace(position + vec3(eps, 0.0, 0.0), t);
+          vec3 posU = displace(position + vec3(0.0, eps, 0.0), t);
+
           vec3 tang = posR - pos;
           vec3 btan = posU - pos;
           vNorm = normalize(cross(tang, btan));
@@ -419,14 +413,14 @@ document.addEventListener('DOMContentLoaded', triggerRevealObserver);
           vec3 H = normalize(L + V);
           float NdotL = max(dot(N, L), 0.0);
           float NdotV = max(dot(N, V), 0.001);
-          float NdotH = dot(N, H);
-          vec3 T = normalize(cross(N, vec3(0.0, 1.0, 0.0)));
-          vec3 B = cross(N, T);
+          vec3 T = normalize(cross(N, vec3(0.0, 1.0, 0.001)));
+          vec3 B = normalize(cross(N, T));
           float TdotH = dot(T, H);
           float BdotH = dot(B, H);
-          float exponent = (TdotH * TdotH) / (roughU * roughU) + (BdotH * BdotH) / (roughV * roughV);
-          float spec = exp(-exponent) / (roughU * roughV * sqrt(max(NdotL * NdotV, 0.0001)));
-          return specColor * NdotL * max(spec, 0.0);
+          float exponent = (TdotH * TdotH) / max(roughU * roughU, 0.01)
+                         + (BdotH * BdotH) / max(roughV * roughV, 0.01);
+          float spec = clamp(exp(-exponent) * NdotL * 0.35, 0.0, 0.6);
+          return specColor * spec;
         }
 
         float silkTexture(vec2 uv, float time) {
@@ -485,51 +479,44 @@ document.addEventListener('DOMContentLoaded', triggerRevealObserver);
           float pz2 = smoothstep(0.155,0.160,vUv.y) - smoothstep(0.167,0.172,vUv.y);
           zMask = max(zMask, clamp(pz1+pz2, 0.0, 1.0));
 
-          float shimmer = sin(vUv.y * 720.0 + uTime * 2.2) * 0.38 + 0.62;
-          float shimmer2 = cos(vUv.x * 450.0 + uTime * 1.6) * 0.20 + 0.80;
-          float acuteBoost = 1.0 + pow(1.0 - NdotV, 3.0) * 1.8;
-          vec3 goldColor  = vec3(0.88, 0.72, 0.28) * (shimmer * shimmer2) * acuteBoost;
-          vec3 goldDeep   = vec3(0.62, 0.49, 0.16) * acuteBoost;
-          baseColor = mix(baseColor, mix(goldDeep, goldColor, shimmer), zMask * 0.94);
+          float shimmer  = sin(vUv.y * 720.0 + uTime * 2.2) * 0.20 + 0.80;
+          float shimmer2 = cos(vUv.x * 450.0 + uTime * 1.6) * 0.10 + 0.90;
+          vec3 goldColor = vec3(0.92, 0.80, 0.58) * (shimmer * shimmer2);
+          vec3 goldDeep  = vec3(0.70, 0.56, 0.32);
+          baseColor = mix(baseColor, mix(goldDeep, goldColor, shimmer), zMask * 0.80);
 
-          if (bMask < 0.04 && zMask < 0.04 && pallu < 0.04) {
-            if (uIsBg > 0.5) {
-              baseColor += vec3(silkF * 0.03 + weave);
-            } else {
-              baseColor += vec3(silkF * 0.022 + weave);
-            }
-          }
+          baseColor += vec3(silkF * 0.015 + weave * 0.5);
 
-          float edgeMask = smoothstep(0.0, 0.02, vUv.x) * smoothstep(1.0, 0.98, vUv.x)
-                         * smoothstep(0.0, 0.015, vUv.y) * smoothstep(1.0, 0.985, vUv.y);
+          float edgeMask = smoothstep(0.0, 0.03, vUv.x) * smoothstep(1.0, 0.97, vUv.x)
+                         * smoothstep(0.0, 0.025, vUv.y) * smoothstep(1.0, 0.975, vUv.y);
 
-          vec3 diffuse = baseColor * (NdotL * 0.75 + 0.28) * (0.65 + 0.35 * edgeMask);
+          vec3 diffuse = baseColor * (NdotL * 0.55 + 0.45);
 
-          float fres = pow(1.0 - NdotV, 3.5) * 0.18;
-          vec3 fresColor = mix(vec3(0.85, 0.78, 0.65), vec3(0.92, 0.82, 0.48), zMask);
+          float fres = pow(1.0 - NdotV, 4.0) * 0.08;
+          vec3 fresColor = mix(vec3(0.90, 0.82, 0.88), vec3(0.95, 0.88, 0.60), zMask);
 
-          float roughU = bMask > 0.5 ? 0.38 : 0.25;
-          float roughV = bMask > 0.5 ? 0.12 : 0.08;
-          vec3 specCol = zMask > 0.3 ? vec3(1.0, 0.92, 0.60) : vec3(0.90, 0.88, 0.82);
-          vec3 aniso = anisotropicSilk(N, L, V, specCol, roughU, roughV) * 0.55 * edgeMask;
+          float roughU = bMask > 0.5 ? 0.45 : 0.30;
+          float roughV = bMask > 0.5 ? 0.18 : 0.12;
+          vec3 specCol = zMask > 0.3 ? vec3(0.95, 0.90, 0.70) : vec3(0.88, 0.84, 0.90);
+          vec3 aniso = anisotropicSilk(N, L, V, specCol, roughU, roughV) * 0.30 * edgeMask;
 
-          float lightVal = smoothstep(-0.5, 0.65, vZ);
-          float shadow   = pow(max(0.0, -vZ), 1.6) * 0.22;
+          float lightVal = smoothstep(-0.3, 0.5, vZ);
+          float shadow   = pow(max(0.0, -vZ), 2.0) * 0.10;
 
-          vec3 rimDir = normalize(vec3(-1.2, 0.2, 0.8));
-          float rim = pow(max(dot(N, rimDir), 0.0), 4.0) * 0.12;
-          vec3 rimColor = vec3(0.80, 0.65, 0.28) * rim * edgeMask;
+          vec3 rimDir = normalize(vec3(-1.0, 0.3, 0.8));
+          float rim = pow(max(dot(N, rimDir), 0.0), 5.0) * 0.06;
+          vec3 rimColor = vec3(0.85, 0.72, 0.80) * rim * edgeMask;
 
-          vec3 finalColor = diffuse * (0.78 + 0.36 * lightVal)
+          vec3 finalColor = diffuse * (0.85 + 0.20 * lightVal)
             + aniso
-            + (fresColor * fres * edgeMask)
+            + fresColor * fres * edgeMask
             + rimColor
-            + uEnvColor * (0.06 + 0.04 * NdotV) * edgeMask
+            + uEnvColor * 0.04 * edgeMask
             - vec3(shadow);
 
           if (zMask > 0.3) {
-            float goldSpec = pow(max(dot(N, normalize(L + V)), 0.0), 60.0) * 1.4;
-            finalColor += vec3(1.0, 0.92, 0.55) * goldSpec * shimmer * edgeMask;
+            float goldSpec = pow(max(dot(N, normalize(L + V)), 0.0), 80.0) * 0.6;
+            finalColor += vec3(0.95, 0.88, 0.60) * goldSpec * shimmer * edgeMask;
           }
 
           float feather = smoothstep(0.0, 0.035, vUv.x) * smoothstep(1.0, 0.965, vUv.x)
@@ -609,31 +596,31 @@ document.addEventListener('DOMContentLoaded', triggerRevealObserver);
   const palettes = [
     {
       limit: 0.0,
-      body1: new THREE.Color(0.962, 0.948, 0.916),
-      body2: new THREE.Color(0.940, 0.922, 0.886),
-      bord1: new THREE.Color(0.56,  0.08,  0.14),
-      bord2: new THREE.Color(0.40,  0.04,  0.09)
+      body1: new THREE.Color(0.95,  0.88,  0.92),
+      body2: new THREE.Color(0.90,  0.82,  0.88),
+      bord1: new THREE.Color(0.72,  0.30,  0.45),
+      bord2: new THREE.Color(0.58,  0.20,  0.35)
     },
     {
       limit: 2.0,
-      body1: new THREE.Color(0.04,  0.34,  0.22),
-      body2: new THREE.Color(0.02,  0.22,  0.15),
-      bord1: new THREE.Color(0.72,  0.52,  0.04),
-      bord2: new THREE.Color(0.54,  0.38,  0.02)
+      body1: new THREE.Color(0.82,  0.92,  0.88),
+      body2: new THREE.Color(0.74,  0.88,  0.82),
+      bord1: new THREE.Color(0.38,  0.62,  0.52),
+      bord2: new THREE.Color(0.28,  0.50,  0.42)
     },
     {
       limit: 4.5,
-      body1: new THREE.Color(0.05,  0.08,  0.36),
-      body2: new THREE.Color(0.03,  0.04,  0.24),
-      bord1: new THREE.Color(0.78,  0.06,  0.42),
-      bord2: new THREE.Color(0.52,  0.02,  0.28)
+      body1: new THREE.Color(0.82,  0.84,  0.95),
+      body2: new THREE.Color(0.74,  0.76,  0.90),
+      bord1: new THREE.Color(0.52,  0.36,  0.72),
+      bord2: new THREE.Color(0.38,  0.24,  0.58)
     },
     {
       limit: 7.5,
-      body1: new THREE.Color(0.12,  0.12,  0.14),
-      body2: new THREE.Color(0.08,  0.08,  0.09),
-      bord1: new THREE.Color(0.68,  0.02,  0.12),
-      bord2: new THREE.Color(0.48,  0.01,  0.08)
+      body1: new THREE.Color(0.90,  0.85,  0.80),
+      body2: new THREE.Color(0.84,  0.78,  0.74),
+      bord1: new THREE.Color(0.68,  0.32,  0.30),
+      bord2: new THREE.Color(0.52,  0.22,  0.20)
     }
   ];
 
