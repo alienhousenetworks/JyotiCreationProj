@@ -9,17 +9,39 @@ REPO_DIR="/root/JyotiCreationProj" # Assuming cloned into /root/
 SERVER_IP="187.127.160.134"
 SOCKET_FILE="/run/${PROJECT_NAME}.sock"
 
+# Database Configuration
+DB_NAME="jyoti_saree_db"
+DB_USER="jyoti_saree_user"
+DB_PASSWORD="jyoti_saree_password" # Change this to a secure password in production
+
 echo "================================================================="
 echo " Starting Django Production Deployment Setup on Hostinger VPS    "
 echo " Target IP: ${SERVER_IP}                                         "
+echo " Database: PostgreSQL                                            "
 echo "================================================================="
 
 # 1. Update and install system dependencies
 echo "--> Updating system packages and installing dependencies..."
 apt-get update -y
-apt-get install -y python3 python3-pip python3-venv nginx curl git ufw
+apt-get install -y python3 python3-pip python3-venv nginx curl git ufw postgresql postgresql-contrib libpq-dev
 
-# 2. Set up virtual environment and install requirements
+# 2. Configure PostgreSQL
+echo "--> Configuring PostgreSQL database and user..."
+# Start PostgreSQL service if not running
+systemctl start postgresql
+systemctl enable postgresql
+
+# Create Database and User (ignores error if they already exist)
+sudo -u postgres psql -c "CREATE DATABASE ${DB_NAME};" || true
+sudo -u postgres psql -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';" || true
+sudo -u postgres psql -c "ALTER ROLE ${DB_USER} SET client_encoding TO 'utf8';"
+sudo -u postgres psql -c "ALTER ROLE ${DB_USER} SET default_transaction_isolation TO 'read committed';"
+sudo -u postgres psql -c "ALTER ROLE ${DB_USER} SET timezone TO 'UTC';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${DB_USER};"
+# Grant permissions to schema public (required for PostgreSQL 15+)
+sudo -u postgres psql -d ${DB_NAME} -c "GRANT ALL ON SCHEMA public TO ${DB_USER};"
+
+# 3. Set up virtual environment and install requirements
 echo "--> Setting up virtual environment..."
 cd "${REPO_DIR}"
 python3 -m venv venv
@@ -30,14 +52,21 @@ pip install --upgrade pip
 pip install -r requirements.txt
 pip install gunicorn
 
-# 3. Django Setup (Migrations, Staticfiles)
+# Export environment variables for the current session to run migrations
+export DB_NAME="${DB_NAME}"
+export DB_USER="${DB_USER}"
+export DB_PASSWORD="${DB_PASSWORD}"
+export DB_HOST="localhost"
+export DB_PORT="5432"
+
+# 4. Django Setup (Migrations, Staticfiles)
 echo "--> Running Django migrations..."
 python manage.py migrate --noinput
 
 echo "--> Collecting static files..."
 python manage.py collectstatic --noinput
 
-# 4. Create Systemd Service for Gunicorn
+# 5. Create Systemd Service for Gunicorn
 echo "--> Creating Gunicorn systemd service..."
 cat <<EOF > /etc/systemd/system/${PROJECT_NAME}.service
 [Unit]
@@ -48,6 +77,11 @@ After=network.target
 User=root
 Group=www-data
 WorkingDirectory=${REPO_DIR}
+Environment=DB_NAME=${DB_NAME}
+Environment=DB_USER=${DB_USER}
+Environment=DB_PASSWORD=${DB_PASSWORD}
+Environment=DB_HOST=localhost
+Environment=DB_PORT=5432
 ExecStart=${REPO_DIR}/venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
@@ -58,13 +92,13 @@ ExecStart=${REPO_DIR}/venv/bin/gunicorn \
 WantedBy=multi-user.target
 EOF
 
-# 5. Start and Enable Gunicorn Service
+# 6. Start and Enable Gunicorn Service
 echo "--> Starting and enabling Gunicorn service..."
 systemctl daemon-reload
-systemctl start ${PROJECT_NAME}
+systemctl restart ${PROJECT_NAME}
 systemctl enable ${PROJECT_NAME}
 
-# 6. Configure Nginx
+# 7. Configure Nginx
 echo "--> Creating Nginx site configuration..."
 cat <<EOF > /etc/nginx/sites-available/${PROJECT_NAME}
 server {
@@ -107,7 +141,7 @@ echo "--> Restarting Nginx..."
 nginx -t
 systemctl restart nginx
 
-# 7. Configure Firewall (UFW)
+# 8. Configure Firewall (UFW)
 echo "--> Configuring firewall (UFW)..."
 ufw allow OpenSSH
 ufw allow 'Nginx Full'
