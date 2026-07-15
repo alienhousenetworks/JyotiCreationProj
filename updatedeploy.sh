@@ -7,10 +7,7 @@ set -e
 PROJECT_NAME="jyoti_saree_proj"
 REPO_DIR="/opt/JyotiCreationProj/JyotiCreationProj"
 
-# Database Configuration (Make sure they match setup_server.sh)
-DB_NAME="jyoti_saree_db"
-DB_USER="jyoti_saree_user"
-DB_PASSWORD="jyoti_saree_password"
+
 
 echo "================================================================="
 echo " Fetching latest updates from GitHub & Deploying...               "
@@ -31,22 +28,15 @@ echo "--> Installing / updating pip requirements..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# 4. Export database environment variables for migrations
-export DB_NAME="${DB_NAME}"
-export DB_USER="${DB_USER}"
-export DB_PASSWORD="${DB_PASSWORD}"
-export DB_HOST="localhost"
-export DB_PORT="5432"
-
-# 5. Run migrations (Updates database schema incrementally without data loss)
+# 4. Run migrations (Updates database schema incrementally without data loss)
 echo "--> Running database migrations..."
 python manage.py migrate --noinput
 
-# 6. Collect static files
+# 5. Collect static files
 echo "--> Collecting static files..."
 python manage.py collectstatic --noinput
 
-# 7. Restart Gunicorn and Nginx to apply updates
+# 6. Restart Gunicorn and Nginx to apply updates
 echo "--> Restarting services..."
 systemctl restart ${PROJECT_NAME}
 systemctl restart nginx

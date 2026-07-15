@@ -40,7 +40,20 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${DB_US
 # Grant permissions to schema public (required for PostgreSQL 15+)
 sudo -u postgres psql -d ${DB_NAME} -c "GRANT ALL ON SCHEMA public TO ${DB_USER};"
 
-# 3. Set up virtual environment and install requirements
+# 3. Create .env file
+echo "--> Creating .env file..."
+cat <<EOF > "${REPO_DIR}/.env"
+DEBUG=True
+SECRET_KEY=django-insecure-@j1-%i5=\$a+x@-t^4o!16phwyg)*sua_)aru3v7t#rqq%+in@)
+ALLOWED_HOSTS=${SERVER_IP},localhost,127.0.0.1,jyoticreations.com,www.jyoticreations.com
+DB_NAME=${DB_NAME}
+DB_USER=${DB_USER}
+DB_PASSWORD=${DB_PASSWORD}
+DB_HOST=localhost
+DB_PORT=5432
+EOF
+
+# 4. Set up virtual environment and install requirements
 echo "--> Setting up virtual environment..."
 cd "${REPO_DIR}"
 python3 -m venv venv
@@ -51,21 +64,14 @@ pip install --upgrade pip
 pip install -r requirements.txt
 pip install gunicorn
 
-# Export environment variables for the current session to run migrations
-export DB_NAME="${DB_NAME}"
-export DB_USER="${DB_USER}"
-export DB_PASSWORD="${DB_PASSWORD}"
-export DB_HOST="localhost"
-export DB_PORT="5432"
-
-# 4. Django Setup (Migrations, Staticfiles)
+# 5. Django Setup (Migrations, Staticfiles)
 echo "--> Running Django migrations..."
 python manage.py migrate --noinput
 
 echo "--> Collecting static files..."
 python manage.py collectstatic --noinput
 
-# 5. Create Systemd Service for Gunicorn
+# 6. Create Systemd Service for Gunicorn
 echo "--> Creating Gunicorn systemd service..."
 cat <<EOF > /etc/systemd/system/${PROJECT_NAME}.service
 [Unit]
@@ -76,11 +82,7 @@ After=network.target
 User=root
 Group=www-data
 WorkingDirectory=${REPO_DIR}
-Environment=DB_NAME=${DB_NAME}
-Environment=DB_USER=${DB_USER}
-Environment=DB_PASSWORD=${DB_PASSWORD}
-Environment=DB_HOST=localhost
-Environment=DB_PORT=5432
+EnvironmentFile=${REPO_DIR}/.env
 ExecStart=${REPO_DIR}/venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
@@ -91,18 +93,18 @@ ExecStart=${REPO_DIR}/venv/bin/gunicorn \
 WantedBy=multi-user.target
 EOF
 
-# 6. Start and Enable Gunicorn Service
+# 7. Start and Enable Gunicorn Service
 echo "--> Starting and enabling Gunicorn service..."
 systemctl daemon-reload
 systemctl restart ${PROJECT_NAME}
 systemctl enable ${PROJECT_NAME}
 
-# 7. Configure Nginx
+# 8. Configure Nginx
 echo "--> Creating Nginx site configuration..."
 cat <<EOF > /etc/nginx/sites-available/${PROJECT_NAME}
 server {
     listen 80;
-    server_name ${SERVER_IP};
+    server_name ${SERVER_IP} jyoticreations.com www.jyoticreations.com;
 
     client_max_body_size 50M;
 
@@ -140,7 +142,7 @@ echo "--> Restarting Nginx..."
 nginx -t
 systemctl restart nginx
 
-# 8. Configure Firewall (UFW)
+# 9. Configure Firewall (UFW)
 echo "--> Configuring firewall (UFW)..."
 ufw allow OpenSSH
 ufw allow 'Nginx Full'
