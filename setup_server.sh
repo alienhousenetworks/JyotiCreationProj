@@ -5,10 +5,9 @@ set -e
 
 # Configuration variables (Adjust these if needed)
 PROJECT_NAME="jyoti_saree_proj"
-REPO_DIR="/opt/JyotiCreationProj"
+REPO_DIR="/opt/JyotiCreationProj/JyotiCreationProj" # Added the nested folder
 SERVER_IP="187.127.160.134"
 SOCKET_FILE="/run/${PROJECT_NAME}.sock"
-
 # Database Configuration
 DB_NAME="jyoti_saree_db"
 DB_USER="jyoti_saree_user"

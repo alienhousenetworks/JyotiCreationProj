@@ -5,7 +5,7 @@ set -e
 
 # Configuration variables (Make sure they match setup_server.sh)
 PROJECT_NAME="jyoti_saree_proj"
-REPO_DIR="/opt/JyotiCreationProj"
+REPO_DIR="/opt/JyotiCreationProj/JyotiCreationProj"
 
 # Database Configuration (Make sure they match setup_server.sh)
 DB_NAME="jyoti_saree_db"
