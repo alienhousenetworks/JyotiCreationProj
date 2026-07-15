@@ -5,7 +5,7 @@ set -e
 
 # Configuration variables (Adjust these if needed)
 PROJECT_NAME="jyoti_saree_proj"
-REPO_DIR="/root/JyotiCreationProj" # Assuming cloned into /root/
+REPO_DIR="/opt/JyotiCreationProj"
 SERVER_IP="187.127.160.134"
 SOCKET_FILE="/run/${PROJECT_NAME}.sock"
 
