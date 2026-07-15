@@ -71,6 +71,12 @@ python manage.py migrate --noinput
 echo "--> Collecting static files..."
 python manage.py collectstatic --noinput
 
+echo "--> Setting permissions for Nginx..."
+chmod -R 755 "${REPO_DIR}"
+chown -R root:www-data "${REPO_DIR}"
+chmod o+x /opt
+chmod o+x /opt/JyotiCreationProj
+
 # 6. Create Systemd Service for Gunicorn
 echo "--> Creating Gunicorn systemd service..."
 cat <<EOF > /etc/systemd/system/${PROJECT_NAME}.service
