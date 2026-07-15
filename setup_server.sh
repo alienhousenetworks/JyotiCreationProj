@@ -111,11 +111,11 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
 
     location /static/ {
-        root ${REPO_DIR};
+        alias ${REPO_DIR}/staticfiles/;
     }
 
     location /media/ {
-        root ${REPO_DIR};
+        alias ${REPO_DIR}/media/;
     }
 
     location / {
