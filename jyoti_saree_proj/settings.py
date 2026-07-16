@@ -87,16 +87,26 @@ WSGI_APPLICATION = "jyoti_saree_proj.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "jyoti_saree_db"),
-        "USER": os.environ.get("DB_USER", "jyoti_saree_user"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "jyoti_saree_password"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
+USE_SQLITE = os.environ.get("USE_SQLITE", "False").lower() in ("true", "1", "yes")
+
+if USE_SQLITE:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("DB_NAME", "jyoti_saree_db"),
+            "USER": os.environ.get("DB_USER", "jyoti_saree_user"),
+            "PASSWORD": os.environ.get("DB_PASSWORD", "jyoti_saree_password"),
+            "HOST": os.environ.get("DB_HOST", "localhost"),
+            "PORT": os.environ.get("DB_PORT", "5432"),
+        }
+    }
 
 
 # Password validation
