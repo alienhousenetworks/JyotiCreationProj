@@ -308,6 +308,43 @@ footer{
   display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;
   padding:80px 8%;gap:48px;
 }
+@media (max-width: 900px) {
+  .ft-top {
+    grid-template-columns: 1fr 1fr;
+    padding: 60px 6%;
+    gap: 36px;
+  }
+  .ft-bot {
+    padding: 24px 6%;
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  .ft-legal {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+@media (max-width: 768px) {
+  .ft-top {
+    grid-template-columns: 1fr;
+    padding: 48px 24px;
+    gap: 28px;
+    text-align: center;
+  }
+  .ft-brand-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .ft-badge {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .ft-col h5 {
+    margin-bottom: 16px;
+  }
+}
 .ft-brand-desc{
   font-size:12px;line-height:1.8;color:var(--text-muted);
   margin-top:20px;margin-bottom:24px;max-width:320px;
@@ -350,6 +387,24 @@ footer{
   transition:right 0.8s var(--ease-lux);
 }
 .drawer.open{right:0}
+@media (max-width: 768px) {
+  .drawer {
+    width: 100% !important;
+    right: -100% !important;
+  }
+  .drawer.open {
+    right: 0 !important;
+  }
+  .dr-body {
+    padding: 24px !important;
+  }
+  .dr-top {
+    padding: 20px 24px !important;
+  }
+  .dr-actions {
+    padding: 20px 24px !important;
+  }
+}
 .dr-top{
   padding:32px 40px;border-bottom:1px solid var(--border-s);
   display:flex;justify-content:space-between;align-items:center;
@@ -567,61 +622,5 @@ footer{
 @keyframes slideUpModal {
   from { transform: translateY(30px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
-}
-
-/* Footer Responsiveness */
-@media (max-width: 900px) {
-  .ft-top {
-    grid-template-columns: 1fr 1fr;
-    padding: 60px 6%;
-    gap: 36px;
-  }
-  .ft-bot {
-    padding: 24px 6%;
-    flex-direction: column;
-    text-align: center;
-    gap: 16px;
-  }
-  .ft-legal {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-}
-
-@media (max-width: 600px) {
-  .ft-top {
-    grid-template-columns: 1fr;
-    padding: 48px 24px;
-    gap: 28px;
-    text-align: center;
-  }
-  .ft-brand-desc {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .ft-badge {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .ft-col h5 {
-    margin-bottom: 16px;
-  }
-  .drawer {
-    width: 100% !important;
-    right: -100% !important;
-  }
-  .drawer.open {
-    right: 0 !important;
-  }
-  .dr-body {
-    padding: 24px !important;
-  }
-  .dr-top {
-    padding: 20px 24px !important;
-  }
-  .dr-actions {
-    padding: 20px 24px !important;
-  }
 }
 

@@ -746,6 +746,11 @@ document.addEventListener('DOMContentLoaded', triggerRevealObserver);
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DEBUG: ft-top template columns =', window.getComputedStyle(document.querySelector('.ft-top')).gridTemplateColumns);
+    console.log('DEBUG: window width =', window.innerWidth);
+  });
+
 })();
 </script>
 {% include 'contactform.html' %}
