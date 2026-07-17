@@ -7,14 +7,19 @@
   .hero {
     padding: 0 6%;
   }
+
   .sec {
     padding: 80px 6%;
   }
+
   .editorial-sec {
     padding: 80px 6%;
     gap: 40px;
   }
-  .heritage-grid, .why-layout, .export-grid {
+
+  .heritage-grid,
+  .why-layout,
+  .export-grid {
     gap: 40px;
   }
 }
@@ -22,7 +27,8 @@
 /* ─── MEDIUM TABLETS (max-width: 900px) ─── */
 @media (max-width: 900px) {
   #hp {
-    min-height: auto; /* Avoid forced huge scroll heights on mobile */
+    min-height: auto;
+    /* Avoid forced huge scroll heights on mobile */
   }
 
   /* Hero Section */
@@ -33,19 +39,23 @@
     display: flex;
     align-items: center;
   }
+
   .hero-content {
     max-width: 100%;
     width: 100%;
   }
+
   .hero-h1 {
     font-size: clamp(34px, 7vw, 56px);
     line-height: 1.1;
   }
+
   .hero-sub {
     font-size: 15px;
     margin-bottom: 36px;
     max-width: 100%;
   }
+
   .hero-stats {
     margin-top: 48px;
     display: grid;
@@ -54,24 +64,29 @@
   }
 
   /* Editorial Sections */
-  .editorial-sec, .editorial-sec.rev {
+  .editorial-sec,
+  .editorial-sec.rev {
     grid-template-columns: 1fr;
     padding: 60px 6%;
     gap: 48px;
   }
+
   .ed-panel {
     order: 1 !important;
     padding: 40px 32px;
     max-width: 100%;
   }
+
   .ed-image-wrap {
     order: 2 !important;
     height: 400px;
     max-width: 100%;
   }
+
   .ed-image-frame {
     transform: none !important;
   }
+
   .ed-image-frame:hover {
     transform: scale(1.01) !important;
   }
@@ -81,6 +96,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
   }
+
   .prod-img-box {
     height: 320px;
   }
@@ -90,33 +106,42 @@
     grid-template-columns: 1fr;
     gap: 48px;
   }
+
   .why-header {
     max-width: 100%;
     text-align: center;
   }
+
   .why-header .sec-label {
     justify-content: center;
   }
+
   .why-header .sec-h {
     text-align: center;
   }
+
   .why-header-guarantee {
     justify-content: center;
     gap: 36px;
   }
+
   .why-header .btn-gold {
     margin: 0 auto;
   }
+
   .why-grid-asym {
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     padding-bottom: 0;
   }
+
   .why-card-luxe {
     padding: 32px;
   }
+
   .why-card-luxe:nth-child(even) {
-    transform: translateY(24px); /* Tamed offset for tablets */
+    transform: translateY(24px);
+    /* Tamed offset for tablets */
   }
 
   /* Heritage Section */
@@ -124,43 +149,53 @@
     grid-template-columns: 1fr;
     gap: 48px;
   }
+
   .h-visual {
     height: 420px;
     order: 2;
   }
+
   .h-content {
     max-width: 100%;
     order: 1;
     text-align: center;
   }
+
   .h-content .sec-label {
     justify-content: center;
   }
+
   .h-title {
     text-align: center;
   }
+
   .h-specs-grid {
     text-align: left;
   }
+
   .h-content .btn-gold {
     margin: 0 auto;
     display: inline-flex;
   }
+
   .hsw-main {
     width: 220px;
     height: 340px;
     transform: rotate(3deg) translate(10px, 10px);
   }
+
   .hsw-sec {
     width: 160px;
     height: 260px;
     left: calc(50% - 180px);
     top: calc(50% - 140px);
   }
+
   .h-tag {
     bottom: 40px;
     left: calc(50% - 160px);
   }
+
   .h-year-badge {
     top: 40px;
     right: calc(50% - 150px);
@@ -172,9 +207,12 @@
     justify-content: center;
     gap: 28px;
   }
+
   .process-steps::before {
-    display: none; /* Hide desktop timeline line */
+    display: none;
+    /* Hide desktop timeline line */
   }
+
   .ps {
     width: calc(33.33% - 20px);
     min-width: 130px;
@@ -185,6 +223,7 @@
     grid-template-columns: 1fr;
     gap: 40px;
   }
+
   .export-map-placeholder {
     height: 340px;
   }
@@ -195,8 +234,45 @@
     gap: 24px;
     margin-bottom: 48px;
   }
+
   .t-card {
     padding: 36px 32px;
+  }
+
+  /* B2B Enquiry Section for Tablets */
+  .enquiry-sec {
+    min-height: auto;
+    padding: 80px 0;
+  }
+
+  .eq-inner {
+    padding: 0 24px;
+  }
+
+  .eq-h {
+    font-size: clamp(32px, 4.5vw, 48px);
+    margin-bottom: 20px;
+  }
+
+  .eq-p {
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 36px;
+  }
+
+  .eq-btns {
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .btn-wa,
+  .btn-em {
+    padding: 14px 28px;
+    font-size: 9.5px;
+  }
+
+  .eq-guarantees {
+    gap: 20px 28px;
   }
 }
 
@@ -205,6 +281,7 @@
   .sec {
     padding: 60px 16px;
   }
+
   .sh {
     margin-bottom: 40px;
   }
@@ -213,11 +290,13 @@
   .hero {
     padding: 120px 16px 60px 16px;
   }
+
   .hero-cta-grid {
     flex-direction: column;
     width: 100%;
     gap: 12px;
   }
+
   .hero-cta-grid .btn-gold,
   .hero-cta-grid .btn-ghost,
   .hero-cta-grid .btn-crimson {
@@ -225,6 +304,7 @@
     padding: 16px;
     letter-spacing: 2px;
   }
+
   .hero-stats {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -232,13 +312,16 @@
   }
 
   /* Editorial Sections */
-  .editorial-sec, .editorial-sec.rev {
+  .editorial-sec,
+  .editorial-sec.rev {
     padding: 40px 16px;
     gap: 32px;
   }
+
   .ed-panel {
     padding: 32px 20px;
   }
+
   .ed-image-wrap {
     height: 300px;
   }
@@ -248,9 +331,11 @@
     grid-template-columns: 1fr;
     gap: 20px;
   }
+
   .prod-img-box {
     height: 280px;
   }
+
   .prod-details {
     padding: 24px;
   }
@@ -260,10 +345,13 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
+
   .why-card-luxe {
-    transform: none !important; /* Fully flat on mobile */
+    transform: none !important;
+    /* Fully flat on mobile */
     padding: 24px;
   }
+
   .why-card-icon {
     top: 24px;
     right: 24px;
@@ -274,34 +362,41 @@
   .heritage-grid {
     padding: 40px 16px;
   }
+
   .h-visual {
     height: 320px;
   }
+
   .hsw-main {
     width: 160px;
     height: 240px;
     transform: rotate(2deg) translate(5px, 5px);
   }
+
   .hsw-sec {
     width: 120px;
     height: 180px;
     left: calc(50% - 130px);
     top: calc(50% - 100px);
   }
+
   .h-tag {
     bottom: 30px;
     left: calc(50% - 120px);
     font-size: 7px;
   }
+
   .h-year-badge {
     top: 30px;
     right: calc(50% - 110px);
     width: 54px;
     height: 54px;
   }
+
   .h-year-badge span:first-child {
     font-size: 13px;
   }
+
   .h-specs-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -316,19 +411,23 @@
   .spec-rows {
     padding: 16px;
   }
+
   .spec-row {
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 20px 12px;
     text-align: center;
   }
+
   .spec-lbl {
     justify-content: center;
     font-size: 11px;
   }
+
   .spec-val {
     font-size: 12px;
   }
+
   .spec-chip {
     margin: 0 auto;
     width: 100%;
@@ -339,10 +438,12 @@
   .export-map-placeholder {
     height: 260px;
   }
+
   .map-label {
     bottom: 20px;
     left: 20px;
   }
+
   .map-label h3 {
     font-size: 24px;
   }
@@ -351,37 +452,37 @@
   .enquiry-sec {
     padding: 60px 16px;
   }
+
   .eq-inner {
     padding: 0;
   }
+
   .eq-badge {
     margin-bottom: 24px;
   }
+
   .eq-h {
     font-size: clamp(28px, 6.5vw, 44px);
     line-height: 1.1;
   }
+
   .eq-p {
     font-size: 13.5px;
     margin-bottom: 32px;
   }
+
   .eq-btns {
     flex-direction: column;
     gap: 12px;
   }
-  .btn-wa, .btn-em {
+
+  .btn-wa,
+  .btn-em {
     width: 100%;
     padding: 16px;
   }
+
   .eq-guarantees {
     gap: 16px 24px;
-  }
-  
-  /* Modal Overlay adjust */
-  .modal-content {
-    padding: 32px 20px;
-  }
-  .modal-brand {
-    font-size: 22px;
   }
 }
