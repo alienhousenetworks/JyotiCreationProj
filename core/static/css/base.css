@@ -211,7 +211,7 @@ h1,h2,.hero-h1,.eq-h,.h-title,.sec-h,.ed-h,.hdr-title {
   display:flex;justify-content:space-between;align-items:center;
   padding:32px 6%;z-index:1000;
   /* Always frosted so logo/links are readable against pastel silk */
-  background:rgba(14,10,20,0.85);
+  background:rgba(14,10,20,0.52);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   transition:all 0.8s var(--ease-lux);
   opacity:0;transform:translateY(-10px);
