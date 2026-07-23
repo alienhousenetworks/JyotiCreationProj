@@ -314,11 +314,11 @@ footer{
   display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;
   padding:80px 8%;gap:48px;
 }
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .ft-top {
     grid-template-columns: 1fr 1fr;
     padding: 60px 6%;
-    gap: 36px;
+    gap: 40px;
   }
   .ft-bot {
     padding: 24px 6%;
@@ -329,28 +329,24 @@ footer{
   .ft-legal {
     justify-content: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px 18px;
   }
 }
 @media (max-width: 768px) {
   .ft-top {
     grid-template-columns: 1fr;
     padding: 48px 24px;
-    gap: 28px;
+    gap: 32px;
     text-align: center;
   }
   .ft-brand-desc {
     margin-left: auto;
     margin-right: auto;
+    max-width: 100%;
   }
   .ft-badge {
     margin-left: auto;
     margin-right: auto;
-    width: auto;
-    max-width: 100%;
-    box-sizing: border-box;
-    white-space: normal;
-    display: inline-block;
   }
   .ft-col h5 {
     margin-bottom: 16px;
@@ -390,8 +386,13 @@ footer{
 }
 .ft-badge{
   font-size:10.5px;text-transform:uppercase;letter-spacing:2px;
-  color:var(--gold);border:1px solid var(--border-s);
-  padding:6px 14px;width:max-content;
+  color:var(--gold);border:1px solid rgba(223, 186, 95, 0.35);
+  padding:6px 14px;
+  display:inline-block;
+  max-width:100%;
+  box-sizing:border-box;
+  white-space:normal;
+  text-align:center;
 }
 .ft-col h5{
   font-size:13px;text-transform:uppercase;letter-spacing:2.5px;
@@ -407,10 +408,13 @@ footer{
 .ft-bot{
   border-top:1px solid var(--border-s);
   padding:32px 8%;display:flex;justify-content:space-between;
-  align-items:center;flex-wrap:wrap;gap:20px;
+  align-items:center;flex-wrap:wrap;gap:20px 32px;
 }
-.ft-copy{font-size:12px;color:var(--text-faint);letter-spacing:0.5px}
-.ft-legal{display:flex;gap:24px}
+.ft-copy{
+  font-size:12px;color:var(--text-faint);letter-spacing:0.5px;
+  line-height:1.5;
+}
+.ft-legal{display:flex;gap:12px 24px;flex-wrap:wrap}
 .ft-legal span{font-size:12px;color:var(--text-faint);cursor:pointer;transition:color 0.4s ease}
 .ft-legal span:hover{color:var(--gold)}
 
