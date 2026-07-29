@@ -216,6 +216,22 @@
   .ps {
     width: calc(33.33% - 20px);
     min-width: 130px;
+    gap: 14px;
+  }
+
+  .ps-num {
+    font-size: 22px;
+  }
+
+  .ps-circle {
+    width: 72px;
+    height: 72px;
+    font-size: 30px;
+  }
+
+  .ps-lbl {
+    font-size: 13px;
+    letter-spacing: 0.8px;
   }
 
   /* Export Map */
@@ -405,6 +421,22 @@
   /* Process Steps */
   .ps {
     width: calc(50% - 16px);
+    gap: 12px;
+  }
+
+  .ps-num {
+    font-size: 20px;
+  }
+
+  .ps-circle {
+    width: 64px;
+    height: 64px;
+    font-size: 26px;
+  }
+
+  .ps-lbl {
+    font-size: 12px;
+    letter-spacing: 0.5px;
   }
 
   /* Tech Metrics Section */
