@@ -51,14 +51,14 @@
 }
 
 .hdr-desc {
-  font-size: 18px !important;
+  font-size: 18x !important;
   line-height: 1.75;
   color: var(--champagne);
   font-weight: 800 !important;
-  text-shadow:
+  /* text-shadow:
     0 2px 4px rgba(0, 0, 0, 0.95),
     0 4px 12px rgba(0, 0, 0, 0.8),
-    0 0 20px rgba(0, 0, 0, 0.3);
+    0 0 20px rgba(0, 0, 0, 0.3); */
 }
 
 /* ════════════════ CATEGORY FILTERS ════════════════ */
