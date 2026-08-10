@@ -67,8 +67,10 @@ class HeroSection(models.Model):
     primary_cta_text = models.CharField(max_length=100, default="Explore Collection")
     secondary_cta_text = models.CharField(max_length=100, default="Become Wholesale Partner")
     
-    # Hero stat (Countries only)
-    stats_countries = models.CharField(max_length=50, default="42", help_text="Number of countries shown in the hero stats")
+    # Hero stats (Countries removed — show years, retailers, variants only)
+    stats_years = models.CharField(max_length=50, default="52+", help_text="Years heritage value shown in hero")
+    stats_retailers = models.CharField(max_length=50, default="500+", help_text="Retail partners value shown in hero")
+    stats_variants = models.CharField(max_length=50, default="12K+", help_text="Design variants value shown in hero")
 
     class Meta:
         verbose_name = "01. Hero Banner Section"

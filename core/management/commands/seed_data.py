@@ -232,7 +232,9 @@ class Command(BaseCommand):
             description="Premium B2B Manufacturer & Global Export Partner for Luxury Boutiques, Fashion Houses & International Retail Chains. Garad · Korial · Baluchari · Jamdani.",
             primary_cta_text="Explore Collection",
             secondary_cta_text="Become Wholesale Partner",
-            stats_countries="42",
+            stats_years="52+",
+            stats_retailers="500+",
+            stats_variants="12K+",
         )
 
         # Editorials

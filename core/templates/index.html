@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=15">
-<link rel="stylesheet" href="{% static 'css/index.css' %}?v=15">
-<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=15">
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=16">
+<link rel="stylesheet" href="{% static 'css/index.css' %}?v=16">
+<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=16">
 {% endblock %}
 
 {% block content %}
@@ -29,10 +29,11 @@
         <a class="btn-gold" href="{% url 'showroom' %}">{{ hero.primary_cta_text|default:"Explore Collection" }}</a>
         {% endif %}
         <button class="btn-ghost" onclick="document.getElementById('eq') && document.getElementById('eq').scrollIntoView({behavior:'smooth'})">{{ hero.secondary_cta_text|default:"Become Wholesale Partner" }}</button>
-        <button class="btn-crimson" onclick="od('Sample Pack','Mixed Collection — Garad, Korial, Baluchari','Assorted Borders','Approx. 500g assorted')">Request Sample</button>
-      </div>
+    </div>
       <div class="hero-stats">
-        <div class="hs-item"><div class="hs-num">{{ hero.stats_countries|default:"42" }}</div><div class="hs-lbl">Countries</div></div>
+        <div class="hs-item"><div class="hs-num">{{ hero.stats_years|default:"52+" }}</div><div class="hs-lbl">Years Heritage</div></div>
+        <div class="hs-item"><div class="hs-num">{{ hero.stats_retailers|default:"500+" }}</div><div class="hs-lbl">Retail Partners</div></div>
+        <div class="hs-item"><div class="hs-num">{{ hero.stats_variants|default:"12K+" }}</div><div class="hs-lbl">Design Variants</div></div>
       </div>
     </div>
 
@@ -683,10 +684,11 @@
   }, { threshold: 0.5 });
   document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el));
 
-  /* ── Hero product card carousel (catalog images, Lottie-style fan) ── */
+  /* ── Hero product card carousel (centered coverflow) ── */
   (function initHeroShowcase() {
     const stage = document.getElementById('hero-showcase-stage');
     const dotsWrap = document.getElementById('hero-showcase-dots');
+    const wrap = document.getElementById('hero-showcase');
     if (!stage) return;
 
     const cards = Array.from(stage.querySelectorAll('.hero-card'));
@@ -695,10 +697,10 @@
     const n = cards.length;
     let active = 0;
     let timer = null;
-    const INTERVAL = 3200;
+    const INTERVAL = 3400;
 
-    // Build dots
     if (dotsWrap) {
+      dotsWrap.innerHTML = '';
       cards.forEach((_, i) => {
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -714,33 +716,36 @@
     }
 
     function layout() {
+      const stageW = stage.clientWidth || 320;
+      // Side step scales with stage so cards stay inside the column
+      const stepX = Math.min(58, stageW * 0.16);
+
       cards.forEach((card, i) => {
-        // Relative offset in circular deck: -floor((n-1)/2) … +ceil
         let offset = (i - active + n) % n;
         if (offset > Math.floor(n / 2)) offset -= n;
 
         const abs = Math.abs(offset);
         const isFront = offset === 0;
 
-        // Fan positions similar to the old Lottie card stack
-        const spread = offset * 72;
-        const depth = isFront ? 80 : 40 - abs * 55;
-        const scale = isFront ? 1 : Math.max(0.72, 0.92 - abs * 0.1);
-        const tilt = offset * -14;
-        const y = isFront ? 0 : 10 + abs * 6;
-        const opacity = abs > 2 ? 0 : (isFront ? 1 : Math.max(0.35, 0.85 - abs * 0.25));
-        const blur = abs >= 2 ? 1.2 : 0;
-        const zIndex = 20 - abs;
+        // Keep at most ±2 visible side cards for a clean stack
+        const visible = abs <= 2;
+        const tx = offset * stepX;
+        const ty = isFront ? 0 : abs * 6;
+        const tz = isFront ? 40 : -abs * 48;
+        const scale = isFront ? 1 : Math.max(0.78, 0.94 - abs * 0.08);
+        const tilt = offset * -11;
+        const opacity = !visible ? 0 : (isFront ? 1 : Math.max(0.4, 0.88 - abs * 0.22));
+        const zIndex = isFront ? 30 : 20 - abs;
 
-        card.style.setProperty('--spread', spread + 'px');
-        card.style.setProperty('--depth', depth + 'px');
+        card.style.setProperty('--tx', tx + 'px');
+        card.style.setProperty('--ty', ty + 'px');
+        card.style.setProperty('--tz', tz + 'px');
         card.style.setProperty('--scale', String(scale));
         card.style.setProperty('--tilt', tilt + 'deg');
-        card.style.setProperty('--y', y + 'px');
         card.style.setProperty('--opacity', String(opacity));
-        card.style.setProperty('--blur', blur + 'px');
         card.style.zIndex = String(zIndex);
         card.classList.toggle('is-active', isFront);
+        card.setAttribute('aria-hidden', isFront ? 'false' : 'true');
       });
 
       if (dotsWrap) {
@@ -763,7 +768,10 @@
     layout();
     restart();
 
-    // Pause when tab hidden
+    window.addEventListener('resize', () => {
+      layout();
+    }, { passive: true });
+
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         if (timer) clearInterval(timer);
@@ -772,6 +780,15 @@
         restart();
       }
     });
+
+    // Pause float while hovering the active card for cleaner interaction
+    if (wrap) {
+      wrap.addEventListener('mouseenter', () => {
+        if (timer) clearInterval(timer);
+        timer = null;
+      });
+      wrap.addEventListener('mouseleave', restart);
+    }
   })();
 </script>
 {% endblock %}

@@ -44,7 +44,7 @@ class SiteConfigurationAdmin(SingletonAdmin):
 
 @admin.register(HeroSection)
 class HeroSectionAdmin(SingletonAdmin):
-    list_display = ('title', 'highlighted_title', 'is_active', 'stats_countries')
+    list_display = ('title', 'highlighted_title', 'is_active', 'stats_years', 'stats_retailers', 'stats_variants')
     list_editable = ('is_active',)
     fieldsets = (
         ('Visibility', {'fields': ('is_active',)}),
@@ -52,7 +52,7 @@ class HeroSectionAdmin(SingletonAdmin):
             'fields': (
                 'eyebrow', 'title', 'highlighted_title', 'description',
                 'primary_cta_text', 'secondary_cta_text',
-                'stats_countries',
+                'stats_years', 'stats_retailers', 'stats_variants',
             )
         }),
     )
