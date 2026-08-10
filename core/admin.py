@@ -44,7 +44,7 @@ class SiteConfigurationAdmin(SingletonAdmin):
 
 @admin.register(HeroSection)
 class HeroSectionAdmin(SingletonAdmin):
-    list_display = ('title', 'highlighted_title', 'is_active', 'stats_years', 'stats_retailers', 'stats_countries')
+    list_display = ('title', 'highlighted_title', 'is_active', 'stats_countries')
     list_editable = ('is_active',)
     fieldsets = (
         ('Visibility', {'fields': ('is_active',)}),
@@ -52,7 +52,7 @@ class HeroSectionAdmin(SingletonAdmin):
             'fields': (
                 'eyebrow', 'title', 'highlighted_title', 'description',
                 'primary_cta_text', 'secondary_cta_text',
-                'stats_years', 'stats_retailers', 'stats_countries', 'stats_variants',
+                'stats_countries',
             )
         }),
     )
@@ -89,7 +89,7 @@ class ProductImageInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'subcategory', 'moq', 'material', 'is_active', 'is_best_seller', 'is_new_arrival')
+    list_display = ('name', 'category', 'subcategory', 'material', 'is_active', 'is_best_seller', 'is_new_arrival')
     list_filter = ('category', 'subcategory', 'is_active', 'is_best_seller', 'is_new_arrival', 'is_handcrafted', 'is_hand_painted')
     search_fields = ('name', 'description', 'purity_fabric', 'material')
     prepopulated_fields = {'slug': ('name',)}
@@ -99,7 +99,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'slug', 'category', 'subcategory', 'description')
         }),
         ('B2B Sourcing Metrics', {
-            'fields': ('purity_fabric', 'border_specs', 'structural_weight', 'moq', 'lead_time', 'material')
+            'fields': ('purity_fabric', 'border_specs', 'structural_weight', 'lead_time', 'material')
         }),
         ('Images & Media', {
             'fields': ('image_main', 'image_hover', 'video')

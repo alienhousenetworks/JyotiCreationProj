@@ -31,7 +31,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id', 'name', 'slug', 'category', 'category_name', 'subcategory', 'subcategory_name',
-            'description', 'purity_fabric', 'border_specs', 'structural_weight', 'moq',
+            'description', 'purity_fabric', 'border_specs', 'structural_weight',
             'lead_time', 'material', 'image_main', 'image_hover', 'video', 'additional_images',
             'is_best_seller', 'is_new_arrival', 'is_handcrafted', 'is_hand_painted',
             'is_silk_collection', 'is_cotton_collection', 'is_festive_collection', 'is_sale', 'is_premium',

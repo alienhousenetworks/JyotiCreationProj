@@ -67,11 +67,8 @@ class HeroSection(models.Model):
     primary_cta_text = models.CharField(max_length=100, default="Explore Collection")
     secondary_cta_text = models.CharField(max_length=100, default="Become Wholesale Partner")
     
-    # Stats
-    stats_years = models.CharField(max_length=50, default="52+")
-    stats_retailers = models.CharField(max_length=50, default="500+")
-    stats_countries = models.CharField(max_length=50, default="42")
-    stats_variants = models.CharField(max_length=50, default="12K+")
+    # Hero stat (Countries only)
+    stats_countries = models.CharField(max_length=50, default="42", help_text="Number of countries shown in the hero stats")
 
     class Meta:
         verbose_name = "01. Hero Banner Section"
@@ -169,7 +166,6 @@ class Product(models.Model):
     purity_fabric = models.CharField(max_length=200, default="Grade AAAA Raw Silk", help_text="e.g. Grade AAAA Mulberry Raw Silk — Non-Bleached")
     border_specs = models.CharField(max_length=200, default="Traditional Border", help_text="e.g. Intricate 24K Gold Thread Borders")
     structural_weight = models.CharField(max_length=100, default="400 Grams", help_text="e.g. 390 Grams Linear Weight Profile")
-    moq = models.CharField(max_length=100, default="10 Units", help_text="e.g. 25 Units Minimum")
     lead_time = models.CharField(max_length=100, default="14-21 Days")
     material = models.CharField(max_length=150, default="Pure Silk")
     
@@ -516,7 +512,7 @@ class B2BEnquiryCTA(models.Model):
     description = models.TextField(default="Join 500+ boutiques and luxury retailers sourcing directly from our Bengali silk clusters. Allocations are capacity-limited — contact our procurement team to secure priority access.")
     whatsapp_button_text = models.CharField(max_length=150, default="✆ Contact Procurement Desk")
     email_button_text = models.CharField(max_length=150, default="✉ Send Formal Enquiry")
-    guarantees = models.TextField(default="Response within 4 hours\nMOQ from 10 units\nFree sample packs\nGlobal shipping included", help_text="One guarantee per line")
+    guarantees = models.TextField(default="Response within 4 hours\nDedicated account manager\nFree sample packs\nGlobal shipping included", help_text="One guarantee per line")
 
     class Meta:
         verbose_name = "13b. Wholesale Partnership CTA Section"
@@ -557,7 +553,7 @@ class B2BEnquiry(models.Model):
 class PartnersSectionSettings(models.Model):
     is_active = models.BooleanField(
         default=True,
-        help_text="Uncheck to deactivate Partners page content (also controlled by Global Settings → partners_page_active)"
+        help_text="Uncheck to hide Partners from header, footer, and /partners/ (also gated by Global Settings → partners_page_active)"
     )
     label = models.CharField(max_length=100, default="Enterprise Network")
     title = models.CharField(max_length=200, default="Our Global")

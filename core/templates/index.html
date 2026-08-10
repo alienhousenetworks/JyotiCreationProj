@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=13">
-<link rel="stylesheet" href="{% static 'css/index.css' %}?v=13">
-<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=13">
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=15">
+<link rel="stylesheet" href="{% static 'css/index.css' %}?v=15">
+<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=15">
 {% endblock %}
 
 {% block content %}
@@ -29,30 +29,66 @@
         <a class="btn-gold" href="{% url 'showroom' %}">{{ hero.primary_cta_text|default:"Explore Collection" }}</a>
         {% endif %}
         <button class="btn-ghost" onclick="document.getElementById('eq') && document.getElementById('eq').scrollIntoView({behavior:'smooth'})">{{ hero.secondary_cta_text|default:"Become Wholesale Partner" }}</button>
-        <button class="btn-crimson" onclick="od('Sample Pack','Mixed Collection — Garad, Korial, Baluchari','Assorted Borders','Approx. 500g assorted','5 Units Minimum Sample')">Request Sample</button>
+        <button class="btn-crimson" onclick="od('Sample Pack','Mixed Collection — Garad, Korial, Baluchari','Assorted Borders','Approx. 500g assorted')">Request Sample</button>
       </div>
       <div class="hero-stats">
-        <div class="hs-item"><div class="hs-num">{{ hero.stats_years|default:"52+" }}</div><div class="hs-lbl">Years Heritage</div></div>
-        <div class="hs-item"><div class="hs-num">{{ hero.stats_retailers|default:"500+" }}</div><div class="hs-lbl">Retail Partners</div></div>
         <div class="hs-item"><div class="hs-num">{{ hero.stats_countries|default:"42" }}</div><div class="hs-lbl">Countries</div></div>
-        <div class="hs-item"><div class="hs-num">{{ hero.stats_variants|default:"12K+" }}</div><div class="hs-lbl">Design Variants</div></div>
       </div>
     </div>
 
-    <!-- Saree Lottie visual -->
-    <div class="hero-lottie-wrap" aria-hidden="true">
-      <div class="hero-lottie-glow"></div>
-      <div class="hero-lottie-frame">
-        <dotlottie-wc
-          id="saree-lottie"
-          src="{% static 'lottie/saree-animation.lottie' %}"
-          autoplay
-          loop
-          speed="1"
-          style="width:100%;height:100%;display:block;"
-        ></dotlottie-wc>
+    <!-- Custom product card carousel (same visual language as former Lottie) -->
+    <div class="hero-showcase-wrap" id="hero-showcase">
+      <div class="hero-showcase-glow"></div>
+      <div class="hero-showcase-orbit">
+        <div class="hero-showcase-stage" id="hero-showcase-stage">
+          {% for prod in hero_showcase %}
+          <article
+            class="hero-card"
+            data-index="{{ forloop.counter0 }}"
+            style="--i:{{ forloop.counter0 }};"
+            role="button"
+            tabindex="0"
+            onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}')"
+          >
+            <div class="hero-card-media">
+              {% if prod.image_main %}
+              <img src="{{ prod.image_main.url }}" alt="{{ prod.name }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+              {% else %}
+              <div class="hero-card-fallback pattern-{{ forloop.counter }}"></div>
+              {% endif %}
+              <div class="hero-card-veil"></div>
+            </div>
+            <div class="hero-card-meta">
+              <span class="hero-card-cat">{{ prod.category.name }}</span>
+              <h3 class="hero-card-name">{{ prod.name }}</h3>
+              <div class="hero-card-foot">
+                <span>Wholesale</span>
+                <span class="hero-card-cta">View</span>
+              </div>
+            </div>
+          </article>
+          {% empty %}
+          {% for i in "12345" %}
+          <article class="hero-card" data-index="{{ forloop.counter0 }}" style="--i:{{ forloop.counter0 }};">
+            <div class="hero-card-media">
+              <div class="hero-card-fallback pattern-{{ forloop.counter }}"></div>
+              <div class="hero-card-veil"></div>
+            </div>
+            <div class="hero-card-meta">
+              <span class="hero-card-cat">Bengal Handloom</span>
+              <h3 class="hero-card-name">{% if forloop.counter == 1 %}Garad Silk{% elif forloop.counter == 2 %}Korial Zari{% elif forloop.counter == 3 %}Baluchari{% elif forloop.counter == 4 %}Jamdani{% else %}Murshidabad Silk{% endif %}</h3>
+              <div class="hero-card-foot">
+                <span>Wholesale</span>
+                <span class="hero-card-cta">Explore</span>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+          {% endfor %}
+        </div>
       </div>
-      <div class="hero-lottie-caption">Handloom Saree · Live Preview</div>
+      <div class="hero-showcase-caption">Handloom Collection · Live Preview</div>
+      <div class="hero-showcase-dots" id="hero-showcase-dots" role="tablist" aria-label="Showcase slides"></div>
     </div>
 
     <div class="scroll-cue"><span class="sc-text">Scroll</span><div class="sc-line"></div></div>
@@ -72,7 +108,7 @@
       <span class="mi"><span class="mi-dot"></span>24K Gold Zari — Verified</span>
       <span class="mi"><span class="mi-dot"></span>GI-Tagged Bengali Handloom</span>
       <span class="mi"><span class="mi-dot"></span>USA · UK · UAE · France · Singapore</span>
-      <span class="mi"><span class="mi-dot"></span>MOQ from 10 Units</span>
+
       <span class="mi"><span class="mi-dot"></span>98% Repeat Client Rate</span>
       <span class="mi"><span class="mi-dot"></span>500+ Global Retail Partners</span>
       {% endfor %}
@@ -87,7 +123,6 @@
       <span class="mi"><span class="mi-dot"></span>24K Gold Zari — Verified</span>
       <span class="mi"><span class="mi-dot"></span>GI-Tagged Bengali Handloom</span>
       <span class="mi"><span class="mi-dot"></span>USA · UK · UAE · France · Singapore</span>
-      <span class="mi"><span class="mi-dot"></span>MOQ from 10 Units</span>
       <span class="mi"><span class="mi-dot"></span>98% Repeat Client Rate</span>
       <span class="mi"><span class="mi-dot"></span>500+ Global Retail Partners</span>
       {% endfor %}
@@ -145,7 +180,7 @@
       <div class="prem-cat-group {% if forloop.first %}active{% endif %}" id="prem-cat-{{ item.category.slug }}">
         <div class="catalog-grid rv-stagger" style="padding-top: 0; padding-bottom: 0;">
           {% for prod in item.products %}
-          <div class="prod-card" onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}', '{{ prod.moq|escapejs }}')">
+          <div class="prod-card" onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}')">
             <div class="prod-img-box">
               <div class="prod-overlay"></div>
               {% if prod.image_main %}
@@ -153,7 +188,6 @@
               {% else %}
               <div class="prod-img abstract-pattern pattern-{% cycle '1' '2' '3' '4' '5' '6' %}"></div>
               {% endif %}
-              <div class="prod-badge">{{ prod.moq }} MOQ</div>
               <div class="prod-status">Premium</div>
             </div>
             <div class="prod-details">
@@ -403,43 +437,7 @@
   </section>
   {% endif %}
 
-  <!-- GLOBAL EXPORT -->
-  {% if not export_sec or export_sec.is_active %}
-  <section class="export-sec sec">
-    <div class="sh rv rv-up">
-      <div class="sec-label">{{ export_sec.label|default:"Global Reach" }}</div>
-      <h2 class="sec-h">{{ export_sec.title|default:"Export to" }} <em>{{ export_sec.highlighted_title|default:"42" }}</em> {{ export_sec.suffix_title|default:"Countries" }}</h2>
-      <p class="sec-p">{{ export_sec.description|default:"Established shipping infrastructure with full customs documentation for seamless international delivery across luxury markets worldwide." }}</p>
-    </div>
-    <div class="export-grid">
-      <div class="export-map-placeholder rv rv-left">
-        <div class="map-dot" style="left:22%;top:38%"></div>
-        <div class="map-dot" style="left:35%;top:36%;animation-delay:0.5s"></div>
-        <div class="map-dot" style="left:48%;top:34%;animation-delay:1s"></div>
-        <div class="map-dot" style="left:58%;top:32%;animation-delay:0.3s"></div>
-        <div class="map-dot" style="left:68%;top:40%;animation-delay:1.2s"></div>
-        <div class="map-dot" style="left:75%;top:48%;animation-delay:0.7s"></div>
-        <div class="map-dot" style="left:82%;top:55%;animation-delay:0.2s"></div>
-        <div class="map-dot" style="left:55%;top:58%;animation-delay:0.9s"></div>
-        <div class="map-label">
-          <h3>{{ export_sec.map_label_title|default:"42 Countries" }}</h3>
-          <p>{{ export_sec.map_label_sub|default:"Active Export Destinations" }}</p>
-        </div>
-      </div>
-      <div class="export-countries rv-stagger">
-        {% for country in countries %}
-        <div class="ec-row">
-          <span class="ec-flag">{{ country.flag }}</span>
-          <span class="ec-name">{{ country.name }}</span>
-          <span class="ec-tag">{{ country.tag }}</span>
-        </div>
-        {% empty %}
-        <div class="ec-row"><span class="ec-flag">🇺🇸</span><span class="ec-name">United States</span><span class="ec-tag">Premium Market</span></div>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-  {% endif %}
+  
 
   <!-- TESTIMONIALS / CLIENT VOICES -->
   {% if not testimonial_sec or testimonial_sec.is_active %}
@@ -471,18 +469,7 @@
       {% endfor %}
     </div>
     <div class="partner-strip rv d2">
-      <div class="ps-lbl-text">{{ testimonial_sec.partner_strip_label|default:"Trusted by enterprises across" }}</div>
-      <div class="ps-pills">
-        {% for pill in testimonial_sec.get_partner_pills %}
-        <div class="ps-pill">{{ pill }}</div>
-        {% empty %}
-        <div class="ps-pill">USA · New York</div>
-        <div class="ps-pill">UK · London</div>
-        <div class="ps-pill">UAE · Dubai</div>
-        <div class="ps-pill">France · Paris</div>
-        <div class="ps-pill">Singapore</div>
-        {% endfor %}
-      </div>
+      
     </div>
   </section>
   {% endif %}
@@ -510,17 +497,6 @@
       </div>
       {% empty %}
       <!-- Fallbacks -->
-      <div class="faq-item">
-        <button class="faq-trigger">
-          <span class="faq-q">What is the Minimum Order Quantity (MOQ)?</span>
-          <span class="faq-icon"></span>
-        </button>
-        <div class="faq-panel">
-          <div class="faq-content">
-            <p>Our standard B2B MOQ starts at 10 units for active inventory collections and 25-50 units for custom OEM/private label designs.</p>
-          </div>
-        </div>
-      </div>
       <div class="faq-item">
         <button class="faq-trigger">
           <span class="faq-q">Do you provide GI origin certificates?</span>
@@ -579,24 +555,102 @@
   <!-- ENQUIRY CTA -->
   {% if not enquiry_cta or enquiry_cta.is_active %}
   <section class="enquiry-sec sec" id="eq">
-    <div class="eq-grid-bg"></div>
-    <div class="eq-inner glass-panel rv rv-scale">
-      <div class="eq-badge"><div class="eq-pulse"></div>{{ enquiry_cta.badge|default:"B2B Access Portal · Now Accepting Partners" }}</div>
-      <h2 class="eq-h">{{ enquiry_cta.title|default:"Begin Your Premium" }}<br><strong>{{ enquiry_cta.highlighted_title|default:"Wholesale Partnership" }}</strong></h2>
-      <p class="eq-p">{{ enquiry_cta.description|default:"Join 500+ boutiques and luxury retailers sourcing directly from our Bengali silk clusters. Allocations are capacity-limited — contact our procurement team to secure priority access." }}</p>
-      <div class="eq-btns">
-        <button class="btn-wa" onclick="openContactModal()" style="font-family:inherit;font-size:13px;cursor:pointer;border:none;">{{ enquiry_cta.whatsapp_button_text|default:"✆ Contact Procurement Desk" }}</button>
-        <button class="btn-em" onclick="openContactModal()" style="font-family:inherit;font-size:13px;cursor:pointer;border:1px solid var(--border);">{{ enquiry_cta.email_button_text|default:"✉ Send Formal Enquiry" }}</button>
-      </div>
-      <div class="eq-guarantees">
-        {% for guarantee in enquiry_cta.get_guarantees %}
-        <div class="eq-g"><div class="eq-chk">✓</div>{{ guarantee }}</div>
-        {% empty %}
-        <div class="eq-g"><div class="eq-chk">✓</div>Response within 4 hours</div>
-        <div class="eq-g"><div class="eq-chk">✓</div>MOQ from 10 units</div>
-        <div class="eq-g"><div class="eq-chk">✓</div>Free sample packs</div>
-        <div class="eq-g"><div class="eq-chk">✓</div>Global shipping included</div>
-        {% endfor %}
+    <div class="eq-ambient" aria-hidden="true">
+      <div class="eq-orb eq-orb-a"></div>
+      <div class="eq-orb eq-orb-b"></div>
+      <div class="eq-grid-bg"></div>
+    </div>
+
+    <div class="eq-shell rv">
+      <div class="eq-panel">
+        <!-- Left: copy + actions -->
+        <div class="eq-main">
+          <div class="eq-eyebrow">
+            <span class="eq-pulse" aria-hidden="true"></span>
+            <span>{{ enquiry_cta.badge|default:"B2B Access Portal · Now Accepting Partners" }}</span>
+          </div>
+
+          <h2 class="eq-h">
+            {{ enquiry_cta.title|default:"Begin Your Premium" }}
+            <strong>{{ enquiry_cta.highlighted_title|default:"Wholesale Partnership" }}</strong>
+          </h2>
+
+          <p class="eq-p">{{ enquiry_cta.description|default:"Join 500+ boutiques and luxury retailers sourcing directly from our Bengali silk clusters. Allocations are capacity-limited — contact our procurement team to secure priority access." }}</p>
+
+          <div class="eq-actions">
+            <button type="button" class="eq-btn eq-btn-primary" onclick="openContactModal()">
+              <span class="eq-btn-ico" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="eq-btn-txt">
+                <span class="eq-btn-label">{{ enquiry_cta.whatsapp_button_text|default:"Contact Procurement Desk" }}</span>
+                <span class="eq-btn-sub">{{ site_config.phone_number|default:"+91 99999 99999" }}</span>
+              </span>
+            </button>
+            <button type="button" class="eq-btn eq-btn-ghost" onclick="openContactModal()">
+              <span class="eq-btn-ico" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4V6zm0 0l8 7 8-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="eq-btn-txt">
+                <span class="eq-btn-label">{{ enquiry_cta.email_button_text|default:"Send Formal Enquiry" }}</span>
+                <span class="eq-btn-sub">{{ site_config.email_address|default:"b2b@jyoticreations.com" }}</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="eq-trust-row">
+            <div class="eq-trust-item"><span class="eq-trust-mark">ISO</span> 9001:2015</div>
+            <div class="eq-trust-item"><span class="eq-trust-mark">GI</span> Registered</div>
+            <div class="eq-trust-item"><span class="eq-trust-mark">✦</span> Export Licensed</div>
+          </div>
+        </div>
+
+        <!-- Right: privilege card -->
+        <aside class="eq-side">
+          <div class="eq-card">
+            <div class="eq-card-top">
+              <div class="eq-card-kicker">Priority Access</div>
+              <div class="eq-card-seal" aria-hidden="true">JC</div>
+            </div>
+            <h3 class="eq-card-title">What you receive</h3>
+            <p class="eq-card-lead">Enterprise onboarding with dedicated loom allocation support.</p>
+
+            <ul class="eq-perk-list">
+              {% for guarantee in enquiry_cta.get_guarantees %}
+              {% if "moq" not in guarantee|lower %}
+              <li class="eq-perk">
+                <span class="eq-perk-icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span>{{ guarantee }}</span>
+              </li>
+              {% endif %}
+              {% empty %}
+              <li class="eq-perk">
+                <span class="eq-perk-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>Response within 4 hours</span>
+              </li>
+              <li class="eq-perk">
+                <span class="eq-perk-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>Dedicated account manager</span>
+              </li>
+              <li class="eq-perk">
+                <span class="eq-perk-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>Free sample packs</span>
+              </li>
+              <li class="eq-perk">
+                <span class="eq-perk-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>Global shipping included</span>
+              </li>
+              {% endfor %}
+            </ul>
+
+            <div class="eq-card-foot">
+              <div class="eq-foot-line"></div>
+              <p>Capacity-limited allocations · Reply within business hours</p>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   </section>
@@ -607,7 +661,7 @@
 <script>
   // Highlight active link
   document.getElementById('nav-hp')?.classList.add('active-link');
-  
+
   // Animated counters
   const counterObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -628,5 +682,96 @@
     });
   }, { threshold: 0.5 });
   document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el));
+
+  /* ── Hero product card carousel (catalog images, Lottie-style fan) ── */
+  (function initHeroShowcase() {
+    const stage = document.getElementById('hero-showcase-stage');
+    const dotsWrap = document.getElementById('hero-showcase-dots');
+    if (!stage) return;
+
+    const cards = Array.from(stage.querySelectorAll('.hero-card'));
+    if (!cards.length) return;
+
+    const n = cards.length;
+    let active = 0;
+    let timer = null;
+    const INTERVAL = 3200;
+
+    // Build dots
+    if (dotsWrap) {
+      cards.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'hero-showcase-dot' + (i === 0 ? ' is-active' : '');
+        btn.setAttribute('aria-label', 'Show card ' + (i + 1));
+        btn.addEventListener('click', () => {
+          active = i;
+          layout();
+          restart();
+        });
+        dotsWrap.appendChild(btn);
+      });
+    }
+
+    function layout() {
+      cards.forEach((card, i) => {
+        // Relative offset in circular deck: -floor((n-1)/2) … +ceil
+        let offset = (i - active + n) % n;
+        if (offset > Math.floor(n / 2)) offset -= n;
+
+        const abs = Math.abs(offset);
+        const isFront = offset === 0;
+
+        // Fan positions similar to the old Lottie card stack
+        const spread = offset * 72;
+        const depth = isFront ? 80 : 40 - abs * 55;
+        const scale = isFront ? 1 : Math.max(0.72, 0.92 - abs * 0.1);
+        const tilt = offset * -14;
+        const y = isFront ? 0 : 10 + abs * 6;
+        const opacity = abs > 2 ? 0 : (isFront ? 1 : Math.max(0.35, 0.85 - abs * 0.25));
+        const blur = abs >= 2 ? 1.2 : 0;
+        const zIndex = 20 - abs;
+
+        card.style.setProperty('--spread', spread + 'px');
+        card.style.setProperty('--depth', depth + 'px');
+        card.style.setProperty('--scale', String(scale));
+        card.style.setProperty('--tilt', tilt + 'deg');
+        card.style.setProperty('--y', y + 'px');
+        card.style.setProperty('--opacity', String(opacity));
+        card.style.setProperty('--blur', blur + 'px');
+        card.style.zIndex = String(zIndex);
+        card.classList.toggle('is-active', isFront);
+      });
+
+      if (dotsWrap) {
+        dotsWrap.querySelectorAll('.hero-showcase-dot').forEach((d, i) => {
+          d.classList.toggle('is-active', i === active);
+        });
+      }
+    }
+
+    function next() {
+      active = (active + 1) % n;
+      layout();
+    }
+
+    function restart() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(next, INTERVAL);
+    }
+
+    layout();
+    restart();
+
+    // Pause when tab hidden
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (timer) clearInterval(timer);
+        timer = null;
+      } else {
+        restart();
+      }
+    });
+  })();
 </script>
 {% endblock %}

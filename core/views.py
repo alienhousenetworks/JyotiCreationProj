@@ -16,6 +16,13 @@ from .models import (
     PartnersSectionSettings, Partner, CRMVendor, CRMClient, CRMOrder, CRMOrderItem,
     SiteConfiguration,
 )
+from .context_processors import partners_page_is_visible
+from .serializers import (
+    CategorySerializer, SubCategorySerializer, ProductSerializer, B2BEnquirySerializer,
+    HeroSectionSerializer, EditorialSectionSerializer, WhyChooseUsCardSerializer,
+    HeritageSectionSerializer, ProcessStepSerializer, TechnicalMetricSerializer,
+    ExportCountrySerializer, TestimonialSerializer, FaqItemSerializer
+)
 
 
 def _page_is_active(flag_name, default=True):
@@ -24,12 +31,7 @@ def _page_is_active(flag_name, default=True):
     if not config:
         return default
     return bool(getattr(config, flag_name, default))
-from .serializers import (
-    CategorySerializer, SubCategorySerializer, ProductSerializer, B2BEnquirySerializer,
-    HeroSectionSerializer, EditorialSectionSerializer, WhyChooseUsCardSerializer,
-    HeritageSectionSerializer, ProcessStepSerializer, TechnicalMetricSerializer,
-    ExportCountrySerializer, TestimonialSerializer, FaqItemSerializer
-)
+
 
 # ==========================================
 # FRONTEND TEMPLATE VIEWS
@@ -44,7 +46,7 @@ class HomeView(TemplateView):
         # Products & Catalog
         context['categories'] = Category.objects.prefetch_related('subcategories').all()
         context['products'] = Product.objects.filter(is_active=True)
-        
+
         # Premium products grouped by category
         premium_by_cat = []
         for cat in context['categories']:
@@ -55,7 +57,42 @@ class HomeView(TemplateView):
                     'products': prems
                 })
         context['premium_by_category'] = premium_by_cat
-        
+
+        # Hero visual: up to 5 products with images (premium → best sellers → newest)
+        def _with_image(qs):
+            return [p for p in qs if p.image_main]
+
+        hero_showcase = _with_image(
+            Product.objects.filter(is_active=True, is_premium=True)
+            .select_related('category')
+            .order_by('-updated_at')[:12]
+        )[:5]
+        if len(hero_showcase) < 5:
+            seen = {p.id for p in hero_showcase}
+            for p in _with_image(
+                Product.objects.filter(is_active=True, is_best_seller=True)
+                .select_related('category')
+                .order_by('-updated_at')[:12]
+            ):
+                if p.id not in seen:
+                    hero_showcase.append(p)
+                    seen.add(p.id)
+                if len(hero_showcase) >= 5:
+                    break
+        if len(hero_showcase) < 5:
+            seen = {p.id for p in hero_showcase}
+            for p in _with_image(
+                Product.objects.filter(is_active=True)
+                .select_related('category')
+                .order_by('-created_at')[:24]
+            ):
+                if p.id not in seen:
+                    hero_showcase.append(p)
+                    seen.add(p.id)
+                if len(hero_showcase) >= 5:
+                    break
+        context['hero_showcase'] = hero_showcase
+
         # Homepage Sections Config (fetch singletons or defaults)
         context['hero'] = HeroSection.objects.first()
         context['heritage'] = HeritageSection.objects.first()
@@ -132,10 +169,7 @@ class PartnersView(TemplateView):
     template_name = "partners.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if not _page_is_active('partners_page_active'):
-            raise Http404("Partners page is currently inactive.")
-        partners_sec = PartnersSectionSettings.objects.first()
-        if partners_sec is not None and not partners_sec.is_active:
+        if not partners_page_is_visible():
             raise Http404("Partners page is currently inactive.")
         return super().dispatch(request, *args, **kwargs)
 

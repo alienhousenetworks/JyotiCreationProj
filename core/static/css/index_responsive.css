@@ -48,15 +48,25 @@
     width: 100%;
   }
 
-  .hero-lottie-wrap {
+  .hero-showcase-wrap {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: min(360px, 88vw);
     max-width: 360px;
     order: -1;
     margin-top: 8px;
     animation-delay: 0.25s;
   }
 
-  .hero-lottie-frame {
-    max-height: 320px;
+  .hero-showcase-orbit {
+    aspect-ratio: 0.88;
+  }
+
+  .hero-card {
+    width: 70%;
+    max-width: 240px;
   }
 
   .hero-h1 {
@@ -254,10 +264,6 @@
     max-width: 100%;
   }
 
-  .eq-inner {
-    padding: 36px 28px !important;
-  }
-
   .why-card-luxe:nth-child(even) {
     margin-top: 20px;
   }
@@ -285,38 +291,34 @@
 
   /* B2B Enquiry Section for Tablets */
   .enquiry-sec {
-    min-height: auto;
-    padding: 80px 0;
+    padding: 80px 6%;
   }
 
-  .eq-inner {
-    padding: 0 24px;
+  .eq-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .eq-main {
+    padding: 40px 32px 32px;
+    border-right: none;
+    border-bottom: 1px solid rgba(223, 186, 95, 0.12);
+  }
+
+  .eq-side {
+    padding: 0 24px 28px;
   }
 
   .eq-h {
-    font-size: clamp(32px, 4.5vw, 48px);
-    margin-bottom: 20px;
+    font-size: clamp(32px, 5vw, 46px);
   }
 
   .eq-p {
-    font-size: 16px;
-    line-height: 1.8;
-    margin-bottom: 36px;
+    font-size: 15px;
+    max-width: 100%;
   }
 
-  .eq-btns {
-    gap: 16px;
-    margin-bottom: 36px;
-  }
-
-  .btn-wa,
-  .btn-em {
-    padding: 14px 28px;
-    font-size: 12.5px;
-  }
-
-  .eq-guarantees {
-    gap: 20px 28px;
+  .eq-actions {
+    max-width: 100%;
   }
 }
 
@@ -328,10 +330,6 @@
 
   .sh {
     margin-bottom: 36px;
-  }
-
-  .eq-inner {
-    padding: 28px 18px !important;
   }
 
   .prem-tab {
@@ -349,15 +347,26 @@
     padding: 120px 16px 60px 16px;
   }
 
-  .hero-lottie-wrap {
+  .hero-showcase-wrap {
     max-width: 280px;
+    width: min(280px, 86vw);
   }
 
-  .hero-lottie-frame {
-    max-height: 260px;
+  .hero-showcase-orbit {
+    aspect-ratio: 0.9;
   }
 
-  .hero-lottie-caption {
+  .hero-card {
+    width: 74%;
+    max-width: 200px;
+    border-radius: 16px;
+  }
+
+  .hero-card-name {
+    font-size: 15px;
+  }
+
+  .hero-showcase-caption {
     font-size: 8px;
     letter-spacing: 2px;
   }
@@ -537,39 +546,62 @@
 
   /* Enquiry Section */
   .enquiry-sec {
-    padding: 60px 16px;
+    padding: 56px 16px;
   }
 
-  .eq-inner {
-    padding: 0;
+  .eq-main {
+    padding: 28px 20px 24px;
   }
 
-  .eq-badge {
-    margin-bottom: 24px;
+  .eq-side {
+    padding: 0 16px 20px;
+  }
+
+  .eq-eyebrow {
+    font-size: 8px;
+    letter-spacing: 2px;
+    padding: 8px 12px 8px 10px;
+    max-width: 100%;
   }
 
   .eq-h {
-    font-size: clamp(28px, 6.5vw, 44px);
+    font-size: clamp(28px, 7vw, 38px);
     line-height: 1.1;
   }
 
   .eq-p {
-    font-size: 15.5px;
-    margin-bottom: 32px;
+    font-size: 14.5px;
+    margin-bottom: 28px;
   }
 
-  .eq-btns {
-    flex-direction: column;
+  .eq-btn {
+    padding: 14px 14px;
     gap: 12px;
   }
 
-  .btn-wa,
-  .btn-em {
-    width: 100%;
-    padding: 16px;
+  .eq-btn-label {
+    font-size: 11.5px;
+    letter-spacing: 1px;
   }
 
-  .eq-guarantees {
-    gap: 16px 24px;
+  .eq-btn-sub {
+    font-size: 11px;
+  }
+
+  .eq-trust-row {
+    gap: 8px 12px;
+  }
+
+  .eq-card {
+    padding: 22px 18px 18px;
+  }
+
+  .eq-card-title {
+    font-size: 24px;
+  }
+
+  .eq-perk {
+    font-size: 13px;
+    padding: 10px;
   }
 }

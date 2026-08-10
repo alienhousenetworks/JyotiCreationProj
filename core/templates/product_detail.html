@@ -85,17 +85,13 @@
               <td>Loom Lead Time</td>
               <td>{{ product.lead_time }}</td>
             </tr>
-            <tr>
-              <td>Allocation MOQ</td>
-              <td>{{ product.moq }}</td>
-            </tr>
           </table>
         </div>
 
         <div class="sourcing-action-card">
           <h3>Procurement allocation</h3>
-          <p>MOQ starts at {{ product.moq }}. Secure current loom batch timings, negotiate custom weaves, or explore private-label branding options with our sourcing desk.</p>
-          <button class="btn-modal-submit" onclick="openContactModal('{{ product.name|escapejs }}', '{{ product.purity_fabric|escapejs }}', '{{ product.border_specs|escapejs }}', '{{ product.structural_weight|escapejs }}', '{{ product.moq|escapejs }}')">Initialize Sourcing Request</button>
+          <p> Secure current loom batch timings, negotiate custom weaves, or explore private-label branding options with our sourcing desk.</p>
+          <button class="btn-modal-submit" onclick="openContactModal('{{ product.name|escapejs }}', '{{ product.purity_fabric|escapejs }}', '{{ product.border_specs|escapejs }}', '{{ product.structural_weight|escapejs }}')">Initialize Sourcing Request</button>
         </div>
       </div>
       
@@ -133,7 +129,6 @@
             {% else %}
             <div class="prod-img abstract-pattern pattern-{% cycle '1' '2' '3' '4' '5' '6' %}"></div>
             {% endif %}
-            <div class="prod-badge">{{ prod.moq }} MOQ</div>
           </div>
           <div class="prod-details">
             <div class="prod-cat-name">{{ prod.category.name }}</div>

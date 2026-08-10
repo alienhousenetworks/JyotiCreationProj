@@ -96,6 +96,7 @@ h1,h2,.hero-h1,.eq-h,.h-title,.sec-h,.ed-h,.hdr-title {
 
 /* Solid CTAs — crisp type, no heavy shadows */
 .btn-gold,.btn-ghost,.btn-crimson,.btn-wa,.btn-em,
+.eq-btn,.eq-btn-primary,.eq-btn-ghost,
 .nav-cta,.btn-dr-submit,.btn-modal-submit,.dr-wa {
   text-shadow: none !important;
   filter: none !important;

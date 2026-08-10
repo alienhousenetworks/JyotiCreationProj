@@ -108,7 +108,6 @@ class Command(BaseCommand):
             purity_fabric="Grade AAAA Mulberry Raw Silk — Non-Bleached",
             border_specs="Solid Pure Crimson Weft Edge Banding",
             structural_weight="410 Grams Structural Array",
-            moq="30 Units Minimum",
             material="Grade AAAA Mulberry",
             is_best_seller=True,
             is_silk_collection=True
@@ -124,7 +123,6 @@ class Command(BaseCommand):
             purity_fabric="Premium Filament Silk Weft Mesh",
             border_specs="Concentric Fine Zari Geometric Run Bands — 24K Gold",
             structural_weight="490 Grams Heavy Premium Grade",
-            moq="20 Units Minimum",
             material="24K Zari Border",
             is_new_arrival=True,
             is_silk_collection=True
@@ -139,7 +137,6 @@ class Command(BaseCommand):
             purity_fabric="Wild Organic Tussar Core Filament Yarn",
             border_specs="Deep Ruby Red Selvedge Accent Bands",
             structural_weight="430 Grams Textural Open Mesh",
-            moq="40 Units Minimum",
             material="Natural Tussar Silk",
             is_handcrafted=True
         )
@@ -152,7 +149,6 @@ class Command(BaseCommand):
             purity_fabric="Dense Twist Pure Dyed Filament Base Silk",
             border_specs="Mythological Silhouette Pallu Panels — Jacquard",
             structural_weight="560 Grams Narrative Art Weave",
-            moq="12 Units Minimum",
             material="Artisanal Heritage",
             is_best_seller=True,
             is_festive_collection=True
@@ -166,7 +162,6 @@ class Command(BaseCommand):
             purity_fabric="Pure Hand-spun Matka Silk Yarn",
             border_specs="Zari Accent Borders",
             structural_weight="450 Grams",
-            moq="15 Units Minimum",
             material="Matka Silk",
             is_premium=True
         )
@@ -180,7 +175,6 @@ class Command(BaseCommand):
             purity_fabric="100% Pure Modal Silk",
             border_specs="Intricate Handblock Prints",
             structural_weight="250 Grams",
-            moq="50 Units Minimum",
             material="Modal Silk",
             is_best_seller=True,
             is_silk_collection=True
@@ -195,7 +189,6 @@ class Command(BaseCommand):
             purity_fabric="Premium Khadi Cotton",
             border_specs="Hand Kantha Stitch Panel Work",
             structural_weight="220 Grams",
-            moq="25 Units Minimum",
             material="Handwoven Cotton",
             is_handcrafted=True,
             is_cotton_collection=True
@@ -210,7 +203,6 @@ class Command(BaseCommand):
             purity_fabric="4 Ply Bishnupuri Silk",
             border_specs="Madhubani Handpainted Scenic Back",
             structural_weight="150 Grams",
-            moq="10 Units Minimum",
             material="Bishnupuri Silk",
             is_hand_painted=True,
             is_best_seller=True
@@ -225,7 +217,6 @@ class Command(BaseCommand):
             purity_fabric="100% Cotton 60s Count",
             border_specs="Printed Selvedge Details",
             structural_weight="180 Grams",
-            moq="100 Units Minimum",
             material="Pure Cotton",
             is_cotton_collection=True,
             is_sale=True
@@ -241,10 +232,7 @@ class Command(BaseCommand):
             description="Premium B2B Manufacturer & Global Export Partner for Luxury Boutiques, Fashion Houses & International Retail Chains. Garad · Korial · Baluchari · Jamdani.",
             primary_cta_text="Explore Collection",
             secondary_cta_text="Become Wholesale Partner",
-            stats_years="52+",
-            stats_retailers="500+",
             stats_countries="42",
-            stats_variants="12K+"
         )
 
         # Editorials
@@ -351,7 +339,7 @@ class Command(BaseCommand):
 
         # FAQs
         faqs = [
-            ("What is the Minimum Order Quantity (MOQ)?", "Our standard B2B MOQ starts at 10 units for active inventory collections and 25-50 units for custom OEM/private label designs.", 0),
+            ("Do you offer private label and OEM programs?", "Yes. We support OEM manufacturing and private-label branding for boutique and enterprise partners, with dedicated weave and packaging options.", 0),
             ("Do you provide GI origin certificates?", "Yes, all our Baluchari, Garad, and Jamdani sarees are supplied with authentic Geographical Indication (GI) tag certification cards.", 1),
             ("How long is the B2B production cycle?", "Standard catalog allocations ship within 14-21 days. Custom weave or private label orders typically require 28-45 days depending on complexity.", 2),
         ]

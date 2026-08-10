@@ -5,13 +5,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}{{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} — {{ site_config.site_subtitle|default:"Bengal's Finest Handloom Sarees · Premium B2B Manufacturer" }}{% endblock %}</title>
-<meta name="description" content="{% block meta_description %}{{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} — Premier B2B Bengali silk saree manufacturer. Garad, Korial, Baluchari & Jamdani. Direct loom-to-boutique. OEM, Private Label, Export House. MOQ from 10 units.{% endblock %}">
+<meta name="description" content="{% block meta_description %}{{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} — Premier B2B Bengali silk saree manufacturer. Garad, Korial, Baluchari & Jamdani. Direct loom-to-boutique. OEM, Private Label, Export House.{% endblock %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script type="module" src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js"></script>
-<link rel="stylesheet" href="{% static 'css/base.css' %}?v=13">
+<link rel="stylesheet" href="{% static 'css/base.css' %}?v=15">
 {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -51,7 +50,7 @@
       {% if not site_config or site_config.showroom_page_active %}
       <li><a id="nav-cv" href="{% url 'showroom' %}">Showroom</a></li>
       {% endif %}
-      {% if not site_config or site_config.partners_page_active %}
+      {% if partners_page_visible %}
       <li><a id="nav-pt" href="{% url 'partners' %}">Partners</a></li>
       {% endif %}
       <li><button class="nav-cta" type="button" onclick="odc()">Contact</button></li>
@@ -110,7 +109,7 @@
       {% if not site_config or site_config.showroom_page_active %}
       <span><a href="{% url 'showroom' %}" style="color: inherit; text-decoration: none;">Showroom</a></span>
       {% endif %}
-      {% if not site_config or site_config.partners_page_active %}
+      {% if partners_page_visible %}
       <span><a href="{% url 'partners' %}" style="color: inherit; text-decoration: none;">Partners</a></span>
       {% endif %}
       {% if not site_config or site_config.crm_portal_active %}
@@ -137,7 +136,7 @@
       <tr><td>Fabric Core</td><td id="dr-fabric">—</td></tr>
       <tr><td>Border Detail</td><td id="dr-border">—</td></tr>
       <tr><td>Structural Weight</td><td id="dr-weight">—</td></tr>
-      <tr><td>B2B MOQ</td><td id="dr-moq">—</td></tr>
+      
       <tr><td>Origin Cluster</td><td>Bishnupur · Murshidabad · Shantipur (GI Tagged)</td></tr>
       <tr><td>Quality Cert</td><td>ISO 9001:2015 · Quarterly Audit Compliant</td></tr>
       <tr><td>Export Clearance</td><td>Active · 42 International Markets</td></tr>
@@ -150,7 +149,7 @@
     </div>
   </div>
   <div class="dr-actions">
-    <button class="dr-wa" onclick="openContactModal(activeProduct ? activeProduct.name : '', activeProduct ? activeProduct.fabric : '', activeProduct ? activeProduct.border : '', activeProduct ? activeProduct.weight : '', activeProduct ? activeProduct.moq : '')">✆ Initialize Procurement Sourcing</button>
+    <button class="dr-wa" onclick="openContactModal(activeProduct ? activeProduct.name : '', activeProduct ? activeProduct.fabric : '', activeProduct ? activeProduct.border : '', activeProduct ? activeProduct.weight : '')">✆ Initialize Procurement Sourcing</button>
   </div>
 </div>
 
@@ -296,15 +295,14 @@ if (navToggle && navMenu) {
 /* ══════════════════════════════════════════════
    DRAWER
    ══════════════════════════════════════════════ */
-let activeProduct = { name: '', fabric: '', border: '', weight: '', moq: '' };
+let activeProduct = { name: '', fabric: '', border: '', weight: '' };
 
-function od(name, fabric, border, weight, moq) {
-  activeProduct = { name, fabric, border, weight, moq };
+function od(name, fabric, border, weight) {
+  activeProduct = { name, fabric, border, weight };
   document.getElementById('dr-title').textContent = name;
   document.getElementById('dr-fabric').textContent = fabric;
   document.getElementById('dr-border').textContent = border;
   document.getElementById('dr-weight').textContent = weight;
-  document.getElementById('dr-moq').textContent = moq;
   document.getElementById('drawer').classList.add('open');
   document.getElementById('curtain').classList.add('active');
   document.body.style.overflow = 'hidden';

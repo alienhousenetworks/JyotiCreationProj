@@ -29,10 +29,10 @@
 </div>
 
 <script>
-  let activeModalProduct = { name: '', fabric: '', border: '', weight: '', moq: '' };
+  let activeModalProduct = { name: '', fabric: '', border: '', weight: ''  };
 
-  function openContactModal(prodName = '', fabric = '', border = '', weight = '', moq = '') {
-    activeModalProduct = { name: prodName, fabric, border, weight, moq };
+  function openContactModal(prodName = '', fabric = '', border = '', weight = '') {
+    activeModalProduct = { name: prodName, fabric, border, weight };
     
     const msgField = document.getElementById('modal-form-message');
     if (prodName) {
@@ -74,7 +74,6 @@
                 `- Fabric: ${activeModalProduct.fabric}\n` +
                 `- Border: ${activeModalProduct.border}\n` +
                 `- Weight: ${activeModalProduct.weight}\n` +
-                `- MOQ: ${activeModalProduct.moq}\n\n` +
                 `*Custom Branding Requested:* ${customBranding ? 'Yes' : 'No'}\n` +
                 `*Buyer Message:* ${message}`;
     } else {
