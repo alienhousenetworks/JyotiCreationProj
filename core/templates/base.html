@@ -48,7 +48,7 @@
     <ul class="nav-links">
       <li><a id="nav-hp" href="{% url 'home' %}">Home</a></li>
       {% if not site_config or site_config.showroom_page_active %}
-      <li><a id="nav-cv" href="{% url 'showroom' %}">Showroom</a></li>
+      <li><a id="nav-cv" href="{% url 'showroom' %}">Check Our Collections</a></li>
       {% endif %}
       {% if partners_page_visible %}
       <li><a id="nav-pt" href="{% url 'partners' %}">Partners</a></li>
@@ -107,7 +107,7 @@
     <div class="ft-copy">© 2026 {{ site_config.brand_name|default:"Jyoti" }}{{ site_config.brand_suffix|default:"creations" }} Procurement Group Corp. · Premium Bengali Silk B2B Manufacturer · All Rights Reserved</div>
     <div class="ft-legal">
       {% if not site_config or site_config.showroom_page_active %}
-      <span><a href="{% url 'showroom' %}" style="color: inherit; text-decoration: none;">Showroom</a></span>
+      <span><a href="{% url 'showroom' %}" style="color: inherit; text-decoration: none;">Check Our Collections</a></span>
       {% endif %}
       {% if partners_page_visible %}
       <span><a href="{% url 'partners' %}" style="color: inherit; text-decoration: none;">Partners</a></span>
