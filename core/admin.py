@@ -18,10 +18,15 @@ class SingletonAdmin(admin.ModelAdmin):
 
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(SingletonAdmin):
-    list_display = ('brand_name', 'brand_suffix', 'email_address', 'phone_number')
+    list_display = ('brand_name', 'brand_suffix', 'showroom_page_active', 'partners_page_active', 'email_address', 'phone_number')
+    list_editable = ('showroom_page_active', 'partners_page_active')
     fieldsets = (
         ('Branding', {
             'fields': ('brand_name', 'brand_suffix', 'site_subtitle', 'intro_sub')
+        }),
+        ('Client Page Visibility', {
+            'description': 'Deactivate a page to hide it from the header/footer and block public access.',
+            'fields': ('showroom_page_active', 'partners_page_active', 'crm_portal_active')
         }),
         ('Showroom Page Headers', {
             'fields': ('showroom_eyebrow', 'showroom_title', 'showroom_desc')
@@ -39,7 +44,18 @@ class SiteConfigurationAdmin(SingletonAdmin):
 
 @admin.register(HeroSection)
 class HeroSectionAdmin(SingletonAdmin):
-    list_display = ('title', 'highlighted_title', 'stats_years', 'stats_retailers', 'stats_countries')
+    list_display = ('title', 'highlighted_title', 'is_active', 'stats_years', 'stats_retailers', 'stats_countries')
+    list_editable = ('is_active',)
+    fieldsets = (
+        ('Visibility', {'fields': ('is_active',)}),
+        ('Content', {
+            'fields': (
+                'eyebrow', 'title', 'highlighted_title', 'description',
+                'primary_cta_text', 'secondary_cta_text',
+                'stats_years', 'stats_retailers', 'stats_countries', 'stats_variants',
+            )
+        }),
+    )
 
 @admin.register(TrustMarqueeItem)
 class TrustMarqueeItemAdmin(admin.ModelAdmin):
@@ -48,7 +64,9 @@ class TrustMarqueeItemAdmin(admin.ModelAdmin):
 
 @admin.register(CategorySectionSettings)
 class CategorySectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title')
+    list_display = ('label', 'title', 'highlighted_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = ('is_active', 'label', 'title', 'highlighted_title', 'description')
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -96,12 +114,18 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(EditorialSection)
 class EditorialSectionAdmin(admin.ModelAdmin):
-    list_display = ('tag', 'title', 'section_id', 'is_reversed')
-    list_editable = ('is_reversed',)
+    list_display = ('tag', 'title', 'section_id', 'is_active', 'is_reversed')
+    list_editable = ('is_active', 'is_reversed')
+    list_filter = ('is_active',)
 
 @admin.register(WhyChooseUsSectionSettings)
 class WhyChooseUsSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title')
+    list_display = ('label', 'title', 'highlighted_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = (
+        'is_active', 'label', 'title', 'highlighted_title', 'description',
+        'stat1_number', 'stat1_label', 'stat2_number', 'stat2_label',
+    )
 
 @admin.register(WhyChooseUsCard)
 class WhyChooseUsCardAdmin(admin.ModelAdmin):
@@ -110,11 +134,18 @@ class WhyChooseUsCardAdmin(admin.ModelAdmin):
 
 @admin.register(HeritageSection)
 class HeritageSectionAdmin(SingletonAdmin):
-    list_display = ('title', 'highlighted_title', 'specs_iso', 'specs_gi')
+    list_display = ('title', 'highlighted_title', 'is_active', 'specs_iso', 'specs_gi')
+    list_editable = ('is_active',)
+    fields = (
+        'is_active', 'label', 'title', 'highlighted_title', 'body_p1', 'body_p2',
+        'specs_iso', 'specs_gi', 'specs_established', 'specs_license', 'button_text',
+    )
 
 @admin.register(ProcessSectionSettings)
 class ProcessSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title', 'suffix_title')
+    list_display = ('label', 'title', 'highlighted_title', 'suffix_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = ('is_active', 'label', 'title', 'highlighted_title', 'suffix_title', 'description')
 
 @admin.register(ProcessStep)
 class ProcessStepAdmin(admin.ModelAdmin):
@@ -123,7 +154,9 @@ class ProcessStepAdmin(admin.ModelAdmin):
 
 @admin.register(MetricsSectionSettings)
 class MetricsSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title', 'suffix_title')
+    list_display = ('label', 'title', 'highlighted_title', 'suffix_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = ('is_active', 'label', 'title', 'highlighted_title', 'suffix_title', 'description')
 
 @admin.register(TechnicalMetric)
 class TechnicalMetricAdmin(admin.ModelAdmin):
@@ -132,7 +165,12 @@ class TechnicalMetricAdmin(admin.ModelAdmin):
 
 @admin.register(ExportSectionSettings)
 class ExportSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title', 'suffix_title')
+    list_display = ('label', 'title', 'highlighted_title', 'suffix_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = (
+        'is_active', 'label', 'title', 'highlighted_title', 'suffix_title',
+        'description', 'map_label_title', 'map_label_sub',
+    )
 
 @admin.register(ExportCountry)
 class ExportCountryAdmin(admin.ModelAdmin):
@@ -141,7 +179,12 @@ class ExportCountryAdmin(admin.ModelAdmin):
 
 @admin.register(TestimonialSectionSettings)
 class TestimonialSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title')
+    list_display = ('label', 'title', 'highlighted_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = (
+        'is_active', 'label', 'title', 'highlighted_title', 'suffix_title',
+        'description', 'partner_strip_label', 'partner_strip_pills',
+    )
 
 @admin.register(Testimonial)
 class TestimonialAdmin(admin.ModelAdmin):
@@ -150,7 +193,9 @@ class TestimonialAdmin(admin.ModelAdmin):
 
 @admin.register(FaqSectionSettings)
 class FaqSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title')
+    list_display = ('label', 'title', 'highlighted_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = ('is_active', 'label', 'title', 'highlighted_title', 'description')
 
 @admin.register(FaqItem)
 class FaqItemAdmin(admin.ModelAdmin):
@@ -159,11 +204,18 @@ class FaqItemAdmin(admin.ModelAdmin):
 
 @admin.register(PremiumSectionSettings)
 class PremiumSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title')
+    list_display = ('label', 'title', 'highlighted_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = ('is_active', 'label', 'title', 'highlighted_title', 'description')
 
 @admin.register(B2BEnquiryCTA)
 class B2BEnquiryCTAAdmin(SingletonAdmin):
-    list_display = ('badge', 'title', 'highlighted_title')
+    list_display = ('badge', 'title', 'highlighted_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = (
+        'is_active', 'badge', 'title', 'highlighted_title', 'description',
+        'whatsapp_button_text', 'email_button_text', 'guarantees',
+    )
 
 @admin.register(B2BEnquiry)
 class B2BEnquiryAdmin(admin.ModelAdmin):
@@ -174,13 +226,15 @@ class B2BEnquiryAdmin(admin.ModelAdmin):
 
 @admin.register(PartnersSectionSettings)
 class PartnersSectionSettingsAdmin(SingletonAdmin):
-    list_display = ('label', 'title', 'highlighted_title')
+    list_display = ('label', 'title', 'highlighted_title', 'is_active')
+    list_editable = ('is_active',)
+    fields = ('is_active', 'label', 'title', 'highlighted_title', 'description')
 
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_top_highlight', 'order')
-    list_editable = ('is_top_highlight', 'order')
-    list_filter = ('is_top_highlight',)
+    list_display = ('name', 'is_active', 'is_top_highlight', 'order')
+    list_editable = ('is_active', 'is_top_highlight', 'order')
+    list_filter = ('is_active', 'is_top_highlight')
     search_fields = ('name',)
 
 

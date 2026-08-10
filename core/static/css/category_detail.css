@@ -36,8 +36,11 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
-  border-bottom: 1px solid var(--border-s);
-  padding-bottom: 24px;
+  border: 1px solid var(--border-s);
+  padding: 18px 22px;
+  background: var(--panel-soft, rgba(10, 7, 16, 0.72));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .sub-filters {
@@ -47,29 +50,30 @@
 }
 
 .sub-tab {
-  background: rgba(14, 11, 16, 0.4);
+  background: var(--panel-soft, rgba(10, 7, 16, 0.72));
   border: 1px solid var(--border-s);
   color: var(--text-muted);
   padding: 10px 20px;
   font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.4s var(--ease-lux);
+  font-family: inherit;
 }
 
 .sub-tab:hover {
   border-color: var(--border);
-  color: var(--ivory);
+  color: var(--ivory-warm);
 }
 
 .sub-tab.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--black);
-  font-weight: 600;
-  box-shadow: 0 0 15px var(--gold-glow);
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  border-color: var(--gold-l);
+  color: #0a0710;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(228, 192, 106, 0.32);
 }
 
 .sort-box {

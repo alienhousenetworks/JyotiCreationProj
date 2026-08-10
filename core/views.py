@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import Http404
 from django.views import View
 from django.views.generic import TemplateView
 from django.db.models import Sum, Count
@@ -12,8 +13,17 @@ from .models import (
     CategorySectionSettings, WhyChooseUsSectionSettings, ProcessSectionSettings,
     MetricsSectionSettings, ExportSectionSettings, TestimonialSectionSettings,
     FaqSectionSettings, PremiumSectionSettings, B2BEnquiryCTA,
-    PartnersSectionSettings, Partner, CRMVendor, CRMClient, CRMOrder, CRMOrderItem
+    PartnersSectionSettings, Partner, CRMVendor, CRMClient, CRMOrder, CRMOrderItem,
+    SiteConfiguration,
 )
+
+
+def _page_is_active(flag_name, default=True):
+    """Return SiteConfiguration page visibility flag (True when no config row exists)."""
+    config = SiteConfiguration.objects.first()
+    if not config:
+        return default
+    return bool(getattr(config, flag_name, default))
 from .serializers import (
     CategorySerializer, SubCategorySerializer, ProductSerializer, B2BEnquirySerializer,
     HeroSectionSerializer, EditorialSectionSerializer, WhyChooseUsCardSerializer,
@@ -61,8 +71,8 @@ class HomeView(TemplateView):
         context['premium_sec'] = PremiumSectionSettings.objects.first()
         context['enquiry_cta'] = B2BEnquiryCTA.objects.first()
         
-        # List sections
-        context['editorials'] = EditorialSection.objects.all()
+        # List sections — only active editorial panels
+        context['editorials'] = EditorialSection.objects.filter(is_active=True)
         context['why_cards'] = WhyChooseUsCard.objects.all()
         context['steps'] = ProcessStep.objects.all()
         context['metrics'] = TechnicalMetric.objects.all()
@@ -90,6 +100,11 @@ class CategoryDetailView(TemplateView):
 class ShowroomView(TemplateView):
     template_name = "showroom.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if not _page_is_active('showroom_page_active'):
+            raise Http404("Showroom page is currently inactive.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.prefetch_related('subcategories').all()
@@ -103,7 +118,7 @@ class ProductDetailView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         slug = self.kwargs.get('slug')
-        product = get_object_or_404(Product, slug=slug)
+        product = get_object_or_404(Product, slug=slug, is_active=True)
         context['product'] = product
         # Fetch up to 4 related products in the same category, excluding current product
         context['related_products'] = Product.objects.filter(
@@ -116,11 +131,20 @@ class ProductDetailView(TemplateView):
 class PartnersView(TemplateView):
     template_name = "partners.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if not _page_is_active('partners_page_active'):
+            raise Http404("Partners page is currently inactive.")
+        partners_sec = PartnersSectionSettings.objects.first()
+        if partners_sec is not None and not partners_sec.is_active:
+            raise Http404("Partners page is currently inactive.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['partners_sec'] = PartnersSectionSettings.objects.first()
-        context['top_partners'] = Partner.objects.filter(is_top_highlight=True).order_by('order')[:10]
-        context['all_partners'] = Partner.objects.all().order_by('order')
+        active_partners = Partner.objects.filter(is_active=True).order_by('order')
+        context['top_partners'] = active_partners.filter(is_top_highlight=True)[:10]
+        context['all_partners'] = active_partners
         return context
 
 

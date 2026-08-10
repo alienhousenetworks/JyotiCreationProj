@@ -37,12 +37,26 @@
     min-height: 100vh;
     padding: 140px 6% 80px 6%;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
+    gap: 36px;
   }
 
   .hero-content {
     max-width: 100%;
     width: 100%;
+  }
+
+  .hero-lottie-wrap {
+    max-width: 360px;
+    order: -1;
+    margin-top: 8px;
+    animation-delay: 0.25s;
+  }
+
+  .hero-lottie-frame {
+    max-height: 320px;
   }
 
   .hero-h1 {
@@ -206,11 +220,12 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 28px;
+    padding: 32px 20px;
   }
 
-  .process-steps::before {
+  .process-steps::before,
+  .process-steps::after {
     display: none;
-    /* Hide desktop timeline line */
   }
 
   .ps {
@@ -232,6 +247,19 @@
   .ps-lbl {
     font-size: 13px;
     letter-spacing: 0.8px;
+  }
+
+  .why-header,
+  .h-content {
+    max-width: 100%;
+  }
+
+  .eq-inner {
+    padding: 36px 28px !important;
+  }
+
+  .why-card-luxe:nth-child(even) {
+    margin-top: 20px;
   }
 
   /* Export Map */
@@ -299,12 +327,39 @@
   }
 
   .sh {
-    margin-bottom: 40px;
+    margin-bottom: 36px;
+  }
+
+  .eq-inner {
+    padding: 28px 18px !important;
+  }
+
+  .prem-tab {
+    padding: 10px 14px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .why-card-luxe:nth-child(even) {
+    margin-top: 0;
   }
 
   /* Hero Section */
   .hero {
     padding: 120px 16px 60px 16px;
+  }
+
+  .hero-lottie-wrap {
+    max-width: 280px;
+  }
+
+  .hero-lottie-frame {
+    max-height: 260px;
+  }
+
+  .hero-lottie-caption {
+    font-size: 8px;
+    letter-spacing: 2px;
   }
 
   .hero-cta-grid {

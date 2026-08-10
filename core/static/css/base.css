@@ -1,11 +1,15 @@
 /* ═══════════════════════════════════════════════════════
    LUXURY DESIGN SYSTEM & BASE STYLES
+   Premium Bengali Saree — dark-on-silk contrast system
    ═══════════════════════════════════════════════════════ */
 :root {
-  --black:       #0e0a12;
-  --black-rich:  #120e16;
+  --black:       #0a0710;
+  --black-rich:  #100c16;
   --charcoal:    #1a1525;
   --charcoal-l:  #251e30;
+  --panel:       rgba(10, 7, 16, 0.88);
+  --panel-soft:  rgba(10, 7, 16, 0.72);
+  --panel-deep:  rgba(6, 4, 10, 0.94);
   --ivory:       #faf6f0;
   --ivory-warm:  #fffbf5;
   --ivory-dim:   #d8cfbe;
@@ -14,35 +18,37 @@
   --text-dark-2: #2e2040;
   --text-mid:    rgba(28, 18, 40, 0.82);
   --text-faint-d:rgba(28, 18, 40, 0.52);
-  --crimson:     #8b1a2a;
-  --crimson-l:   #b02235;
-  --crimson-pale:rgba(139,26,42,0.18);
-  --gold:        #dfba5f;
-  --gold-l:      #ffd97d;
+  --crimson:     #9a1f32;
+  --crimson-l:   #c4283e;
+  --crimson-pale:rgba(154,31,50,0.18);
+  --gold:        #e4c06a;
+  --gold-l:      #ffe29a;
   --gold-d:      #b28e3b;
   --gold-antique:#b8943f;
   --champagne:   #f5e6be;
   --champagne-dim:rgba(245,230,190,0.15);
-  --gold-glow:   rgba(223,186,95,0.22);
-  --gold-glow-s: rgba(223,186,95,0.08);
-  --crim-glow:   rgba(139,26,42,0.25);
-  --border:      rgba(28,18,40,0.18);
-  --border-h:    rgba(28,18,40,0.40);
-  --border-s:    rgba(28,18,40,0.08);
-  --text-on-dark:rgba(255, 252, 245, 0.96);
-  --text-muted:  rgba(240, 235, 220, 0.78);
-  --text-faint:  rgba(240, 235, 220, 0.50);
+  --gold-glow:   rgba(228,192,106,0.35);
+  --gold-glow-s: rgba(228,192,106,0.12);
+  --crim-glow:   rgba(154,31,50,0.35);
+  /* Gold-tinted borders for dark glass panels over silk */
+  --border:      rgba(228,192,106,0.28);
+  --border-h:    rgba(228,192,106,0.55);
+  --border-s:    rgba(228,192,106,0.14);
+  --text-on-dark:#fffaf0;
+  --text-muted:  rgba(255, 248, 235, 0.88);
+  --text-faint:  rgba(255, 248, 235, 0.62);
   --ease-lux:    cubic-bezier(0.19, 1, 0.22, 1);
   --ease-silk:   cubic-bezier(0.65, 0, 0.35, 1);
   --ease-gold:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
   font-family:'Inter',system-ui,sans-serif;
-  background:#e8e0ea;
-  color:var(--text-dark);
+  background:#1a1224;
+  color:var(--text-on-dark);
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -50,57 +56,77 @@ body{
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--black)}
 ::-webkit-scrollbar-thumb{background:linear-gradient(var(--crimson),var(--gold));border-radius:2px}
-::selection{background:rgba(223,186,95,0.25);color:#fff}
+::selection{background:rgba(223,186,95,0.35);color:#0a0710}
 
 /* ═══════════════════════════════════════════════════════
-   GLOBAL TEXT SHADOW — auto highlight over silk canvas
+   GLOBAL READABILITY — soft lift on free-floating type
+   (Buttons use their own solid fills — no muddy shadows)
    ═══════════════════════════════════════════════════════ */
 h1,h2,h3,h4,h5,h6,
-p,span,a,li,label,
-div.sec-label,div.ed-tag,div.hs-lbl,div.hs-num,
-div.sc-lbl,div.sc-num,div.sc-sub,
-.eyebrow-text,.hero-sub,.hero-h1,
-.btn-gold,.btn-ghost,.btn-crimson,
-.marquee-track,.mi,
-.v-card h3,.v-body,.v-num,.vs,.v-action,
-.ed-h,.ed-p,.ed-list li,
-.why-card-luxe h4,.why-card-luxe p,.why-card-num,
-.h-title,.h-body,.h-spec span,.h-spec label,
-.ps-lbl,.ps-num,
-.spec-lbl,.spec-val,
-.map-label h3,.map-label p,.ec-name,.ec-tag,
-.t-text,.t-name,.t-role,.t-loc,.t-quote-icon,
-.ps-lbl-text,.ps-pill,
-.faq-q,.faq-content p,
-.eq-h,.eq-p,.eq-g,
-.eq-badge,.eq-chk,
-.wh-number,.wh-label,
-.home-cat-details h3,.home-cat-link,
-.prem-tab,.prod-h,.prod-desc,.prod-cat-name,
+.hero-h1,.hero-sub,.eyebrow-text,
+.sec-h,.sec-p,.sec-label,
+.ed-h,.ed-p,.ed-tag,
+.h-title,.h-body,
+.eq-h,.eq-p,
 .hdr-title,.hdr-desc,.hdr-eyebrow,
-.cat-tab,
-button,input,textarea,select {
+.faq-q,.wh-number,.wh-label,
+.hs-num,.hs-lbl {
   text-shadow:
-    0 1px 3px rgba(0,0,0,0.55),
-    0 2px 8px rgba(0,0,0,0.35),
-    0 4px 16px rgba(0,0,0,0.20);
+    0 1px 2px rgba(0,0,0,0.75),
+    0 2px 12px rgba(0,0,0,0.45);
 }
 
-/* Stronger shadow for large display headings */
+/* Stronger halo for large display headings over silk */
 h1,h2,.hero-h1,.eq-h,.h-title,.sec-h,.ed-h,.hdr-title {
   text-shadow:
-    0 1px 2px rgba(0,0,0,0.70),
-    0 3px 10px rgba(0,0,0,0.50),
-    0 8px 24px rgba(0,0,0,0.30);
+    0 1px 2px rgba(0,0,0,0.85),
+    0 4px 18px rgba(0,0,0,0.55),
+    0 12px 36px rgba(0,0,0,0.35);
 }
 
-/* Gold/gradient text needs shadow applied differently since -webkit-text-fill-color overrides color */
+/* Gold/gradient text needs drop-shadow (fill-color overrides text-shadow) */
 .hero-h1 strong,
 .sec-h strong, .sec-h em,
 .ed-h strong,
 .h-title strong,
-.eq-h strong {
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.55)) drop-shadow(0 4px 14px rgba(0,0,0,0.35));
+.eq-h strong,
+.hdr-title strong {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.65)) drop-shadow(0 6px 18px rgba(0,0,0,0.4));
+}
+
+/* Solid CTAs — crisp type, no heavy shadows */
+.btn-gold,.btn-ghost,.btn-crimson,.btn-wa,.btn-em,
+.nav-cta,.btn-dr-submit,.btn-modal-submit,.dr-wa {
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SELECTIVE GLASS — use only on dense content cards
+   (headers/hero stay free-floating over silk)
+   ═══════════════════════════════════════════════════════ */
+.glass-panel{
+  background: rgba(10, 7, 16, 0.78);
+  border: 1px solid var(--border-s);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32);
+}
+.glass-panel-soft{
+  background: rgba(10, 7, 16, 0.62);
+  border: 1px solid var(--border-s);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+/* Text inside glass is already on a dark substrate — lighter shadows */
+.glass-panel,
+.glass-panel-soft,
+.glass-panel h1, .glass-panel h2, .glass-panel h3, .glass-panel h4,
+.glass-panel p, .glass-panel span, .glass-panel li,
+.glass-panel-soft h1, .glass-panel-soft h2, .glass-panel-soft h3, .glass-panel-soft h4,
+.glass-panel-soft p, .glass-panel-soft span, .glass-panel-soft li {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 
@@ -165,27 +191,33 @@ h1,h2,.hero-h1,.eq-h,.h-title,.sec-h,.ed-h,.hdr-title {
 }
 
 /* ═══════════════════════════════════════════════════════
-   AMBIENT OVERLAY — luxury depth atmosphere
+   AMBIENT OVERLAY — darken silk so ivory type stays crisp
    ═══════════════════════════════════════════════════════ */
 #ambient-layer{
   position:fixed;inset:0;z-index:1;
   pointer-events:none;
   background:
+    /* Overall plum veil — primary readability layer */
+    linear-gradient(180deg,
+      rgba(8,5,14,0.58) 0%,
+      rgba(10,6,18,0.48) 28%,
+      rgba(12,7,20,0.42) 55%,
+      rgba(8,5,14,0.55) 100%),
     /* Deep dark crown at top — keeps nav text readable */
-    radial-gradient(ellipse 100% 22% at 50% 0%,   rgba(14,10,20,0.82) 0%, transparent 100%),
+    radial-gradient(ellipse 100% 28% at 50% 0%,   rgba(6,4,12,0.90) 0%, transparent 100%),
     /* Left-edge plum shadow */
-    radial-gradient(ellipse 40% 70% at 0%   50%,  rgba(20,12,32,0.50) 0%, transparent 80%),
+    radial-gradient(ellipse 48% 80% at 0%   50%,  rgba(12,6,22,0.62) 0%, transparent 78%),
     /* Right-edge plum shadow */
-    radial-gradient(ellipse 40% 70% at 100% 50%,  rgba(20,12,32,0.50) 0%, transparent 80%),
+    radial-gradient(ellipse 48% 80% at 100% 50%,  rgba(12,6,22,0.62) 0%, transparent 78%),
     /* Bottom dark vignette — keeps footer legible */
-    radial-gradient(ellipse 100% 28% at 50% 100%, rgba(14,10,20,0.90) 0%, transparent 100%),
-    /* Centre-screen very subtle tint so centre body text has a substrate */
-    radial-gradient(ellipse 70% 50% at 50% 50%,  rgba(14,10,20,0.18) 0%, transparent 100%);
+    radial-gradient(ellipse 100% 34% at 50% 100%, rgba(6,4,12,0.94) 0%, transparent 100%),
+    /* Soft centre vignette for body copy */
+    radial-gradient(ellipse 80% 55% at 50% 50%,  rgba(8,5,14,0.28) 0%, transparent 100%);
   animation: ambientBreathe 18s ease-in-out infinite alternate;
 }
 @keyframes ambientBreathe {
-  0%   { filter: brightness(0.95) saturate(1.0); }
-  100% { filter: brightness(1.05) saturate(1.1); }
+  0%   { filter: brightness(0.92) saturate(1.05); }
+  100% { filter: brightness(1.04) saturate(1.18); }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -283,23 +315,26 @@ body.nav-open{overflow:hidden}
 .nav-links a:hover::after, .nav-links a.active-link::after{width:100%}
 
 .nav-cta{
-  padding:10px 24px !important;
-  background:transparent !important;
-  border:1.5px solid var(--gold) !important;
-  color:var(--gold-l) !important;
+  padding:11px 26px !important;
+  background:linear-gradient(135deg,var(--gold-l) 0%,var(--gold) 55%,var(--gold-d) 100%) !important;
+  border:1px solid var(--gold-l) !important;
+  color:#0a0710 !important;
   letter-spacing:2.5px !important;
   border-radius:0px !important;
-  transition:all 0.4s var(--ease-lux) !important;
+  transition:all 0.45s var(--ease-lux) !important;
   font-family:inherit !important;
-  font-size:13px !important;
+  font-size:12px !important;
+  font-weight:700 !important;
   text-transform:uppercase !important;
   cursor:pointer !important;
+  box-shadow:0 4px 18px rgba(228,192,106,0.28), inset 0 1px 0 rgba(255,255,255,0.35) !important;
 }
 .nav-cta:hover{
-  background:var(--gold) !important;
-  color:var(--black) !important;
-  border-color:var(--gold) !important;
-  box-shadow:0 0 15px var(--gold-glow);
+  background:linear-gradient(135deg,#fff0c0 0%,var(--gold-l) 50%,var(--gold) 100%) !important;
+  color:#0a0710 !important;
+  border-color:#fff0c0 !important;
+  box-shadow:0 6px 28px rgba(228,192,106,0.45), inset 0 1px 0 rgba(255,255,255,0.5) !important;
+  transform:translateY(-1px);
 }
 .nav-cta::after{display:none !important}
 
@@ -512,16 +547,23 @@ footer{
 .dr-form-group input:focus, .dr-form-group textarea:focus{
   border-color:var(--gold-l);
 }
-.btn-dr-submit{
-  width:100%;padding:16px;background:var(--gold);border:1px solid var(--gold);
-  color:var(--black);font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:2.5px;cursor:pointer;transition:all 0.4s var(--ease-lux);
-  box-shadow:0 4px 15px rgba(223,186,95,0.15);
+.btn-dr-submit,
+.dr-wa{
+  width:100%;padding:16px;
+  background:linear-gradient(135deg,var(--gold-l) 0%,var(--gold) 55%,var(--gold-d) 100%);
+  border:1px solid var(--gold-l);
+  color:#0a0710;font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:2.5px;cursor:pointer;transition:all 0.45s var(--ease-lux);
+  box-shadow:0 4px 20px rgba(228,192,106,0.3), inset 0 1px 0 rgba(255,255,255,0.35);
   display:flex;align-items:center;justify-content:center;
+  font-family:inherit;
 }
-.btn-dr-submit:hover{
-  background:transparent;color:var(--gold-l);
-  box-shadow:0 4px 20px rgba(223,186,95,0.25);
+.btn-dr-submit:hover,
+.dr-wa:hover{
+  background:linear-gradient(135deg,#fff0c0 0%,var(--gold-l) 50%,var(--gold) 100%);
+  color:#0a0710;
+  box-shadow:0 8px 28px rgba(228,192,106,0.45);
+  transform:translateY(-1px);
 }
 
 /* Curtain */
@@ -533,18 +575,55 @@ footer{
 }
 #curtain.active{opacity:1;pointer-events:auto}
 
-/* Scroll reveal classes */
+/* Scroll reveal — clean, light motion */
 .rv{
-  opacity:0;transform:translateY(24px);
-  transition:opacity 1.2s var(--ease-lux), transform 1.2s var(--ease-lux);
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity 0.85s var(--ease-lux), transform 0.85s var(--ease-lux);
+  will-change:opacity,transform;
 }
 .rv.vis{opacity:1;transform:translateY(0)}
-.d1{transition-delay:0.15s}
-.d2{transition-delay:0.3s}
-.d3{transition-delay:0.45s}
-.d4{transition-delay:0.6s}
-.d5{transition-delay:0.75s}
-.d6{transition-delay:0.9s}
+
+.rv-left{transform:translateX(-36px)}
+.rv-left.vis{transform:translateX(0)}
+.rv-right{transform:translateX(36px)}
+.rv-right.vis{transform:translateX(0)}
+.rv-scale{transform:translateY(20px) scale(0.96)}
+.rv-scale.vis{transform:translateY(0) scale(1)}
+.rv-up{transform:translateY(40px)}
+.rv-up.vis{transform:translateY(0)}
+
+/* Stagger delays */
+.d1{transition-delay:0.1s}
+.d2{transition-delay:0.2s}
+.d3{transition-delay:0.3s}
+.d4{transition-delay:0.4s}
+.d5{transition-delay:0.5s}
+.d6{transition-delay:0.6s}
+
+/* Grid children auto-stagger when parent is .rv-stagger */
+.rv-stagger > *{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.7s var(--ease-lux), transform 0.7s var(--ease-lux);
+}
+.rv-stagger.vis > *:nth-child(1){transition-delay:0.05s}
+.rv-stagger.vis > *:nth-child(2){transition-delay:0.12s}
+.rv-stagger.vis > *:nth-child(3){transition-delay:0.19s}
+.rv-stagger.vis > *:nth-child(4){transition-delay:0.26s}
+.rv-stagger.vis > *:nth-child(5){transition-delay:0.33s}
+.rv-stagger.vis > *:nth-child(6){transition-delay:0.40s}
+.rv-stagger.vis > *:nth-child(7){transition-delay:0.47s}
+.rv-stagger.vis > *:nth-child(8){transition-delay:0.54s}
+.rv-stagger.vis > *{
+  opacity:1;
+  transform:translateY(0);
+}
+
+@keyframes lineExpand{
+  from{transform:scaleX(0);opacity:0}
+  to{transform:scaleX(1);opacity:1}
+}
 
 /* CONTACT MODAL OVERLAY */
 .modal-overlay {

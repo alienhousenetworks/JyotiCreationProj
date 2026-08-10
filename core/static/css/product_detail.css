@@ -105,15 +105,31 @@
 .product-info-panel {
   display: flex;
   flex-direction: column;
+  padding: 36px 32px;
+  background: var(--panel, rgba(10, 7, 16, 0.88));
+  border: 1px solid var(--border);
+  backdrop-filter: blur(24px) saturate(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+.product-info-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-l), var(--gold), transparent);
 }
 
 .prod-category-tag {
-  font-size: 9.5px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 3px;
-  color: var(--gold);
+  color: var(--gold-l);
   margin-bottom: 12px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .prod-title-h1 {
@@ -126,7 +142,7 @@
 }
 
 .prod-desc-text {
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.85;
   color: var(--text-muted);
   margin-bottom: 36px;
@@ -169,11 +185,12 @@
 }
 
 .sourcing-action-card {
-  background: rgba(14, 11, 16, 0.72);
+  background: var(--panel-deep, rgba(6, 4, 10, 0.94));
   border: 1px solid var(--border);
   padding: 32px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
 .sourcing-action-card h3 {

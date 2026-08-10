@@ -32,6 +32,20 @@ class SiteConfiguration(models.Model):
     legal_gi_text = models.CharField(max_length=100, default="GI Certification")
     legal_export_text = models.CharField(max_length=100, default="Export Compliance")
 
+    # Public page visibility (header / footer / route access)
+    showroom_page_active = models.BooleanField(
+        default=True,
+        help_text="If inactive: hide Showroom from header/footer and return 404 on /showroom/"
+    )
+    partners_page_active = models.BooleanField(
+        default=True,
+        help_text="If inactive: hide Partners from header/footer and return 404 on /partners/"
+    )
+    crm_portal_active = models.BooleanField(
+        default=True,
+        help_text="If inactive: hide CRM Portal link in the footer (login route still works for staff)"
+    )
+
     class Meta:
         verbose_name = "00. Global Settings & Contact Info"
         verbose_name_plural = "00. Global Settings & Contact Info"
@@ -45,6 +59,7 @@ class SiteConfiguration(models.Model):
 # ==========================================
 
 class HeroSection(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     eyebrow = models.CharField(max_length=200, default="Direct Manufacturer · Export House · OEM · Private Label")
     title = models.CharField(max_length=200, default="Bengal's Finest")
     highlighted_title = models.CharField(max_length=200, default="Handloom Sarees")
@@ -88,6 +103,7 @@ class TrustMarqueeItem(models.Model):
 # ==========================================
 
 class CategorySectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Heritage Portfolios")
     title = models.CharField(max_length=200, default="Explore Saree")
     highlighted_title = models.CharField(max_length=200, default="Categories")
@@ -209,6 +225,7 @@ class ProductImage(models.Model):
 # ==========================================
 
 class EditorialSection(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this editorial panel on the client homepage")
     section_id = models.CharField(max_length=50, unique=True, help_text="e.g. editorial_1, editorial_2")
     tag = models.CharField(max_length=100)
     title = models.CharField(max_length=200)
@@ -236,6 +253,7 @@ class EditorialSection(models.Model):
 # ==========================================
 
 class WhyChooseUsSectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Our Advantage")
     title = models.CharField(max_length=200, default="Why Global Buyers Choose")
     highlighted_title = models.CharField(max_length=200, default="Jyoticreations")
@@ -274,6 +292,7 @@ class WhyChooseUsCard(models.Model):
 # ==========================================
 
 class HeritageSection(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Our Heritage")
     title = models.CharField(max_length=200, default="Five Centuries of")
     highlighted_title = models.CharField(max_length=200, default="Bengali Silk Mastery")
@@ -300,6 +319,7 @@ class HeritageSection(models.Model):
 # ==========================================
 
 class ProcessSectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Our Craft")
     title = models.CharField(max_length=200, default="The")
     highlighted_title = models.CharField(max_length=200, default="Manufacturing")
@@ -333,6 +353,7 @@ class ProcessStep(models.Model):
 # ==========================================
 
 class MetricsSectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Quality Framework")
     title = models.CharField(max_length=200, default="Technical")
     highlighted_title = models.CharField(max_length=200, default="Loom")
@@ -366,6 +387,7 @@ class TechnicalMetric(models.Model):
 # ==========================================
 
 class ExportSectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Global Reach")
     title = models.CharField(max_length=200, default="Export to")
     highlighted_title = models.CharField(max_length=200, default="42")
@@ -401,6 +423,7 @@ class ExportCountry(models.Model):
 # ==========================================
 
 class TestimonialSectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide the Client Voices section on the homepage")
     label = models.CharField(max_length=100, default="Enterprise Confidence")
     title = models.CharField(max_length=200, default="B2B")
     highlighted_title = models.CharField(max_length=200, default="Client")
@@ -440,6 +463,7 @@ class Testimonial(models.Model):
 # ==========================================
 
 class FaqSectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Support Ledger")
     title = models.CharField(max_length=200, default="Frequently Asked")
     highlighted_title = models.CharField(max_length=200, default="Questions")
@@ -471,6 +495,7 @@ class FaqItem(models.Model):
 # ==========================================
 
 class PremiumSectionSettings(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     label = models.CharField(max_length=100, default="Exclusive Selections")
     title = models.CharField(max_length=200, default="Premium B2B")
     highlighted_title = models.CharField(max_length=200, default="Creations")
@@ -484,6 +509,7 @@ class PremiumSectionSettings(models.Model):
         return "Premium Section Headers"
 
 class B2BEnquiryCTA(models.Model):
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this section on the client homepage")
     badge = models.CharField(max_length=200, default="B2B Access Portal · Now Accepting Partners")
     title = models.CharField(max_length=200, default="Begin Your Premium")
     highlighted_title = models.CharField(max_length=200, default="Wholesale Partnership")
@@ -529,6 +555,10 @@ class B2BEnquiry(models.Model):
 # ==========================================
 
 class PartnersSectionSettings(models.Model):
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Uncheck to deactivate Partners page content (also controlled by Global Settings → partners_page_active)"
+    )
     label = models.CharField(max_length=100, default="Enterprise Network")
     title = models.CharField(max_length=200, default="Our Global")
     highlighted_title = models.CharField(max_length=200, default="B2B Partners")
@@ -545,6 +575,7 @@ class PartnersSectionSettings(models.Model):
 class Partner(models.Model):
     name = models.CharField(max_length=150)
     logo = models.ImageField(upload_to='partners/', blank=True, null=True, help_text="Partner logo or emblem image")
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this partner from the client Partners page")
     is_top_highlight = models.BooleanField(default=False, help_text="Highlight this partner at the top of the list (Max 10)")
     order = models.PositiveIntegerField(default=0)
 

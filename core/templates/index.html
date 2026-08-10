@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=12">
-<link rel="stylesheet" href="{% static 'css/index.css' %}?v=12">
-<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=12">
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=13">
+<link rel="stylesheet" href="{% static 'css/index.css' %}?v=13">
+<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=13">
 {% endblock %}
 
 {% block content %}
@@ -12,6 +12,7 @@
 <main class="vp act" id="hp">
 
   <!-- HERO -->
+  {% if not hero or hero.is_active %}
   <section class="hero">
     <div class="hero-content">
       <div class="hero-eyebrow">
@@ -24,8 +25,10 @@
       </h1>
       <p class="hero-sub">{{ hero.description|default:"Premium B2B Manufacturer & Global Export Partner for Luxury Boutiques, Fashion Houses & International Retail Chains. Garad · Korial · Baluchari · Jamdani." }}</p>
       <div class="hero-cta-grid">
+        {% if not site_config or site_config.showroom_page_active %}
         <a class="btn-gold" href="{% url 'showroom' %}">{{ hero.primary_cta_text|default:"Explore Collection" }}</a>
-        <button class="btn-ghost" onclick="document.getElementById('eq').scrollIntoView({behavior:'smooth'})">{{ hero.secondary_cta_text|default:"Become Wholesale Partner" }}</button>
+        {% endif %}
+        <button class="btn-ghost" onclick="document.getElementById('eq') && document.getElementById('eq').scrollIntoView({behavior:'smooth'})">{{ hero.secondary_cta_text|default:"Become Wholesale Partner" }}</button>
         <button class="btn-crimson" onclick="od('Sample Pack','Mixed Collection — Garad, Korial, Baluchari','Assorted Borders','Approx. 500g assorted','5 Units Minimum Sample')">Request Sample</button>
       </div>
       <div class="hero-stats">
@@ -35,8 +38,26 @@
         <div class="hs-item"><div class="hs-num">{{ hero.stats_variants|default:"12K+" }}</div><div class="hs-lbl">Design Variants</div></div>
       </div>
     </div>
+
+    <!-- Saree Lottie visual -->
+    <div class="hero-lottie-wrap" aria-hidden="true">
+      <div class="hero-lottie-glow"></div>
+      <div class="hero-lottie-frame">
+        <dotlottie-wc
+          id="saree-lottie"
+          src="{% static 'lottie/saree-animation.lottie' %}"
+          autoplay
+          loop
+          speed="1"
+          style="width:100%;height:100%;display:block;"
+        ></dotlottie-wc>
+      </div>
+      <div class="hero-lottie-caption">Handloom Saree · Live Preview</div>
+    </div>
+
     <div class="scroll-cue"><span class="sc-text">Scroll</span><div class="sc-line"></div></div>
   </section>
+  {% endif %}
 
   <!-- TRUST MARQUEE -->
   <div class="marquee-wrap">
@@ -74,13 +95,14 @@
   </div>
 
   <!-- CATEGORIES SECTION -->
+  {% if not category_sec or category_sec.is_active %}
   <section class="home-cat-sec sec">
-    <div class="sh rv">
+    <div class="sh rv rv-up">
       <div class="sec-label">{{ category_sec.label|default:"Heritage Portfolios" }}</div>
       <h2 class="sec-h">{{ category_sec.title|default:"Explore Saree" }} <strong>{{ category_sec.highlighted_title|default:"Categories" }}</strong></h2>
       <p class="sec-p">{{ category_sec.description|default:"Select a category to view active loom allocations, technical specifications, and custom procurement options." }}</p>
     </div>
-    <div class="home-cat-grid rv d1">
+    <div class="home-cat-grid rv-stagger">
       {% for cat in categories %}
       <a class="home-cat-card" href="{% url 'category_detail' cat.slug %}">
         <div class="home-cat-img-box">
@@ -99,10 +121,12 @@
       {% endfor %}
     </div>
   </section>
+  {% endif %}
 
   <!-- PREMIUM PRODUCTS (CATEGORY-WISE) -->
+  {% if not premium_sec or premium_sec.is_active %}
   <section class="prem-products-sec sec" style="border-top:1px solid var(--border-s);">
-    <div class="sh rv">
+    <div class="sh rv rv-up">
       <div class="sec-label">{{ premium_sec.label|default:"Exclusive Selections" }}</div>
       <h2 class="sec-h">{{ premium_sec.title|default:"Premium B2B" }} <strong>{{ premium_sec.highlighted_title|default:"Creations" }}</strong></h2>
       <p class="sec-p">{{ premium_sec.description|default:"Explore our most exclusive handloom creations selected for priority showroom allocation. Filtered by category." }}</p>
@@ -116,10 +140,10 @@
     </div>
 
     <!-- Premium Products Display Grid -->
-    <div class="prem-grid rv d2">
+    <div class="prem-grid">
       {% for item in premium_by_category %}
       <div class="prem-cat-group {% if forloop.first %}active{% endif %}" id="prem-cat-{{ item.category.slug }}">
-        <div class="catalog-grid" style="padding-top: 0; padding-bottom: 0;">
+        <div class="catalog-grid rv-stagger" style="padding-top: 0; padding-bottom: 0;">
           {% for prod in item.products %}
           <div class="prod-card" onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}', '{{ prod.moq|escapejs }}')">
             <div class="prod-img-box">
@@ -172,11 +196,12 @@
       });
     </script>
   </section>
+  {% endif %}
 
   <!-- EDITORIAL PANELS -->
   {% for ed in editorials %}
   <section class="editorial-sec {% if ed.is_reversed %}rev{% endif %}">
-    <div class="ed-panel rv">
+    <div class="ed-panel glass-panel rv {% if ed.is_reversed %}rv-right{% else %}rv-left{% endif %}">
       <div class="ed-tag">{{ ed.tag }}</div>
       <h2 class="ed-h">{{ ed.title|safe }} <strong>{{ ed.highlighted_title|safe }}</strong></h2>
       <p class="ed-p">{{ ed.description }}</p>
@@ -185,9 +210,11 @@
         <li>{{ bullet }}</li>
         {% endfor %}
       </ul>
+      {% if not site_config or site_config.showroom_page_active %}
       <a class="btn-gold" href="{% url 'showroom' %}">{{ ed.button_text }}</a>
+      {% endif %}
     </div>
-    <div class="ed-image-wrap rv d1">
+    <div class="ed-image-wrap rv {% if ed.is_reversed %}rv-left{% else %}rv-right{% endif %} d1" data-parallax="0.08">
       <div class="ed-image-frame">
         {% if ed.video %}
         <video class="ed-img ed-vid" src="{{ ed.video.url }}" autoplay loop muted playsinline></video>
@@ -202,7 +229,7 @@
   {% empty %}
   <!-- Fallback Editorial -->
   <section class="editorial-sec">
-    <div class="ed-panel rv">
+    <div class="ed-panel glass-panel rv rv-left">
       <div class="ed-tag">Silk Engineering</div>
       <h2 class="ed-h">Pure <strong>Garad</strong> &amp;<br>Korial Heritage</h2>
       <p class="ed-p">The off-white mulberry core of the Garad saree carries centuries of Bengali ritual heritage. Each warp thread is sourced from select mulberry clusters and woven by master artisans trained through generations of guild knowledge.</p>
@@ -211,9 +238,11 @@
         <li>Traditional Hand-wound Zari Paar Borders</li>
         <li>Bishnupur &amp; Murshidabad GI-Tagged Origin</li>
       </ul>
+      {% if not site_config or site_config.showroom_page_active %}
       <a class="btn-gold" href="{% url 'showroom' %}">View Full Collection</a>
+      {% endif %}
     </div>
-    <div class="ed-image-wrap rv d1">
+    <div class="ed-image-wrap rv rv-right d1" data-parallax="0.08">
       <div class="ed-image-frame">
         <div class="ed-img-pattern pattern-1"></div>
       </div>
@@ -222,10 +251,11 @@
   {% endfor %}
 
   <!-- WHY CHOOSE US -->
+  {% if not why_sec or why_sec.is_active %}
   <section class="why-sec sec" id="why-us">
     <div class="why-layout">
       <!-- Left: Editorial Header -->
-      <div class="why-header rv">
+      <div class="why-header rv rv-left">
         <div class="sec-label">{{ why_sec.label|default:"Our Advantage" }}</div>
         <h2 class="sec-h">{{ why_sec.title|default:"Why Global Buyers Choose" }} <em>{{ why_sec.highlighted_title|default:"Jyoticreations" }}</em></h2>
         <p class="sec-p">{{ why_sec.description|default:"From direct loom access to private label programs — we are the complete B2B manufacturing partner for luxury saree commerce worldwide." }}</p>
@@ -239,13 +269,15 @@
             <span class="wh-label">{{ why_sec.stat2_label|default:"9001:2015 Audited" }}</span>
           </div>
         </div>
+        {% if not site_config or site_config.showroom_page_active %}
         <a class="btn-gold" href="{% url 'showroom' %}">View Showroom Allocation</a>
+        {% endif %}
       </div>
 
       <!-- Right: Asymmetric Cards Grid -->
-      <div class="why-grid-asym">
+      <div class="why-grid-asym rv-stagger">
         {% for card in why_cards %}
-        <div class="why-card-luxe rv d{{ forloop.counter }}">
+        <div class="why-card-luxe glass-panel-soft">
           <div class="why-card-num">0{{ forloop.counter }}</div>
           <div class="why-card-icon">{{ card.icon }}</div>
           <h4>{{ card.title }}</h4>
@@ -253,25 +285,25 @@
         </div>
         {% empty %}
         <!-- Fallbacks -->
-        <div class="why-card-luxe rv d1">
+        <div class="why-card-luxe glass-panel-soft">
           <div class="why-card-num">01</div>
           <div class="why-card-icon">🏭</div>
           <h4>Direct Manufacturer</h4>
           <p>We own the looms. No agents, no brokers. Direct factory pricing ensures your margins remain strong.</p>
         </div>
-        <div class="why-card-luxe rv d2">
+        <div class="why-card-luxe glass-panel-soft">
           <div class="why-card-num">02</div>
           <div class="why-card-icon">🏷️</div>
           <h4>Private Label &amp; OEM</h4>
           <p>Complete private label manufacturing. Your brand, your labels, your packaging.</p>
         </div>
-        <div class="why-card-luxe rv d3">
+        <div class="why-card-luxe glass-panel-soft">
           <div class="why-card-num">03</div>
           <div class="why-card-icon">🌐</div>
           <h4>Worldwide Shipping</h4>
           <p>Established export infrastructure to 42 countries. Full custom clearance documentation.</p>
         </div>
-        <div class="why-card-luxe rv d4">
+        <div class="why-card-luxe glass-panel-soft">
           <div class="why-card-num">04</div>
           <div class="why-card-icon">✦</div>
           <h4>Quality Control</h4>
@@ -281,11 +313,13 @@
       </div>
     </div>
   </section>
+  {% endif %}
 
   <!-- HERITAGE -->
+  {% if not heritage or heritage.is_active %}
   <section class="heritage-sec sec">
     <div class="heritage-grid">
-      <div class="h-visual rv">
+      <div class="h-visual rv rv-left" data-parallax="0.1">
         <div class="hsw-main">
           <div class="hsw-body"></div>
           <div class="hsw-border-strip"></div>
@@ -301,41 +335,43 @@
         <div class="h-tag">Garad Heritage · Grade AAAA</div>
         <div class="h-year-badge"><span>2008</span><span>Founded</span></div>
       </div>
-      <div class="h-content">
-        <div class="sec-label rv">{{ heritage.label|default:"Our Heritage" }}</div>
-        <h2 class="h-title rv d1">
+      <div class="h-content rv rv-right">
+        <div class="sec-label">{{ heritage.label|default:"Our Heritage" }}</div>
+        <h2 class="h-title">
           {{ heritage.title|default:"Five Centuries of" }}
           <strong>{{ heritage.highlighted_title|default:"Bengali Silk Mastery" }}</strong>
         </h2>
-        <p class="h-body rv d2">{{ heritage.body_p1|default:"Rooted in the handloom heartlands of Bishnupur, Murshidabad, and Shantipur, Jyoticreations was founded to bridge Bengal's finest handloom artisans with global luxury commerce. Our sarees carry an unbroken thread of craftsmanship stretching back five hundred years." }}</p>
-        <p class="h-body rv d2" style="margin-top:-16px">{{ heritage.body_p2|default:"We operate exclusively as a B2B platform — no retail, no compromise. Enterprise clients from Paris, London, New York, Dubai and Singapore trust our verification protocols and cluster compliance frameworks built over decades." }}</p>
-        <div class="h-specs-grid rv d3">
+        <p class="h-body">{{ heritage.body_p1|default:"Rooted in the handloom heartlands of Bishnupur, Murshidabad, and Shantipur, Jyoticreations was founded to bridge Bengal's finest handloom artisans with global luxury commerce. Our sarees carry an unbroken thread of craftsmanship stretching back five hundred years." }}</p>
+        <p class="h-body" style="margin-top:-16px">{{ heritage.body_p2|default:"We operate exclusively as a B2B platform — no retail, no compromise. Enterprise clients from Paris, London, New York, Dubai and Singapore trust our verification protocols and cluster compliance frameworks built over decades." }}</p>
+        <div class="h-specs-grid">
           <div class="h-spec"><label>ISO Certification</label><span>{{ heritage.specs_iso|default:"9001:2015" }}</span></div>
           <div class="h-spec"><label>GI Tag Status</label><span>{{ heritage.specs_gi|default:"Registered" }}</span></div>
           <div class="h-spec"><label>Established</label><span>{{ heritage.specs_established|default:"Est. 2008" }}</span></div>
           <div class="h-spec"><label>Export License</label><span>{{ heritage.specs_license|default:"Active · 42 Nations" }}</span></div>
         </div>
-        <button class="btn-gold rv d4" onclick="document.getElementById('eq').scrollIntoView({behavior:'smooth'})">{{ heritage.button_text|default:"Begin B2B Partnership" }}</button>
+        <button class="btn-gold" onclick="document.getElementById('eq') && document.getElementById('eq').scrollIntoView({behavior:'smooth'})">{{ heritage.button_text|default:"Begin B2B Partnership" }}</button>
       </div>
     </div>
   </section>
+  {% endif %}
 
   <!-- MANUFACTURING PROCESS -->
+  {% if not process_sec or process_sec.is_active %}
   <section class="process-sec sec">
-    <div class="sh rv">
+    <div class="sh rv rv-up">
       <div class="sec-label">{{ process_sec.label|default:"Our Craft" }}</div>
       <h2 class="sec-h">{{ process_sec.title|default:"The" }} <em>{{ process_sec.highlighted_title|default:"Manufacturing" }}</em> {{ process_sec.suffix_title|default:"Journey" }}</h2>
       <p class="sec-p">{{ process_sec.description|default:"From raw silk selection to export-ready packaging — every stage is controlled in-house under ISO-certified quality protocols." }}</p>
     </div>
-    <div class="process-steps">
+    <div class="process-steps rv-stagger">
       {% for step in steps %}
-      <div class="ps rv d{{ forloop.counter }}">
+      <div class="ps">
         <div class="ps-num">{{ step.step_number }}</div>
         <div class="ps-circle">{{ step.icon }}</div>
         <div class="ps-lbl">{{ step.label }}</div>
       </div>
       {% empty %}
-      <div class="ps rv">
+      <div class="ps">
         <div class="ps-num">01</div>
         <div class="ps-circle">🌿</div>
         <div class="ps-lbl">Silk Selection</div>
@@ -343,15 +379,17 @@
       {% endfor %}
     </div>
   </section>
+  {% endif %}
 
   <!-- TECH SPECS -->
+  {% if not metrics_sec or metrics_sec.is_active %}
   <section class="tech-sec sec">
-    <div class="sh rv">
+    <div class="sh rv rv-up">
       <div class="sec-label">{{ metrics_sec.label|default:"Quality Framework" }}</div>
       <h2 class="sec-h">{{ metrics_sec.title|default:"Technical" }} <em>{{ metrics_sec.highlighted_title|default:"Loom" }}</em> {{ metrics_sec.suffix_title|default:"Metrics" }}</h2>
       <p class="sec-p">{{ metrics_sec.description|default:"Rigorous laboratory-grade standards maintained across all production runs for international B2B compliance and customs clearance." }}</p>
     </div>
-    <div class="spec-rows rv d1">
+    <div class="spec-rows rv rv-scale d1">
       {% for metric in metrics %}
       <div class="spec-row">
         <div class="spec-lbl">{{ metric.label }}</div>
@@ -363,16 +401,18 @@
       {% endfor %}
     </div>
   </section>
+  {% endif %}
 
   <!-- GLOBAL EXPORT -->
+  {% if not export_sec or export_sec.is_active %}
   <section class="export-sec sec">
-    <div class="sh rv">
+    <div class="sh rv rv-up">
       <div class="sec-label">{{ export_sec.label|default:"Global Reach" }}</div>
       <h2 class="sec-h">{{ export_sec.title|default:"Export to" }} <em>{{ export_sec.highlighted_title|default:"42" }}</em> {{ export_sec.suffix_title|default:"Countries" }}</h2>
       <p class="sec-p">{{ export_sec.description|default:"Established shipping infrastructure with full customs documentation for seamless international delivery across luxury markets worldwide." }}</p>
     </div>
     <div class="export-grid">
-      <div class="export-map-placeholder rv">
+      <div class="export-map-placeholder rv rv-left">
         <div class="map-dot" style="left:22%;top:38%"></div>
         <div class="map-dot" style="left:35%;top:36%;animation-delay:0.5s"></div>
         <div class="map-dot" style="left:48%;top:34%;animation-delay:1s"></div>
@@ -386,7 +426,7 @@
           <p>{{ export_sec.map_label_sub|default:"Active Export Destinations" }}</p>
         </div>
       </div>
-      <div class="export-countries rv d1">
+      <div class="export-countries rv-stagger">
         {% for country in countries %}
         <div class="ec-row">
           <span class="ec-flag">{{ country.flag }}</span>
@@ -399,17 +439,19 @@
       </div>
     </div>
   </section>
+  {% endif %}
 
-  <!-- TESTIMONIALS -->
+  <!-- TESTIMONIALS / CLIENT VOICES -->
+  {% if not testimonial_sec or testimonial_sec.is_active %}
   <section class="testi-sec sec">
-    <div class="sh rv">
+    <div class="sh rv rv-up">
       <div class="sec-label">{{ testimonial_sec.label|default:"Enterprise Confidence" }}</div>
       <h2 class="sec-h">{{ testimonial_sec.title|default:"B2B" }} <strong>{{ testimonial_sec.highlighted_title|default:"Client" }}</strong> {{ testimonial_sec.suffix_title|default:"Voices" }}</h2>
       <p class="sec-p">{{ testimonial_sec.description|default:"Trusted by luxury boutiques, fashion houses, and international retail chains across four continents." }}</p>
     </div>
-    <div class="t-grid">
+    <div class="t-grid rv-stagger">
       {% for testimonial in testimonials %}
-      <div class="t-card rv d{{ forloop.counter }}">
+      <div class="t-card glass-panel">
         <div class="t-quote-icon">"</div>
         <p class="t-text">"{{ testimonial.quote }}"</p>
         <div class="t-author">
@@ -418,7 +460,7 @@
         </div>
       </div>
       {% empty %}
-      <div class="t-card rv">
+      <div class="t-card glass-panel">
         <div class="t-quote-icon">"</div>
         <p class="t-text">"The Korial Zari collection outsold every other saree line in our Dubai flagship within two weeks."</p>
         <div class="t-author">
@@ -428,7 +470,7 @@
       </div>
       {% endfor %}
     </div>
-    <div class="partner-strip rv">
+    <div class="partner-strip rv d2">
       <div class="ps-lbl-text">{{ testimonial_sec.partner_strip_label|default:"Trusted by enterprises across" }}</div>
       <div class="ps-pills">
         {% for pill in testimonial_sec.get_partner_pills %}
@@ -443,15 +485,17 @@
       </div>
     </div>
   </section>
+  {% endif %}
 
   <!-- FAQ SECTION -->
+  {% if not faq_sec or faq_sec.is_active %}
   <section class="faq-sec sec" style="border-top:1px solid var(--border-s)">
-    <div class="sh rv">
+    <div class="sh rv rv-up">
       <div class="sec-label">{{ faq_sec.label|default:"Support Ledger" }}</div>
       <h2 class="sec-h">{{ faq_sec.title|default:"Frequently Asked" }} <strong>{{ faq_sec.highlighted_title|default:"Questions" }}</strong></h2>
       <p class="sec-p">{{ faq_sec.description|default:"Essential information regarding production capacity, lead times, export documentation, and custom orders." }}</p>
     </div>
-    <div class="faq-accordion rv d1">
+    <div class="faq-accordion rv-stagger">
       {% for faq in faqs %}
       <div class="faq-item">
         <button class="faq-trigger">
@@ -530,19 +574,21 @@
       });
     </script>
   </section>
+  {% endif %}
 
   <!-- ENQUIRY CTA -->
+  {% if not enquiry_cta or enquiry_cta.is_active %}
   <section class="enquiry-sec sec" id="eq">
     <div class="eq-grid-bg"></div>
-    <div class="eq-inner">
-      <div class="eq-badge rv"><div class="eq-pulse"></div>{{ enquiry_cta.badge|default:"B2B Access Portal · Now Accepting Partners" }}</div>
-      <h2 class="eq-h rv d1">{{ enquiry_cta.title|default:"Begin Your Premium" }}<br><strong>{{ enquiry_cta.highlighted_title|default:"Wholesale Partnership" }}</strong></h2>
-      <p class="eq-p rv d2">{{ enquiry_cta.description|default:"Join 500+ boutiques and luxury retailers sourcing directly from our Bengali silk clusters. Allocations are capacity-limited — contact our procurement team to secure priority access." }}</p>
-      <div class="eq-btns rv d3">
+    <div class="eq-inner glass-panel rv rv-scale">
+      <div class="eq-badge"><div class="eq-pulse"></div>{{ enquiry_cta.badge|default:"B2B Access Portal · Now Accepting Partners" }}</div>
+      <h2 class="eq-h">{{ enquiry_cta.title|default:"Begin Your Premium" }}<br><strong>{{ enquiry_cta.highlighted_title|default:"Wholesale Partnership" }}</strong></h2>
+      <p class="eq-p">{{ enquiry_cta.description|default:"Join 500+ boutiques and luxury retailers sourcing directly from our Bengali silk clusters. Allocations are capacity-limited — contact our procurement team to secure priority access." }}</p>
+      <div class="eq-btns">
         <button class="btn-wa" onclick="openContactModal()" style="font-family:inherit;font-size:13px;cursor:pointer;border:none;">{{ enquiry_cta.whatsapp_button_text|default:"✆ Contact Procurement Desk" }}</button>
         <button class="btn-em" onclick="openContactModal()" style="font-family:inherit;font-size:13px;cursor:pointer;border:1px solid var(--border);">{{ enquiry_cta.email_button_text|default:"✉ Send Formal Enquiry" }}</button>
       </div>
-      <div class="eq-guarantees rv d4">
+      <div class="eq-guarantees">
         {% for guarantee in enquiry_cta.get_guarantees %}
         <div class="eq-g"><div class="eq-chk">✓</div>{{ guarantee }}</div>
         {% empty %}
@@ -554,12 +600,13 @@
       </div>
     </div>
   </section>
+  {% endif %}
 
 </main>
 
 <script>
   // Highlight active link
-  document.getElementById('nav-hp').classList.add('active-link');
+  document.getElementById('nav-hp')?.classList.add('active-link');
   
   // Animated counters
   const counterObs = new IntersectionObserver(entries => {

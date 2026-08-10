@@ -4,7 +4,7 @@
 {% block title %}B2B Showroom Catalog — Jyoticreations Saree Sourcing{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=12">
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=13">
 {% endblock %}
 
 {% block content %}
@@ -81,7 +81,7 @@
 
 <script>
   // Highlight active link
-  document.getElementById('nav-cv').classList.add('active-link');
+  document.getElementById('nav-cv')?.classList.add('active-link');
 
   document.addEventListener('DOMContentLoaded', () => {
     const catTabs = document.querySelectorAll('.cat-tab');
