@@ -14,7 +14,7 @@ from .models import (
     MetricsSectionSettings, ExportSectionSettings, TestimonialSectionSettings,
     FaqSectionSettings, PremiumSectionSettings, B2BEnquiryCTA,
     PartnersSectionSettings, Partner, CRMVendor, CRMClient, CRMOrder, CRMOrderItem,
-    SiteConfiguration,
+    SiteConfiguration, HeroAnimationImage,
 )
 from .context_processors import partners_page_is_visible
 from .serializers import (
@@ -58,40 +58,10 @@ class HomeView(TemplateView):
                 })
         context['premium_by_category'] = premium_by_cat
 
-        # Hero visual: up to 5 products with images (premium → best sellers → newest)
-        def _with_image(qs):
-            return [p for p in qs if p.image_main]
-
-        hero_showcase = _with_image(
-            Product.objects.filter(is_active=True, is_premium=True)
-            .select_related('category')
-            .order_by('-updated_at')[:12]
-        )[:5]
-        if len(hero_showcase) < 5:
-            seen = {p.id for p in hero_showcase}
-            for p in _with_image(
-                Product.objects.filter(is_active=True, is_best_seller=True)
-                .select_related('category')
-                .order_by('-updated_at')[:12]
-            ):
-                if p.id not in seen:
-                    hero_showcase.append(p)
-                    seen.add(p.id)
-                if len(hero_showcase) >= 5:
-                    break
-        if len(hero_showcase) < 5:
-            seen = {p.id for p in hero_showcase}
-            for p in _with_image(
-                Product.objects.filter(is_active=True)
-                .select_related('category')
-                .order_by('-created_at')[:24]
-            ):
-                if p.id not in seen:
-                    hero_showcase.append(p)
-                    seen.add(p.id)
-                if len(hero_showcase) >= 5:
-                    break
-        context['hero_showcase'] = hero_showcase
+        # Hero animation images (upload via admin → 01b. Hero Animation Images)
+        context['hero_animation_images'] = list(
+            HeroAnimationImage.objects.filter(is_active=True).order_by('order', 'id')[:10]
+        )
 
         # Homepage Sections Config (fetch singletons or defaults)
         context['hero'] = HeroSection.objects.first()

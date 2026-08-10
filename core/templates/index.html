@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=16">
-<link rel="stylesheet" href="{% static 'css/index.css' %}?v=16">
-<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=16">
+<link rel="stylesheet" href="{% static 'css/showroom.css' %}?v=17">
+<link rel="stylesheet" href="{% static 'css/index.css' %}?v=17">
+<link rel="stylesheet" href="{% static 'css/index_responsive.css' %}?v=17">
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
 
   <!-- HERO -->
   {% if not hero or hero.is_active %}
-  <section class="hero">
+  <section class="hero{% if hero_animation_images %} hero--with-showcase{% endif %}">
     <div class="hero-content">
       <div class="hero-eyebrow">
         <div class="eyebrow-rule"></div>
@@ -37,60 +37,23 @@
       </div>
     </div>
 
-    <!-- Custom product card carousel (same visual language as former Lottie) -->
-    <div class="hero-showcase-wrap" id="hero-showcase">
+    <!-- Hero image-only coverflow (upload via admin: 01b. Hero Animation Images) -->
+    {% if hero_animation_images %}
+    <div class="hero-showcase-wrap" id="hero-showcase" aria-hidden="true">
       <div class="hero-showcase-glow"></div>
       <div class="hero-showcase-orbit">
         <div class="hero-showcase-stage" id="hero-showcase-stage">
-          {% for prod in hero_showcase %}
-          <article
-            class="hero-card"
-            data-index="{{ forloop.counter0 }}"
-            style="--i:{{ forloop.counter0 }};"
-            role="button"
-            tabindex="0"
-            onclick="od('{{ prod.name|escapejs }}', '{{ prod.purity_fabric|escapejs }}', '{{ prod.border_specs|escapejs }}', '{{ prod.structural_weight|escapejs }}')"
-          >
+          {% for slide in hero_animation_images %}
+          <div class="hero-card" data-index="{{ forloop.counter0 }}" style="--i:{{ forloop.counter0 }};">
             <div class="hero-card-media">
-              {% if prod.image_main %}
-              <img src="{{ prod.image_main.url }}" alt="{{ prod.name }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
-              {% else %}
-              <div class="hero-card-fallback pattern-{{ forloop.counter }}"></div>
-              {% endif %}
-              <div class="hero-card-veil"></div>
+              <img src="{{ slide.image.url }}" alt="" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
             </div>
-            <div class="hero-card-meta">
-              <span class="hero-card-cat">{{ prod.category.name }}</span>
-              <h3 class="hero-card-name">{{ prod.name }}</h3>
-              <div class="hero-card-foot">
-                <span>Wholesale</span>
-                <span class="hero-card-cta">View</span>
-              </div>
-            </div>
-          </article>
-          {% empty %}
-          {% for i in "12345" %}
-          <article class="hero-card" data-index="{{ forloop.counter0 }}" style="--i:{{ forloop.counter0 }};">
-            <div class="hero-card-media">
-              <div class="hero-card-fallback pattern-{{ forloop.counter }}"></div>
-              <div class="hero-card-veil"></div>
-            </div>
-            <div class="hero-card-meta">
-              <span class="hero-card-cat">Bengal Handloom</span>
-              <h3 class="hero-card-name">{% if forloop.counter == 1 %}Garad Silk{% elif forloop.counter == 2 %}Korial Zari{% elif forloop.counter == 3 %}Baluchari{% elif forloop.counter == 4 %}Jamdani{% else %}Murshidabad Silk{% endif %}</h3>
-              <div class="hero-card-foot">
-                <span>Wholesale</span>
-                <span class="hero-card-cta">Explore</span>
-              </div>
-            </div>
-          </article>
-          {% endfor %}
+          </div>
           {% endfor %}
         </div>
       </div>
-      <div class="hero-showcase-caption">Handloom Collection · Live Preview</div>
-      <div class="hero-showcase-dots" id="hero-showcase-dots" role="tablist" aria-label="Showcase slides"></div>
     </div>
+    {% endif %}
 
     <div class="scroll-cue"><span class="sc-text">Scroll</span><div class="sc-line"></div></div>
   </section>
@@ -102,14 +65,12 @@
       {% for item in trust_marquee %}
       <span class="mi"><span class="mi-dot"></span>{{ item.text }}</span>
       {% empty %}
-      <span class="mi"><span class="mi-dot"></span>ISO 9001:2015 Certified</span>
       <span class="mi"><span class="mi-dot"></span>Direct Manufacturer</span>
       <span class="mi"><span class="mi-dot"></span>OEM &amp; Private Label</span>
       <span class="mi"><span class="mi-dot"></span>100% Pure Mulberry Silk</span>
       <span class="mi"><span class="mi-dot"></span>24K Gold Zari — Verified</span>
-      <span class="mi"><span class="mi-dot"></span>GI-Tagged Bengali Handloom</span>
+      <span class="mi"><span class="mi-dot"></span>Bengali Handloom Heritage</span>
       <span class="mi"><span class="mi-dot"></span>USA · UK · UAE · France · Singapore</span>
-
       <span class="mi"><span class="mi-dot"></span>98% Repeat Client Rate</span>
       <span class="mi"><span class="mi-dot"></span>500+ Global Retail Partners</span>
       {% endfor %}
@@ -117,12 +78,11 @@
       {% for item in trust_marquee %}
       <span class="mi"><span class="mi-dot"></span>{{ item.text }}</span>
       {% empty %}
-      <span class="mi"><span class="mi-dot"></span>ISO 9001:2015 Certified</span>
       <span class="mi"><span class="mi-dot"></span>Direct Manufacturer</span>
       <span class="mi"><span class="mi-dot"></span>OEM &amp; Private Label</span>
       <span class="mi"><span class="mi-dot"></span>100% Pure Mulberry Silk</span>
       <span class="mi"><span class="mi-dot"></span>24K Gold Zari — Verified</span>
-      <span class="mi"><span class="mi-dot"></span>GI-Tagged Bengali Handloom</span>
+      <span class="mi"><span class="mi-dot"></span>Bengali Handloom Heritage</span>
       <span class="mi"><span class="mi-dot"></span>USA · UK · UAE · France · Singapore</span>
       <span class="mi"><span class="mi-dot"></span>98% Repeat Client Rate</span>
       <span class="mi"><span class="mi-dot"></span>500+ Global Retail Partners</span>
@@ -271,7 +231,7 @@
       <ul class="ed-list">
         <li>Grade AAAA Non-Bleached Mulberry Raw Silk</li>
         <li>Traditional Hand-wound Zari Paar Borders</li>
-        <li>Bishnupur &amp; Murshidabad GI-Tagged Origin</li>
+        <li>Bishnupur &amp; Murshidabad Origin Clusters</li>
       </ul>
       {% if not site_config or site_config.showroom_page_active %}
       <a class="btn-gold" href="{% url 'showroom' %}">View Full Collection</a>
@@ -300,8 +260,8 @@
             <span class="wh-label">{{ why_sec.stat1_label|default:"Sourcing Transparency" }}</span>
           </div>
           <div class="wh-item">
-            <span class="wh-number">{{ why_sec.stat2_number|default:"ISO" }}</span>
-            <span class="wh-label">{{ why_sec.stat2_label|default:"9001:2015 Audited" }}</span>
+            <span class="wh-number">{{ why_sec.stat2_number|default:"14pt" }}</span>
+            <span class="wh-label">{{ why_sec.stat2_label|default:"Quality Inspection" }}</span>
           </div>
         </div>
         {% if not site_config or site_config.showroom_page_active %}
@@ -342,7 +302,7 @@
           <div class="why-card-num">04</div>
           <div class="why-card-icon">✦</div>
           <h4>Quality Control</h4>
-          <p>ISO 9001:2015 certified processes. Every piece undergoes 14-point inspection.</p>
+          <p>Rigorous in-house quality control. Every piece undergoes 14-point inspection before packaging.</p>
         </div>
         {% endfor %}
       </div>
@@ -379,8 +339,8 @@
         <p class="h-body">{{ heritage.body_p1|default:"Rooted in the handloom heartlands of Bishnupur, Murshidabad, and Shantipur, Jyoticreations was founded to bridge Bengal's finest handloom artisans with global luxury commerce. Our sarees carry an unbroken thread of craftsmanship stretching back five hundred years." }}</p>
         <p class="h-body" style="margin-top:-16px">{{ heritage.body_p2|default:"We operate exclusively as a B2B platform — no retail, no compromise. Enterprise clients from Paris, London, New York, Dubai and Singapore trust our verification protocols and cluster compliance frameworks built over decades." }}</p>
         <div class="h-specs-grid">
-          <div class="h-spec"><label>ISO Certification</label><span>{{ heritage.specs_iso|default:"9001:2015" }}</span></div>
-          <div class="h-spec"><label>GI Tag Status</label><span>{{ heritage.specs_gi|default:"Registered" }}</span></div>
+          <div class="h-spec"><label>Quality Standard</label><span>{{ heritage.specs_iso|default:"14-Point Inspection" }}</span></div>
+          <div class="h-spec"><label>Origin Clusters</label><span>{{ heritage.specs_gi|default:"Bishnupur · Murshidabad" }}</span></div>
           <div class="h-spec"><label>Established</label><span>{{ heritage.specs_established|default:"Est. 2008" }}</span></div>
           <div class="h-spec"><label>Export License</label><span>{{ heritage.specs_license|default:"Active · 42 Nations" }}</span></div>
         </div>
@@ -396,7 +356,7 @@
     <div class="sh rv rv-up">
       <div class="sec-label">{{ process_sec.label|default:"Our Craft" }}</div>
       <h2 class="sec-h">{{ process_sec.title|default:"The" }} <em>{{ process_sec.highlighted_title|default:"Manufacturing" }}</em> {{ process_sec.suffix_title|default:"Journey" }}</h2>
-      <p class="sec-p">{{ process_sec.description|default:"From raw silk selection to export-ready packaging — every stage is controlled in-house under ISO-certified quality protocols." }}</p>
+      <p class="sec-p">{{ process_sec.description|default:"From raw silk selection to export-ready packaging — every stage is controlled in-house under rigorous quality protocols." }}</p>
     </div>
     <div class="process-steps rv-stagger">
       {% for step in steps %}
@@ -500,17 +460,6 @@
       <!-- Fallbacks -->
       <div class="faq-item">
         <button class="faq-trigger">
-          <span class="faq-q">Do you provide GI origin certificates?</span>
-          <span class="faq-icon"></span>
-        </button>
-        <div class="faq-panel">
-          <div class="faq-content">
-            <p>Yes, all our Baluchari, Garad, and Jamdani sarees are supplied with authentic Geographical Indication (GI) tag certification cards.</p>
-          </div>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-trigger">
           <span class="faq-q">How long is the B2B production cycle?</span>
           <span class="faq-icon"></span>
         </button>
@@ -600,9 +549,9 @@
           </div>
 
           <div class="eq-trust-row">
-            <div class="eq-trust-item"><span class="eq-trust-mark">ISO</span> 9001:2015</div>
-            <div class="eq-trust-item"><span class="eq-trust-mark">GI</span> Registered</div>
+            <div class="eq-trust-item"><span class="eq-trust-mark">✦</span> Direct Manufacturer</div>
             <div class="eq-trust-item"><span class="eq-trust-mark">✦</span> Export Licensed</div>
+            <div class="eq-trust-item"><span class="eq-trust-mark">✦</span> Private Label Ready</div>
           </div>
         </div>
 
@@ -684,11 +633,9 @@
   }, { threshold: 0.5 });
   document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el));
 
-  /* ── Hero product card carousel (centered coverflow) ── */
+  /* ── Hero image-only coverflow ── */
   (function initHeroShowcase() {
     const stage = document.getElementById('hero-showcase-stage');
-    const dotsWrap = document.getElementById('hero-showcase-dots');
-    const wrap = document.getElementById('hero-showcase');
     if (!stage) return;
 
     const cards = Array.from(stage.querySelectorAll('.hero-card'));
@@ -699,25 +646,8 @@
     let timer = null;
     const INTERVAL = 3400;
 
-    if (dotsWrap) {
-      dotsWrap.innerHTML = '';
-      cards.forEach((_, i) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'hero-showcase-dot' + (i === 0 ? ' is-active' : '');
-        btn.setAttribute('aria-label', 'Show card ' + (i + 1));
-        btn.addEventListener('click', () => {
-          active = i;
-          layout();
-          restart();
-        });
-        dotsWrap.appendChild(btn);
-      });
-    }
-
     function layout() {
       const stageW = stage.clientWidth || 320;
-      // Side step scales with stage so cards stay inside the column
       const stepX = Math.min(58, stageW * 0.16);
 
       cards.forEach((card, i) => {
@@ -726,8 +656,6 @@
 
         const abs = Math.abs(offset);
         const isFront = offset === 0;
-
-        // Keep at most ±2 visible side cards for a clean stack
         const visible = abs <= 2;
         const tx = offset * stepX;
         const ty = isFront ? 0 : abs * 6;
@@ -745,14 +673,7 @@
         card.style.setProperty('--opacity', String(opacity));
         card.style.zIndex = String(zIndex);
         card.classList.toggle('is-active', isFront);
-        card.setAttribute('aria-hidden', isFront ? 'false' : 'true');
       });
-
-      if (dotsWrap) {
-        dotsWrap.querySelectorAll('.hero-showcase-dot').forEach((d, i) => {
-          d.classList.toggle('is-active', i === active);
-        });
-      }
     }
 
     function next() {
@@ -768,9 +689,7 @@
     layout();
     restart();
 
-    window.addEventListener('resize', () => {
-      layout();
-    }, { passive: true });
+    window.addEventListener('resize', layout, { passive: true });
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
@@ -780,15 +699,6 @@
         restart();
       }
     });
-
-    // Pause float while hovering the active card for cleaner interaction
-    if (wrap) {
-      wrap.addEventListener('mouseenter', () => {
-        if (timer) clearInterval(timer);
-        timer = null;
-      });
-      wrap.addEventListener('mouseleave', restart);
-    }
   })();
 </script>
 {% endblock %}

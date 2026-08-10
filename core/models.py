@@ -80,12 +80,27 @@ class HeroSection(models.Model):
         return "Hero Banner Settings"
 
 
+class HeroAnimationImage(models.Model):
+    """Images for the hero right-side coverflow animation (image-only, no text)."""
+    image = models.ImageField(upload_to='hero_animation/', help_text="Upload a portrait image for the hero animation")
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide this slide from the hero animation")
+    order = models.PositiveIntegerField(default=0, help_text="Lower numbers appear first")
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "01b. Hero Animation Image"
+        verbose_name_plural = "01b. Hero Animation Images"
+
+    def __str__(self):
+        return f"Hero animation image #{self.pk or 'new'}"
+
+
 # ==========================================
 # 02. TRUST RIBBON MARQUEE
 # ==========================================
 
 class TrustMarqueeItem(models.Model):
-    text = models.CharField(max_length=150, help_text="e.g. ISO 9001:2015 Certified")
+    text = models.CharField(max_length=150, help_text="e.g. Direct Manufacturer")
     order = models.PositiveIntegerField(default=0)
 
     class Meta:

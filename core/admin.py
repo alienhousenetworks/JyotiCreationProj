@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    SiteConfiguration, HeroSection, TrustMarqueeItem, CategorySectionSettings,
+    SiteConfiguration, HeroSection, HeroAnimationImage, TrustMarqueeItem, CategorySectionSettings,
     Category, SubCategory, Product, ProductImage, EditorialSection, WhyChooseUsSectionSettings,
     WhyChooseUsCard, HeritageSection, ProcessSectionSettings, ProcessStep,
     MetricsSectionSettings, TechnicalMetric, ExportSectionSettings, ExportCountry,
@@ -56,6 +56,26 @@ class HeroSectionAdmin(SingletonAdmin):
             )
         }),
     )
+
+
+@admin.register(HeroAnimationImage)
+class HeroAnimationImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'image_preview', 'is_active', 'order')
+    list_editable = ('is_active', 'order')
+    list_display_links = ('id', 'image_preview')
+    ordering = ('order', 'id')
+    fields = ('image', 'is_active', 'order')
+
+    @admin.display(description='Preview')
+    def image_preview(self, obj):
+        if obj.image:
+            from django.utils.html import format_html
+            return format_html(
+                '<img src="{}" style="height:48px;width:36px;object-fit:cover;border-radius:4px;" />',
+                obj.image.url,
+            )
+        return '—'
+
 
 @admin.register(TrustMarqueeItem)
 class TrustMarqueeItemAdmin(admin.ModelAdmin):

@@ -14,13 +14,17 @@
   min-height: 100vh;
   height: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 400px);
+  grid-template-columns: 1fr;
   align-items: center;
   column-gap: clamp(28px, 4vw, 64px);
   row-gap: 32px;
   padding: 120px 7% 72px;
   position: relative;
   overflow: hidden;
+}
+
+.hero.hero--with-showcase {
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 400px);
 }
 
 .hero-content {
@@ -275,22 +279,20 @@
   --tilt: 0deg;
   --opacity: 0;
   position: absolute;
-  /* Center origin — all motion is relative to stage center */
   left: 50%;
   top: 50%;
   width: min(72%, 260px);
   height: auto;
   aspect-ratio: 3 / 4;
   margin: 0;
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
-  background: linear-gradient(160deg, rgba(28, 18, 32, 0.95), rgba(12, 8, 16, 0.98));
-  border: 1px solid rgba(223, 186, 95, 0.22);
+  background: #140e18;
+  border: 1px solid rgba(223, 186, 95, 0.2);
   box-shadow:
     0 24px 50px rgba(0, 0, 0, 0.42),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
     0 0 36px rgba(223, 186, 95, 0.08);
-  /* Single transform chain: center first, then coverflow offsets */
   transform:
     translate3d(calc(-50% + var(--tx)), calc(-50% + var(--ty)), var(--tz))
     rotateY(var(--tilt))
@@ -303,23 +305,22 @@
     border-color 0.55s ease;
   will-change: transform, opacity;
   pointer-events: none;
-  cursor: pointer;
   transform-origin: center center;
   backface-visibility: hidden;
 }
 
 .hero-card.is-active {
-  pointer-events: auto;
-  border-color: rgba(223, 186, 95, 0.55);
+  border-color: rgba(223, 186, 95, 0.45);
   box-shadow:
     0 32px 64px rgba(0, 0, 0, 0.48),
-    0 0 0 1px rgba(255, 230, 170, 0.12) inset,
-    0 0 48px rgba(223, 186, 95, 0.2);
+    0 0 0 1px rgba(255, 230, 170, 0.08) inset,
+    0 0 48px rgba(223, 186, 95, 0.18);
 }
 
+/* Full-bleed image only — no text overlays */
 .hero-card-media {
   position: absolute;
-  inset: 0 0 32% 0;
+  inset: 0;
   overflow: hidden;
   background: #1a1018;
 }
@@ -328,10 +329,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center center;
   display: block;
   transform: scale(1.02);
   transition: transform 1.2s var(--ease-lux);
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .hero-card.is-active .hero-card-media img {
@@ -340,148 +343,7 @@
 
 @keyframes heroCardKen {
   from { transform: scale(1.02) translateY(0); }
-  to { transform: scale(1.07) translateY(-1.5%); }
-}
-
-.hero-card-veil {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, transparent 35%, rgba(10, 6, 12, 0.45) 70%, rgba(10, 6, 12, 0.9) 100%);
-  pointer-events: none;
-}
-
-.hero-card-fallback {
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(255, 230, 200, 0.35), transparent 45%),
-    radial-gradient(ellipse at 70% 80%, rgba(160, 60, 90, 0.45), transparent 50%),
-    linear-gradient(145deg, #3a2430 0%, #1a1018 45%, #4a3040 100%);
-}
-
-.hero-card-fallback.pattern-1 {
-  background:
-    radial-gradient(ellipse at 20% 30%, rgba(223, 186, 95, 0.4), transparent 40%),
-    linear-gradient(160deg, #4a2030, #1c1018 50%, #2a1830);
-}
-.hero-card-fallback.pattern-2 {
-  background:
-    radial-gradient(ellipse at 70% 20%, rgba(200, 160, 120, 0.35), transparent 45%),
-    linear-gradient(140deg, #203528, #101818 55%, #2a4038);
-}
-.hero-card-fallback.pattern-3 {
-  background:
-    radial-gradient(ellipse at 40% 70%, rgba(120, 90, 180, 0.35), transparent 50%),
-    linear-gradient(150deg, #242848, #12101c 50%, #302840);
-}
-.hero-card-fallback.pattern-4 {
-  background:
-    radial-gradient(ellipse at 60% 30%, rgba(180, 70, 70, 0.4), transparent 45%),
-    linear-gradient(155deg, #401818, #180c0c 50%, #302020);
-}
-.hero-card-fallback.pattern-5 {
-  background:
-    radial-gradient(ellipse at 50% 40%, rgba(223, 186, 95, 0.28), transparent 48%),
-    linear-gradient(145deg, #302818, #14100c 50%, #403828);
-}
-
-.hero-card-meta {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 36%;
-  padding: 12px 14px 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  background: linear-gradient(180deg, rgba(14, 10, 16, 0) 0%, rgba(14, 10, 16, 0.92) 28%, rgba(12, 8, 16, 0.98) 100%);
-  box-sizing: border-box;
-}
-
-.hero-card-cat {
-  display: block;
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: 2.2px;
-  color: var(--gold-l);
-  margin-bottom: 3px;
-  font-weight: 600;
-}
-
-.hero-card-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--ivory-warm);
-  line-height: 1.2;
-  margin: 0 0 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.hero-card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 8.5px;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.hero-card-cta {
-  color: var(--gold-l);
-  border: 1px solid rgba(223, 186, 95, 0.35);
-  padding: 3px 9px;
-  border-radius: 999px;
-  letter-spacing: 1.4px;
-  background: rgba(223, 186, 95, 0.06);
-}
-
-.hero-showcase-caption {
-  margin-top: 16px;
-  text-align: center;
-  font-size: 9.5px;
-  text-transform: uppercase;
-  letter-spacing: 3.2px;
-  color: var(--gold-l);
-  opacity: 0.78;
-  position: relative;
-  z-index: 2;
-  width: 100%;
-}
-
-.hero-showcase-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  position: relative;
-  z-index: 2;
-  pointer-events: auto;
-  width: 100%;
-}
-
-.hero-showcase-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1px solid rgba(223, 186, 95, 0.45);
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  transition: all 0.35s ease;
-  flex-shrink: 0;
-}
-
-.hero-showcase-dot.is-active {
-  background: var(--gold);
-  box-shadow: 0 0 12px var(--gold-glow);
-  transform: scale(1.15);
+  to { transform: scale(1.06) translateY(-1%); }
 }
 
 .scroll-cue {

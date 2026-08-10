@@ -356,15 +356,6 @@
     border-radius: 16px;
   }
 
-  .hero-card-name {
-    font-size: 15px;
-  }
-
-  .hero-showcase-caption {
-    font-size: 8px;
-    letter-spacing: 2px;
-  }
-
   .hero-cta-grid {
     flex-direction: column;
     width: 100%;
